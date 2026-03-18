@@ -1,3 +1,4 @@
+import { Webhook } from "svix";
 import {
   createUser,
   getUserByClerkId,
@@ -19,33 +20,71 @@ interface ClerkWebhookEvent {
 }
 
 export async function POST(request: Request) {
-  // Basic webhook verification via Clerk webhook secret
-  // For production, consider using svix for full signature verification
   const body = await request.text();
+
+  // Svix signature verification
+  const svixId = request.headers.get("svix-id");
+  const svixTimestamp = request.headers.get("svix-timestamp");
+  const svixSignature = request.headers.get("svix-signature");
+
+  if (!svixId || !svixTimestamp || !svixSignature) {
+    return Response.json({ error: "Missing svix headers" }, { status: 400 });
+  }
+
+  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("CLERK_WEBHOOK_SECRET is not set");
+    return Response.json(
+      { error: "Webhook secret not configured" },
+      { status: 500 }
+    );
+  }
 
   let event: ClerkWebhookEvent;
   try {
-    event = JSON.parse(body) as ClerkWebhookEvent;
-  } catch {
-    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+    const wh = new Webhook(webhookSecret);
+    event = wh.verify(body, {
+      "svix-id": svixId,
+      "svix-timestamp": svixTimestamp,
+      "svix-signature": svixSignature,
+    }) as ClerkWebhookEvent;
+  } catch (err) {
+    console.error("Clerk webhook verification failed:", err);
+    return Response.json({ error: "Invalid signature" }, { status: 400 });
   }
 
   if (event.type === "user.created") {
-    const { id: clerkId, email_addresses, first_name, last_name, unsafe_metadata } = event.data;
+    const {
+      id: clerkId,
+      email_addresses,
+      first_name,
+      last_name,
+      unsafe_metadata,
+    } = event.data;
 
     const email = email_addresses[0]?.email_address;
     if (!email) {
       return Response.json({ error: "No email found" }, { status: 400 });
     }
 
-    // Check if user already exists (idempotency)
+    // Idempotency check
     const existing = await getUserByClerkId(clerkId);
     if (existing) {
       return Response.json({ received: true });
     }
 
-    const name = [first_name, last_name].filter(Boolean).join(" ") || undefined;
-    const referralCode = generateReferralCode();
+    const name =
+      [first_name, last_name].filter(Boolean).join(" ") || undefined;
+
+    // Generate referral code with uniqueness retry
+    let referralCode = generateReferralCode();
+    let retries = 0;
+    while (retries < 5) {
+      const collision = await getUserByReferralCode(referralCode);
+      if (!collision) break;
+      referralCode = generateReferralCode();
+      retries++;
+    }
 
     // Check for referral from unsafe_metadata (set during sign-up from cookie)
     const refCode = (unsafe_metadata?.amex_ref as string) ?? undefined;
@@ -76,9 +115,9 @@ export async function POST(request: Request) {
     }
 
     const email = email_addresses[0]?.email_address;
-    const name = [first_name, last_name].filter(Boolean).join(" ") || undefined;
+    const name =
+      [first_name, last_name].filter(Boolean).join(" ") || undefined;
 
-    // Sync email/name changes
     if (email || name) {
       const { db } = await import("@/lib/db");
       const { users } = await import("@/lib/db/schema");

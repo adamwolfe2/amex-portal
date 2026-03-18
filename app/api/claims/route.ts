@@ -8,6 +8,7 @@ import {
   createBenefitClaim,
   deleteBenefitClaim,
 } from "@/lib/db/queries";
+import { claimsCreateSchema } from "@/lib/validation";
 
 export async function GET() {
   const { userId } = await auth();
@@ -36,21 +37,23 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { benefitId, amount, period, notes } = body;
+  const parsed = claimsCreateSchema.safeParse(body);
 
-  if (!benefitId) {
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "benefitId is required" },
+      { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
       { status: 400 }
     );
   }
 
+  const { benefitId, amount, period, notes } = parsed.data;
+
   const claim = await createBenefitClaim({
     userId: user.id,
     benefitId,
-    amount: amount ? String(amount) : undefined,
-    period,
-    notes,
+    amount: amount ?? undefined,
+    period: period ?? undefined,
+    notes: notes ?? undefined,
   });
 
   return NextResponse.json(claim, { status: 201 });
@@ -70,8 +73,8 @@ export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
 
-  if (!id) {
-    return NextResponse.json({ error: "id is required" }, { status: 400 });
+  if (!id || isNaN(Number(id))) {
+    return NextResponse.json({ error: "Valid id is required" }, { status: 400 });
   }
 
   const deleted = await deleteBenefitClaim(Number(id), user.id);

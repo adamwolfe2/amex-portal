@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
+import { getUserByClerkId, getChecklistProgress } from "@/lib/db/queries";
 import { BENEFITS, CARDS } from "@/lib/data";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 import { getActionItems } from "@/lib/data/actions";
@@ -29,19 +31,32 @@ function computeStats() {
   return { totalAnnualValue, benefitCount, monthlyValue, totalFees };
 }
 
-function computeProgress(card: CardKey) {
-  const tasks = CHECKLIST_ITEMS.filter((t) => t.card === card);
-  // In a real app, completed count would come from user state.
-  // For now, show 0 completed (fresh user).
-  return { completed: 0, total: tasks.length };
-}
-
-export default function DashboardPage() {
+export default async function DashboardPage() {
   const { totalAnnualValue, benefitCount, monthlyValue, totalFees } =
     computeStats();
+  const actions = getActionItems();
+
+  // Fetch real checklist progress from DB
+  let completedIds = new Set<string>();
+  const { userId } = await auth();
+  if (userId) {
+    const dbUser = await getUserByClerkId(userId);
+    if (dbUser) {
+      const progress = await getChecklistProgress(dbUser.id);
+      completedIds = new Set(
+        progress.filter((p) => p.completed).map((p) => p.itemId)
+      );
+    }
+  }
+
+  function computeProgress(card: CardKey) {
+    const tasks = CHECKLIST_ITEMS.filter((t) => t.card === card);
+    const completed = tasks.filter((t) => completedIds.has(t.id)).length;
+    return { completed, total: tasks.length };
+  }
+
   const platProgress = computeProgress("platinum");
   const goldProgress = computeProgress("gold");
-  const actions = getActionItems();
 
   return (
     <div className="max-w-5xl">
@@ -53,14 +68,14 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2 mt-3">
           <Image
             src="/platinum-card.png"
-            alt="Platinum"
+            alt="American Express Platinum Card"
             width={48}
             height={30}
             className="rounded shadow-sm"
           />
           <Image
             src="/gold-card.png"
-            alt="Gold"
+            alt="American Express Gold Card"
             width={48}
             height={30}
             className="rounded shadow-sm"

@@ -62,6 +62,74 @@ export async function updateUserSubscription(
   return result[0] ?? null;
 }
 
+export async function updateUserPlan(
+  clerkId: string,
+  planType: string,
+  extras?: {
+    stripeSubscriptionId?: string;
+    stripeCustomerId?: string;
+    trialEndsAt?: Date | null;
+    subscriptionStatus?: string;
+  }
+) {
+  const values: Record<string, unknown> = {
+    planType,
+    updatedAt: new Date(),
+  };
+  if (extras?.stripeSubscriptionId !== undefined) {
+    values.stripeSubscriptionId = extras.stripeSubscriptionId;
+  }
+  if (extras?.stripeCustomerId !== undefined) {
+    values.stripeCustomerId = extras.stripeCustomerId;
+  }
+  if (extras?.trialEndsAt !== undefined) {
+    values.trialEndsAt = extras.trialEndsAt;
+  }
+  if (extras?.subscriptionStatus !== undefined) {
+    values.subscriptionStatus = extras.subscriptionStatus;
+  }
+  const result = await db
+    .update(users)
+    .set(values)
+    .where(eq(users.clerkId, clerkId))
+    .returning();
+  return result[0] ?? null;
+}
+
+export async function getUserByStripeSubscriptionId(subscriptionId: string) {
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.stripeSubscriptionId, subscriptionId))
+    .limit(1);
+  return result[0] ?? null;
+}
+
+export async function getUserByStripeCustomerId(customerId: string) {
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.stripeCustomerId, customerId))
+    .limit(1);
+  return result[0] ?? null;
+}
+
+export async function getUserSubscriptionStatus(clerkId: string) {
+  const result = await db
+    .select({
+      planType: users.planType,
+      subscriptionStatus: users.subscriptionStatus,
+      referralCode: users.referralCode,
+      trialEndsAt: users.trialEndsAt,
+      cards: users.cards,
+      stripeSubscriptionId: users.stripeSubscriptionId,
+    })
+    .from(users)
+    .where(eq(users.clerkId, clerkId))
+    .limit(1);
+  return result[0] ?? null;
+}
+
 export async function updateUserCards(clerkId: string, cards: string[]) {
   const result = await db
     .update(users)

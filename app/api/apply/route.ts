@@ -1,21 +1,29 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { ambassadorApplications } from "@/lib/db/schema";
+import { applySchema } from "@/lib/validation";
+import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const { ok } = rateLimit(ip);
+  if (!ok) return getRateLimitResponse();
+
   try {
     const body = await req.json();
-    const { name, email, handle, platform, followerCount, cards, reason } =
-      body;
+    const parsed = applySchema.safeParse(body);
 
-    if (!name || !email || !handle || !platform || !followerCount) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
         { status: 400 }
       );
     }
+
+    const { name, email, handle, platform, followerCount, cards, reason } =
+      parsed.data;
 
     await db.insert(ambassadorApplications).values({
       name,
@@ -23,14 +31,11 @@ export async function POST(req: Request) {
       handle,
       platform,
       followerCount,
-      cards: cards || [],
-      reason: reason || null,
+      cards: cards ?? [],
+      reason: reason ?? null,
     });
 
-    return NextResponse.json(
-      { success: true },
-      { status: 201 }
-    );
+    return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
     console.error("Ambassador application error:", error);
     return NextResponse.json(

@@ -8,6 +8,7 @@ import {
   integer,
   json,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable(
@@ -21,7 +22,10 @@ export const users = pgTable(
     referredBy: text("referred_by"),
     cards: json("cards").$type<string[]>().default([]),
     subscriptionStatus: text("subscription_status").default("free"),
+    planType: text("plan_type").default("free"),
     stripeCustomerId: text("stripe_customer_id"),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    trialEndsAt: timestamp("trial_ends_at"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
   },
@@ -69,6 +73,7 @@ export const referrals = pgTable(
   (table) => [
     index("referrals_referrer_id_idx").on(table.referrerId),
     index("referrals_referred_user_id_idx").on(table.referredUserId),
+    uniqueIndex("referrals_referrer_referred_unique").on(table.referrerId, table.referredUserId),
   ]
 );
 
@@ -110,6 +115,6 @@ export const checklistProgress = pgTable(
   },
   (table) => [
     index("checklist_progress_user_id_idx").on(table.userId),
-    index("checklist_progress_user_item_idx").on(table.userId, table.itemId),
+    uniqueIndex("checklist_progress_user_item_unique").on(table.userId, table.itemId),
   ]
 );

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { createCheckoutSession } from "@/lib/stripe";
 import { getUserByClerkId } from "@/lib/db/queries";
+import { checkoutSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
   const { userId } = await auth();
@@ -17,8 +18,8 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const validPlans = ["monthly", "annual", "lifetime"] as const;
-  const plan = validPlans.includes(body.plan) ? body.plan : "annual";
+  const parsed = checkoutSchema.safeParse(body);
+  const plan = parsed.success ? parsed.data.plan : "annual";
 
   const dbUser = await getUserByClerkId(userId);
   const referralCode = dbUser?.referredBy ?? undefined;

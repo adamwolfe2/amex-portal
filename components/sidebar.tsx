@@ -4,10 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
+  AlertCircle,
+  CreditCard,
   Gift,
   Calendar,
+  CheckSquare,
   Lightbulb,
   Wrench,
+  BookOpen,
   Lock,
   Settings,
   Users,
@@ -21,15 +25,39 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
-const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Benefits", href: "/benefits", icon: Gift },
-  { label: "Calendar", href: "/calendar", icon: Calendar },
-  { label: "Tips", href: "/tips", icon: Lightbulb },
-  { label: "Tools", href: "/tools", icon: Wrench },
-  { label: "Vault", href: "/vault", icon: Lock },
-  { label: "Settings", href: "/settings", icon: Settings },
-  { label: "Refer", href: "/refer", icon: Users },
+const navSections = [
+  {
+    label: "Control Center",
+    items: [
+      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Actions", href: "/actions", icon: AlertCircle },
+      { label: "Best Card", href: "/bestcard", icon: CreditCard },
+    ],
+  },
+  {
+    label: "Benefits",
+    items: [
+      { label: "Benefits", href: "/benefits", icon: Gift },
+      { label: "Calendar", href: "/calendar", icon: Calendar },
+      { label: "Checklist", href: "/checklist", icon: CheckSquare },
+    ],
+  },
+  {
+    label: "Resources",
+    items: [
+      { label: "Tips", href: "/tips", icon: Lightbulb },
+      { label: "Tools", href: "/tools", icon: Wrench },
+      { label: "Sources", href: "/sources", icon: BookOpen },
+    ],
+  },
+  {
+    label: "Personal",
+    items: [
+      { label: "Vault", href: "/vault", icon: Lock },
+      { label: "Settings", href: "/settings", icon: Settings },
+      { label: "Refer", href: "/refer", icon: Users },
+    ],
+  },
 ];
 
 function NavContent({
@@ -53,34 +81,45 @@ function NavContent({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 space-y-1">
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href || pathname.startsWith(item.href + "/");
-          const Icon = item.icon;
+      <nav className="flex-1 px-3 space-y-4 overflow-y-auto">
+        {navSections.map((section) => (
+          <div key={section.label}>
+            <p className="px-3 mb-1 text-[10px] font-medium text-[#999999] uppercase tracking-wider">
+              {section.label}
+            </p>
+            <div className="space-y-0.5">
+              {section.items.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(item.href + "/");
+                const Icon = item.icon;
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`
-                relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-                transition-colors duration-150
-                ${
-                  isActive
-                    ? "bg-[#f0efed] text-[#111111]"
-                    : "text-[#666666] hover:bg-[#f0efed] hover:text-[#111111]"
-                }
-              `}
-            >
-              {isActive && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#1a1a2e] rounded-r-full" />
-              )}
-              <Icon className="h-4 w-4 shrink-0" />
-              {item.label}
-            </Link>
-          );
-        })}
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`
+                      relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+                      transition-colors duration-150
+                      ${
+                        isActive
+                          ? "bg-[#f0efed] text-[#111111]"
+                          : "text-[#666666] hover:bg-[#f0efed] hover:text-[#111111]"
+                      }
+                    `}
+                  >
+                    {isActive && (
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#1a1a2e] rounded-r-full" />
+                    )}
+                    <Icon className="h-4 w-4 shrink-0" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Footer: Plan badge + User */}
@@ -124,7 +163,10 @@ export function Sidebar({ plan = "free" }: { plan?: "free" | "pro" }) {
       {/* Mobile hamburger + sheet */}
       <div className="fixed top-0 left-0 right-0 z-40 flex items-center h-14 px-4 bg-[#fafaf9] border-b border-[#e0ddd9] md:hidden">
         <Sheet>
-          <SheetTrigger className="p-2 -ml-2 rounded-md hover:bg-[#f0efed]">
+          <SheetTrigger
+            className="p-2 -ml-2 rounded-md hover:bg-[#f0efed]"
+            aria-label="Open navigation menu"
+          >
             <Menu className="h-5 w-5 text-[#111111]" />
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0 bg-[#fafaf9]">
@@ -136,7 +178,9 @@ export function Sidebar({ plan = "free" }: { plan?: "free" | "pro" }) {
           <div className="h-7 w-7 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
             <span className="text-white font-bold text-xs">C</span>
           </div>
-          <span className="text-sm font-semibold text-[#111111]">CreditOS</span>
+          <span className="text-sm font-semibold text-[#111111]">
+            CreditOS
+          </span>
         </div>
         <div className="ml-auto">
           <Show when="signed-in">

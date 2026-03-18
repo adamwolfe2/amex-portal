@@ -2,10 +2,13 @@ import Stripe from "stripe";
 import {
   getUserByClerkId,
   getUserByReferralCode,
-  updateUserSubscription,
+  updateUserPlan,
   createReferral,
+  getUserByStripeSubscriptionId,
+  getUserByStripeCustomerId,
 } from "@/lib/db/queries";
 import { calculateCommission } from "@/lib/referral";
+import type { PlanType } from "@/lib/referral";
 import { getStripe } from "@/lib/stripe";
 
 export async function POST(request: Request) {
@@ -25,40 +28,128 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.metadata?.userId;
-    const referralCode = session.metadata?.referralCode;
-    const stripeCustomerId =
-      typeof session.customer === "string" ? session.customer : undefined;
+  try {
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const userId = session.metadata?.userId;
+        const referralCode = session.metadata?.referralCode;
+        const plan = (session.metadata?.plan as PlanType) ?? "annual";
+        const stripeCustomerId =
+          typeof session.customer === "string" ? session.customer : undefined;
+        const stripeSubscriptionId =
+          typeof session.subscription === "string"
+            ? session.subscription
+            : undefined;
 
-    if (!userId) {
-      console.error("Stripe webhook: missing userId in session metadata");
-      return Response.json(
-        { error: "Missing userId metadata" },
-        { status: 400 }
-      );
-    }
+        if (!userId) {
+          console.error("Stripe webhook: missing userId in session metadata");
+          return Response.json(
+            { error: "Missing userId metadata" },
+            { status: 400 }
+          );
+        }
 
-    // Upgrade user to pro
-    await updateUserSubscription(userId, "pro", stripeCustomerId);
+        // Determine trial end if applicable
+        let trialEndsAt: Date | null = null;
+        if (plan === "annual" && stripeSubscriptionId) {
+          const sub = await getStripe().subscriptions.retrieve(
+            stripeSubscriptionId
+          );
+          if (sub.trial_end) {
+            trialEndsAt = new Date(sub.trial_end * 1000);
+          }
+        }
 
-    // Handle referral commission
-    if (referralCode) {
-      const referrer = await getUserByReferralCode(referralCode);
-      const purchaser = await getUserByClerkId(userId);
-
-      if (referrer && purchaser) {
-        const commission = calculateCommission();
-        await createReferral({
-          referrerId: referrer.id,
-          referredUserId: purchaser.id,
-          status: "completed",
-          stripePaymentId: session.payment_intent as string,
-          commissionAmount: commission.toFixed(2),
+        // Upgrade user
+        await updateUserPlan(userId, plan === "lifetime" ? "lifetime" : "pro", {
+          stripeCustomerId,
+          stripeSubscriptionId,
+          trialEndsAt,
+          subscriptionStatus: "pro",
         });
+
+        // Handle referral commission
+        if (referralCode) {
+          const referrer = await getUserByReferralCode(referralCode);
+          const purchaser = await getUserByClerkId(userId);
+
+          if (referrer && purchaser) {
+            const commission = calculateCommission(plan);
+            await createReferral({
+              referrerId: referrer.id,
+              referredUserId: purchaser.id,
+              status: "paid",
+              stripePaymentId: session.payment_intent as string,
+              commissionAmount: commission.toFixed(2),
+            });
+          }
+        }
+        break;
+      }
+
+      case "customer.subscription.updated": {
+        const subscription = event.data.object as Stripe.Subscription;
+        const user = await getUserByStripeSubscriptionId(subscription.id);
+        if (!user) break;
+
+        const statusMap: Record<string, string> = {
+          active: "pro",
+          trialing: "pro",
+          past_due: "past_due",
+          canceled: "free",
+          unpaid: "past_due",
+          incomplete: "free",
+          incomplete_expired: "free",
+          paused: "free",
+        };
+
+        const newStatus = statusMap[subscription.status] ?? "free";
+        const planType = newStatus === "free" ? "free" : user.planType;
+
+        let trialEndsAt: Date | null = null;
+        if (subscription.trial_end) {
+          trialEndsAt = new Date(subscription.trial_end * 1000);
+        }
+
+        await updateUserPlan(user.clerkId, planType ?? "free", {
+          subscriptionStatus: newStatus,
+          trialEndsAt,
+        });
+        break;
+      }
+
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription;
+        const user = await getUserByStripeSubscriptionId(subscription.id);
+        if (!user) break;
+
+        await updateUserPlan(user.clerkId, "free", {
+          subscriptionStatus: "free",
+          stripeSubscriptionId: undefined,
+          trialEndsAt: null,
+        });
+        break;
+      }
+
+      case "invoice.payment_failed": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const customerId =
+          typeof invoice.customer === "string" ? invoice.customer : null;
+        if (!customerId) break;
+
+        const user = await getUserByStripeCustomerId(customerId);
+        if (!user) break;
+
+        await updateUserPlan(user.clerkId, user.planType ?? "free", {
+          subscriptionStatus: "past_due",
+        });
+        break;
       }
     }
+  } catch (err) {
+    console.error(`Stripe webhook handler error: ${err}`);
+    return Response.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 
   return Response.json({ received: true });

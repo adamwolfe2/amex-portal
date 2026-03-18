@@ -148,15 +148,15 @@ export default function VaultPage() {
       {/* Actions */}
       <div className="flex flex-wrap gap-2">
         <Button onClick={() => setShowForm(true)} size="sm">
-          <Plus className="h-4 w-4" data-icon="inline-start" />
+          <Plus className="h-4 w-4 mr-1.5" />
           Add Entry
         </Button>
         <Button onClick={handleExport} variant="outline" size="sm">
-          <Download className="h-4 w-4" data-icon="inline-start" />
+          <Download className="h-4 w-4 mr-1.5" />
           Export JSON
         </Button>
         <Button onClick={handleImport} variant="outline" size="sm">
-          <Upload className="h-4 w-4" data-icon="inline-start" />
+          <Upload className="h-4 w-4 mr-1.5" />
           Import JSON
         </Button>
       </div>
