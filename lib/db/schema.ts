@@ -72,6 +72,31 @@ export const referrals = pgTable(
   ]
 );
 
+export const ambassadorApplications = pgTable("ambassador_applications", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  handle: text("handle").notNull(),
+  platform: text("platform").notNull(),
+  followerCount: text("follower_count").notNull(),
+  cards: json("cards").$type<string[]>().default([]),
+  reason: text("reason"),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const feedbackResponses = pgTable("feedback_responses", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  cards: json("cards").$type<string[]>().default([]),
+  mainProblem: text("main_problem").notNull(),
+  wishFeature: text("wish_feature").notNull(),
+  priceWillingness: text("price_willingness").notNull(),
+  currentTracking: json("current_tracking").$type<string[]>().default([]),
+  additionalNotes: text("additional_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const checklistProgress = pgTable(
   "checklist_progress",
   {
