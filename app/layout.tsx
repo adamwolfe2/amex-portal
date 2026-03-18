@@ -6,6 +6,17 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "CreditOS",
   description: "Your credit card rewards command center",
+  openGraph: {
+    title: "CreditOS",
+    description: "Your credit card rewards command center",
+    siteName: "CreditOS",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CreditOS",
+    description: "Your credit card rewards command center",
+  },
 };
 
 export default function RootLayout({

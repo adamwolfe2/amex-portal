@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -71,9 +72,13 @@ function NavContent({
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6">
-        <div className="h-9 w-9 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
-          <span className="text-white font-bold text-sm">C</span>
-        </div>
+        <Image
+          src="/logo.png"
+          alt="CreditOS"
+          width={36}
+          height={24}
+          className="rounded"
+        />
         <div>
           <div className="text-sm font-semibold text-[#111111]">CreditOS</div>
           <div className="text-xs text-[#666666]">Rewards Command Center</div>
@@ -175,9 +180,13 @@ export function Sidebar({ plan = "free" }: { plan?: "free" | "pro" }) {
           </SheetContent>
         </Sheet>
         <div className="ml-3 flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
-            <span className="text-white font-bold text-xs">C</span>
-          </div>
+          <Image
+            src="/logo.png"
+            alt="CreditOS"
+            width={28}
+            height={18}
+            className="rounded"
+          />
           <span className="text-sm font-semibold text-[#111111]">
             CreditOS
           </span>
