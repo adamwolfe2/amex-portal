@@ -1,0 +1,90 @@
+import {
+  pgTable,
+  serial,
+  text,
+  boolean,
+  timestamp,
+  numeric,
+  integer,
+  json,
+  index,
+} from "drizzle-orm/pg-core";
+
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    clerkId: text("clerk_id").unique().notNull(),
+    email: text("email").notNull(),
+    name: text("name"),
+    referralCode: text("referral_code").unique().notNull(),
+    referredBy: text("referred_by"),
+    cards: json("cards").$type<string[]>().default([]),
+    subscriptionStatus: text("subscription_status").default("free"),
+    stripeCustomerId: text("stripe_customer_id"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => [
+    index("users_clerk_id_idx").on(table.clerkId),
+    index("users_referral_code_idx").on(table.referralCode),
+    index("users_email_idx").on(table.email),
+  ]
+);
+
+export const benefitClaims = pgTable(
+  "benefit_claims",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .references(() => users.id)
+      .notNull(),
+    benefitId: text("benefit_id").notNull(),
+    claimedAt: timestamp("claimed_at").defaultNow(),
+    amount: numeric("amount"),
+    period: text("period"),
+    notes: text("notes"),
+  },
+  (table) => [
+    index("benefit_claims_user_id_idx").on(table.userId),
+    index("benefit_claims_benefit_id_idx").on(table.benefitId),
+  ]
+);
+
+export const referrals = pgTable(
+  "referrals",
+  {
+    id: serial("id").primaryKey(),
+    referrerId: integer("referrer_id")
+      .references(() => users.id)
+      .notNull(),
+    referredUserId: integer("referred_user_id")
+      .references(() => users.id)
+      .notNull(),
+    status: text("status").default("pending"),
+    stripePaymentId: text("stripe_payment_id"),
+    commissionAmount: numeric("commission_amount"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [
+    index("referrals_referrer_id_idx").on(table.referrerId),
+    index("referrals_referred_user_id_idx").on(table.referredUserId),
+  ]
+);
+
+export const checklistProgress = pgTable(
+  "checklist_progress",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .references(() => users.id)
+      .notNull(),
+    itemId: text("item_id").notNull(),
+    completed: boolean("completed").default(false),
+    completedAt: timestamp("completed_at"),
+  },
+  (table) => [
+    index("checklist_progress_user_id_idx").on(table.userId),
+    index("checklist_progress_user_item_idx").on(table.userId, table.itemId),
+  ]
+);

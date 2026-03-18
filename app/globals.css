@@ -127,3 +127,12 @@
     @apply font-sans;
   }
 }
+
+/* Hide scrollbar on filter rows */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
