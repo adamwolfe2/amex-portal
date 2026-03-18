@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, Link2, BarChart3, ArrowRight, CheckCircle2, Loader2, DollarSign } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, CheckCircle2, Loader2, DollarSign } from "lucide-react";
 
 const PLATFORMS = ["Instagram", "TikTok", "YouTube", "Twitter/X", "Blog", "Other"];
 const FOLLOWER_RANGES = ["Under 1K", "1K-10K", "10K-50K", "50K-100K", "100K+"];
@@ -92,8 +93,8 @@ export default function ApplyPage() {
               Application Received
             </h2>
             <p className="text-[#6b6b6b] text-sm leading-relaxed">
-              Thanks for applying! We'll review your application and get back to
-              you within 48 hours with your custom referral link.
+              We&apos;ll review your application and get back to you within 48
+              hours with your custom referral link.
             </p>
           </div>
         </div>
@@ -106,39 +107,33 @@ export default function ApplyPage() {
       <div className="w-full max-w-lg">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
-              <CreditCard className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-base font-semibold text-[#1a1a2e] tracking-tight">
-              CreditOS
-            </span>
-          </div>
+          <Image
+            src="/logo.png"
+            alt="CreditOS"
+            width={48}
+            height={32}
+            className="mx-auto mb-4 rounded"
+          />
           <h1 className="text-2xl font-bold text-[#1a1a2e] mb-2">
             Ambassador Program
           </h1>
-          <p className="text-sm text-[#6b6b6b] leading-relaxed max-w-md mx-auto">
+          <p className="text-sm text-[#6b6b6b] leading-relaxed max-w-sm mx-auto">
             Earn 30% commission on every Pro upgrade from your referral link.
-            Share CreditOS with your audience and help them maximize their card
-            benefits.
           </p>
         </div>
 
         {/* Value Props */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           {[
-            { icon: BarChart3, label: "30% Revenue Share ($3/mo, $15/yr, or $45 lifetime)" },
-            { icon: Link2, label: "Custom Referral Link" },
-            { icon: BarChart3, label: "Real-Time Dashboard" },
-          ].map(({ icon: Icon, label }) => (
+            { label: "30% Revenue\nShare" },
+            { label: "Custom Referral\nLink" },
+            { label: "Real-Time\nDashboard" },
+          ].map(({ label }) => (
             <div
               key={label}
-              className="bg-white border border-[#e0ddd9] rounded-lg p-3 text-center"
+              className="bg-white border border-[#e0ddd9] rounded-lg px-3 py-3.5 text-center"
             >
-              <div className="mx-auto w-8 h-8 rounded-md bg-[#1a1a2e]/5 flex items-center justify-center mb-2">
-                <Icon className="w-4 h-4 text-[#1a1a2e]" />
-              </div>
-              <p className="text-xs font-medium text-[#1a1a2e] leading-tight">
+              <p className="text-xs font-medium text-[#1a1a2e] leading-tight whitespace-pre-line">
                 {label}
               </p>
             </div>
