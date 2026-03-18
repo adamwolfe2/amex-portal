@@ -8,7 +8,7 @@ interface StatCardProps {
 
 export function StatCard({ label, value, subtitle }: StatCardProps) {
   return (
-    <div className="border border-[#e0ddd9] rounded-lg p-4 bg-white">
+    <div className="border border-[#e0ddd9] rounded-lg p-4 bg-white hover:shadow-md hover:border-[#ccc] transition-shadow">
       <div
         className="text-[0.7rem] font-semibold uppercase tracking-[0.06em] text-[#777777] mb-1.5"
       >

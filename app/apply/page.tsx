@@ -22,13 +22,15 @@ export default function ApplyPage() {
 
   // Earnings calculator state
   const [referrals, setReferrals] = useState(100);
-  const [calcPlan, setCalcPlan] = useState<"monthly" | "lifetime">("monthly");
+  const [calcPlan, setCalcPlan] = useState<"monthly" | "annual" | "lifetime">("monthly");
 
-  const MONTHLY_COMMISSION = 2.7;
-  const LIFETIME_COMMISSION = 8.7;
+  const MONTHLY_COMMISSION = 3;
+  const ANNUAL_COMMISSION = 15;
+  const LIFETIME_COMMISSION = 45;
 
   const monthlyEarnings = referrals * MONTHLY_COMMISSION;
   const yearlyEarnings = monthlyEarnings * 12;
+  const annualEarnings = referrals * ANNUAL_COMMISSION;
   const lifetimeEarnings = referrals * LIFETIME_COMMISSION;
 
   const PRESETS = [
@@ -125,7 +127,7 @@ export default function ApplyPage() {
         {/* Value Props */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           {[
-            { icon: BarChart3, label: "30% Revenue Share" },
+            { icon: BarChart3, label: "30% Revenue Share ($3/mo, $15/yr, or $45 lifetime)" },
             { icon: Link2, label: "Custom Referral Link" },
             { icon: BarChart3, label: "Real-Time Dashboard" },
           ].map(({ icon: Icon, label }) => (
@@ -195,7 +197,18 @@ export default function ApplyPage() {
                   : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
               }`}
             >
-              Monthly ($9/mo)
+              Monthly ($10/mo)
+            </button>
+            <button
+              type="button"
+              onClick={() => setCalcPlan("annual")}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                calcPlan === "annual"
+                  ? "bg-[#1a1a2e] text-white border-[#1a1a2e]"
+                  : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
+              }`}
+            >
+              Annual ($50/yr)
             </button>
             <button
               type="button"
@@ -206,7 +219,7 @@ export default function ApplyPage() {
                   : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
               }`}
             >
-              Lifetime ($29)
+              Lifetime ($150)
             </button>
           </div>
 
@@ -253,29 +266,37 @@ export default function ApplyPage() {
           {calcPlan === "monthly" ? (
             <div className="text-center">
               <p className="text-xs text-[#6b6b6b] mb-1">
-                {referrals.toLocaleString()} referrals x $2.70/mo
+                {referrals.toLocaleString()} referrals x $3/mo
               </p>
               <p className="text-3xl font-bold text-green-600 mb-1">
-                ${monthlyEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/mo
+                ${monthlyEarnings.toLocaleString()}/month
               </p>
-              <p className="text-xs text-[#6b6b6b]">recurring</p>
               <div className="mt-3 pt-3 border-t border-[#e0ddd9]">
                 <p className="text-sm text-[#444444]">
                   That&apos;s{" "}
                   <span className="font-semibold text-[#111111]">
-                    ${yearlyEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    ${yearlyEarnings.toLocaleString()}
                   </span>{" "}
-                  per year
+                  /year in recurring revenue
                 </p>
               </div>
+            </div>
+          ) : calcPlan === "annual" ? (
+            <div className="text-center">
+              <p className="text-xs text-[#6b6b6b] mb-1">
+                {referrals.toLocaleString()} referrals x $15/yr
+              </p>
+              <p className="text-3xl font-bold text-green-600 mb-1">
+                ${annualEarnings.toLocaleString()}/year
+              </p>
             </div>
           ) : (
             <div className="text-center">
               <p className="text-xs text-[#6b6b6b] mb-1">
-                {referrals.toLocaleString()} referrals x $8.70
+                {referrals.toLocaleString()} referrals x $45
               </p>
               <p className="text-3xl font-bold text-[#1a1a2e] mb-1">
-                ${lifetimeEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ${lifetimeEarnings.toLocaleString()}
               </p>
               <p className="text-xs text-[#6b6b6b]">one-time</p>
             </div>

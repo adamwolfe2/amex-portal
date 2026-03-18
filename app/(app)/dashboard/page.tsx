@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { BENEFITS, CARDS } from "@/lib/data";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 import { getActionItems } from "@/lib/data/actions";
@@ -49,6 +50,22 @@ export default function DashboardPage() {
         <p className="text-sm text-[#777777] mt-1">
           Your credit card rewards command center
         </p>
+        <div className="flex items-center gap-2 mt-3">
+          <Image
+            src="/platinum-card.png"
+            alt="Platinum"
+            width={48}
+            height={30}
+            className="rounded shadow-sm"
+          />
+          <Image
+            src="/gold-card.png"
+            alt="Gold"
+            width={48}
+            height={30}
+            className="rounded shadow-sm"
+          />
+        </div>
       </div>
 
       {/* KPI Stats Grid */}

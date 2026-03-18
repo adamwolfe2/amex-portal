@@ -17,8 +17,8 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const plan: "monthly" | "lifetime" =
-    body.plan === "monthly" ? "monthly" : "lifetime";
+  const validPlans = ["monthly", "annual", "lifetime"] as const;
+  const plan = validPlans.includes(body.plan) ? body.plan : "annual";
 
   const dbUser = await getUserByClerkId(userId);
   const referralCode = dbUser?.referredBy ?? undefined;

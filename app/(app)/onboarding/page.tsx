@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
-import { CreditCard, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+import Image from "next/image";
 import type { CardKey } from "@/lib/data/types";
 
 type CardSelection = "platinum" | "gold" | "both" | null;
@@ -78,89 +79,108 @@ export default function OnboardingPage() {
               {/* Platinum */}
               <button
                 onClick={() => setSelection("platinum")}
-                className={`w-full p-5 rounded-lg border-2 text-left transition-all ${
+                className={`w-full rounded-xl border-2 text-left transition-all overflow-hidden ${
                   selection === "platinum"
-                    ? "border-[#1a1a2e] bg-[#fafaf9]"
-                    : "border-[#e0ddd9] bg-white hover:border-[#ccc]"
+                    ? "border-[#1a1a2e] shadow-lg"
+                    : "border-[#e0ddd9] hover:border-[#ccc]"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="h-10 w-10 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: "#1a1a2e" }}
-                    >
-                      <CreditCard className="h-5 w-5 text-white" />
-                    </span>
+                <div className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="text-sm font-medium text-[#111111]">
+                      <p className="text-sm font-semibold text-[#111111]">
                         Platinum Card
                       </p>
-                      <p className="text-xs text-[#666666]">$895/year</p>
+                      <p className="text-xs text-[#666666]">
+                        $895/year — 29 benefits
+                      </p>
                     </div>
+                    {selection === "platinum" && (
+                      <Check className="h-5 w-5 text-[#1a1a2e]" />
+                    )}
                   </div>
-                  {selection === "platinum" && (
-                    <Check className="h-5 w-5 text-[#1a1a2e]" />
-                  )}
+                  <Image
+                    src="/platinum-card.png"
+                    alt="Platinum Card"
+                    width={280}
+                    height={176}
+                    className="w-full max-w-[240px] rounded-lg shadow-md"
+                  />
                 </div>
               </button>
 
               {/* Gold */}
               <button
                 onClick={() => setSelection("gold")}
-                className={`w-full p-5 rounded-lg border-2 text-left transition-all ${
+                className={`w-full rounded-xl border-2 text-left transition-all overflow-hidden ${
                   selection === "gold"
-                    ? "border-[#8B6914] bg-[#fafaf9]"
-                    : "border-[#e0ddd9] bg-white hover:border-[#ccc]"
+                    ? "border-[#8B6914] shadow-lg"
+                    : "border-[#e0ddd9] hover:border-[#ccc]"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="h-10 w-10 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: "#8B6914" }}
-                    >
-                      <CreditCard className="h-5 w-5 text-white" />
-                    </span>
+                <div className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="text-sm font-medium text-[#111111]">
+                      <p className="text-sm font-semibold text-[#111111]">
                         Gold Card
                       </p>
-                      <p className="text-xs text-[#666666]">$325/year</p>
+                      <p className="text-xs text-[#666666]">
+                        $325/year — 20 benefits
+                      </p>
                     </div>
+                    {selection === "gold" && (
+                      <Check className="h-5 w-5 text-[#8B6914]" />
+                    )}
                   </div>
-                  {selection === "gold" && (
-                    <Check className="h-5 w-5 text-[#8B6914]" />
-                  )}
+                  <Image
+                    src="/gold-card.png"
+                    alt="Gold Card"
+                    width={280}
+                    height={176}
+                    className="w-full max-w-[240px] rounded-lg shadow-md"
+                  />
                 </div>
               </button>
 
               {/* Both */}
               <button
                 onClick={() => setSelection("both")}
-                className={`w-full p-5 rounded-lg border-2 text-left transition-all ${
+                className={`w-full rounded-xl border-2 text-left transition-all overflow-hidden ${
                   selection === "both"
-                    ? "border-[#1a1a2e] bg-[#fafaf9]"
-                    : "border-[#e0ddd9] bg-white hover:border-[#ccc]"
+                    ? "border-[#1a1a2e] shadow-lg"
+                    : "border-[#e0ddd9] hover:border-[#ccc]"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="h-10 w-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#1a1a2e] to-[#8B6914]">
-                      <Sparkles className="h-5 w-5 text-white" />
-                    </span>
+                <div className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="text-sm font-medium text-[#111111]">
+                      <p className="text-sm font-semibold text-[#111111]">
                         Both Cards
                       </p>
                       <p className="text-xs text-[#666666]">
-                        Platinum + Gold
+                        Platinum + Gold — All benefits
                       </p>
                     </div>
+                    {selection === "both" && (
+                      <Check className="h-5 w-5 text-[#1a1a2e]" />
+                    )}
                   </div>
-                  {selection === "both" && (
-                    <Check className="h-5 w-5 text-[#1a1a2e]" />
-                  )}
+                  <div className="flex items-center -space-x-8">
+                    <Image
+                      src="/platinum-card.png"
+                      alt="Platinum"
+                      width={160}
+                      height={100}
+                      className="rounded-lg shadow-md -rotate-3"
+                    />
+                    <Image
+                      src="/gold-card.png"
+                      alt="Gold"
+                      width={160}
+                      height={100}
+                      className="rounded-lg shadow-md rotate-3 relative z-10"
+                    />
+                  </div>
                 </div>
               </button>
             </div>

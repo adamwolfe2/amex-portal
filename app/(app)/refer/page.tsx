@@ -82,10 +82,16 @@ export default function ReferPage() {
           Refer friends to CreditOS and earn 30% on every Pro upgrade — monthly
           or lifetime. Your unique link tracks every signup automatically.
         </p>
-        <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
-          <span>Monthly referral: <strong className="text-[#111111]">$2.70/mo recurring</strong></span>
-          <span className="w-px h-3 bg-[#e0ddd9]" />
-          <span>Lifetime referral: <strong className="text-[#111111]">$8.70 one-time</strong></span>
+        <div className="flex flex-wrap justify-center gap-2 mt-3">
+          <span className="inline-flex items-center px-3 py-1.5 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
+            Monthly: <strong className="text-[#111111] ml-1">$3/mo recurring</strong>
+          </span>
+          <span className="inline-flex items-center px-3 py-1.5 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
+            Annual: <strong className="text-[#111111] ml-1">$15/yr</strong>
+          </span>
+          <span className="inline-flex items-center px-3 py-1.5 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
+            Lifetime: <strong className="text-[#111111] ml-1">$45 one-time</strong>
+          </span>
         </div>
       </div>
 
