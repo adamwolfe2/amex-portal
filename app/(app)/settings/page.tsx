@@ -20,6 +20,24 @@ export default function SettingsPage() {
   const [copied, setCopied] = useState(false);
   const [platChecked, setPlatChecked] = useState(false);
   const [goldChecked, setGoldChecked] = useState(false);
+  const [upgrading, setUpgrading] = useState<"monthly" | "lifetime" | null>(null);
+
+  const handleUpgrade = async (plan: "monthly" | "lifetime") => {
+    setUpgrading(plan);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } finally {
+      setUpgrading(null);
+    }
+  };
 
   // In a real app this would come from the DB user record
   const plan = "free" as "free" | "pro";
@@ -110,9 +128,23 @@ export default function SettingsPage() {
             </span>
           </div>
           {plan === "free" && (
-            <Button size="sm">
-              Upgrade to Pro — $29 lifetime
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={upgrading !== null}
+                onClick={() => handleUpgrade("monthly")}
+              >
+                {upgrading === "monthly" ? "Loading..." : "$9/month"}
+              </Button>
+              <Button
+                size="sm"
+                disabled={upgrading !== null}
+                onClick={() => handleUpgrade("lifetime")}
+              >
+                {upgrading === "lifetime" ? "Loading..." : "$29 lifetime"}
+              </Button>
+            </div>
           )}
         </div>
       </div>

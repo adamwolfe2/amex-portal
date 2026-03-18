@@ -47,7 +47,7 @@ export default function DashboardPage() {
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111111]">Dashboard</h1>
         <p className="text-sm text-[#777777] mt-1">
-          Your Amex rewards control center
+          Your credit card rewards command center
         </p>
       </div>
 

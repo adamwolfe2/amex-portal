@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -44,16 +43,12 @@ function NavContent({
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6">
-        <Image
-          src="/centurion-logo.png"
-          alt="Amex OS"
-          width={36}
-          height={36}
-          className="rounded-md"
-        />
+        <div className="h-9 w-9 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+          <span className="text-white font-bold text-sm">C</span>
+        </div>
         <div>
-          <div className="text-sm font-semibold text-[#111111]">Amex OS</div>
-          <div className="text-xs text-[#666666]">Rewards Tracker</div>
+          <div className="text-sm font-semibold text-[#111111]">CreditOS</div>
+          <div className="text-xs text-[#666666]">Rewards Command Center</div>
         </div>
       </div>
 
@@ -138,14 +133,10 @@ export function Sidebar({ plan = "free" }: { plan?: "free" | "pro" }) {
           </SheetContent>
         </Sheet>
         <div className="ml-3 flex items-center gap-2">
-          <Image
-            src="/centurion-logo.png"
-            alt="Amex OS"
-            width={24}
-            height={24}
-            className="rounded-sm"
-          />
-          <span className="text-sm font-semibold text-[#111111]">Amex OS</span>
+          <div className="h-7 w-7 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+            <span className="text-white font-bold text-xs">C</span>
+          </div>
+          <span className="text-sm font-semibold text-[#111111]">CreditOS</span>
         </div>
         <div className="ml-auto">
           <Show when="signed-in">

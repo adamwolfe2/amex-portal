@@ -4,7 +4,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { createCheckoutSession } from "@/lib/stripe";
 import { getUserByClerkId } from "@/lib/db/queries";
 
-export async function POST() {
+export async function POST(request: Request) {
   const { userId } = await auth();
 
   if (!userId) {
@@ -16,11 +16,15 @@ export async function POST() {
     return Response.json({ error: "User not found" }, { status: 404 });
   }
 
+  const body = await request.json().catch(() => ({}));
+  const plan: "monthly" | "lifetime" =
+    body.plan === "monthly" ? "monthly" : "lifetime";
+
   const dbUser = await getUserByClerkId(userId);
   const referralCode = dbUser?.referredBy ?? undefined;
   const email = user.emailAddresses[0]?.emailAddress ?? "";
 
-  const url = await createCheckoutSession(userId, email, referralCode);
+  const url = await createCheckoutSession(userId, email, referralCode, plan);
 
   if (!url) {
     return Response.json(

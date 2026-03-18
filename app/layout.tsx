@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Amex OS",
-  description: "Your Amex rewards operating system",
+  title: "CreditOS",
+  description: "Your credit card rewards command center",
 };
 
 export default function RootLayout({

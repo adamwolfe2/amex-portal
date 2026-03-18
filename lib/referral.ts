@@ -2,9 +2,13 @@ import { nanoid } from "nanoid";
 
 export const COMMISSION_RATE = 0.3;
 export const LIFETIME_PRICE = 29;
+export const MONTHLY_PRICE = 9;
 
-export function calculateCommission(): number {
-  return LIFETIME_PRICE * COMMISSION_RATE;
+export function calculateCommission(
+  plan: "monthly" | "lifetime" = "lifetime"
+): number {
+  const price = plan === "monthly" ? MONTHLY_PRICE : LIFETIME_PRICE;
+  return price * COMMISSION_RATE;
 }
 
 export function generateReferralCode(): string {

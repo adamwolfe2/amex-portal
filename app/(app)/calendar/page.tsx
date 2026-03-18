@@ -128,7 +128,7 @@ function generateICS(events: ResetEvent[]): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//AmexOS//Benefits Calendar//EN",
+    "PRODID:-//CreditOS//Benefits Calendar//EN",
     "CALSCALE:GREGORIAN",
   ];
 
@@ -142,9 +142,9 @@ function generateICS(events: ResetEvent[]): string {
       `SUMMARY:${e.name} Reset${e.value ? ` ($${e.value})` : ""} - ${e.card === "platinum" ? "Platinum" : "Gold"}`
     );
     lines.push(
-      `DESCRIPTION:${e.cadence.charAt(0).toUpperCase() + e.cadence.slice(1)} benefit reset for your Amex ${e.card === "platinum" ? "Platinum" : "Gold"} card.`
+      `DESCRIPTION:${e.cadence.charAt(0).toUpperCase() + e.cadence.slice(1)} benefit reset for your ${e.card === "platinum" ? "Platinum" : "Gold"} card.`
     );
-    lines.push(`UID:${e.benefitId}-${dateStr}@amexos`);
+    lines.push(`UID:${e.benefitId}-${dateStr}@creditos`);
     lines.push("END:VEVENT");
   }
 
@@ -158,7 +158,7 @@ function downloadICS(events: ResetEvent[]) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "amex-benefit-resets.ics";
+  a.download = "creditos-benefit-resets.ics";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

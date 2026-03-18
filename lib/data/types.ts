@@ -1,5 +1,5 @@
 // ============================================================
-// Amex OS — TypeScript Type Definitions
+// CreditOS — TypeScript Type Definitions
 // ============================================================
 
 export type CardKey = 'platinum' | 'gold';

@@ -86,7 +86,7 @@ export default function VaultPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "amex-os-vault.json";
+    a.download = "creditos-vault.json";
     a.click();
     URL.revokeObjectURL(url);
   };

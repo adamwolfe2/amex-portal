@@ -103,7 +103,7 @@ export default function FeedbackPage() {
             </h2>
             <p className="text-[#6b6b6b] text-sm leading-relaxed">
               Thank you for your feedback! Your input helps us build the best
-              Amex benefits platform possible.
+              card benefits platform possible.
             </p>
           </div>
         </div>
@@ -121,14 +121,14 @@ export default function FeedbackPage() {
               <CreditCard className="w-4 h-4 text-white" />
             </div>
             <span className="text-base font-semibold text-[#1a1a2e] tracking-tight">
-              Amex OS
+              CreditOS
             </span>
           </div>
           <h1 className="text-2xl font-bold text-[#1a1a2e] mb-2">
-            Help Us Build Amex OS
+            Help Us Build CreditOS
           </h1>
           <p className="text-sm text-[#6b6b6b] leading-relaxed max-w-md mx-auto">
-            We're building the ultimate platform for maximizing your Amex
+            We're building the ultimate platform for maximizing your card
             benefits. Your feedback shapes what we build next.
           </p>
         </div>
@@ -159,7 +159,7 @@ export default function FeedbackPage() {
           {/* Cards */}
           <fieldset>
             <legend className="block text-sm font-medium text-[#1a1a2e] mb-2">
-              Which Amex cards do you have?
+              Which cards do you have?
             </legend>
             <div className="flex flex-wrap gap-2">
               {CARD_OPTIONS.map((card) => (
@@ -186,7 +186,7 @@ export default function FeedbackPage() {
           {/* Main Problem */}
           <div>
             <label className="block text-sm font-medium text-[#1a1a2e] mb-1.5">
-              What's the #1 problem you have managing your Amex benefits?
+              What's the #1 problem you have managing your card benefits?
             </label>
             <textarea
               required
@@ -201,7 +201,7 @@ export default function FeedbackPage() {
           {/* Wish Feature */}
           <div>
             <label className="block text-sm font-medium text-[#1a1a2e] mb-1.5">
-              What's one thing you wish a platform like Amex OS could solve?
+              What's one thing you wish a platform like CreditOS could solve?
             </label>
             <textarea
               required
@@ -257,7 +257,7 @@ export default function FeedbackPage() {
           {/* Current Tracking */}
           <fieldset>
             <legend className="block text-sm font-medium text-[#1a1a2e] mb-2">
-              How do you currently track your Amex benefits?
+              How do you currently track your card benefits?
             </legend>
             <div className="flex flex-wrap gap-2">
               {TRACKING_OPTIONS.map((method) => (

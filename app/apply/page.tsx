@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, Link2, BarChart3, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { CreditCard, Link2, BarChart3, ArrowRight, CheckCircle2, Loader2, DollarSign } from "lucide-react";
 
 const PLATFORMS = ["Instagram", "TikTok", "YouTube", "Twitter/X", "Blog", "Other"];
 const FOLLOWER_RANGES = ["Under 1K", "1K-10K", "10K-50K", "50K-100K", "100K+"];
@@ -19,6 +19,25 @@ export default function ApplyPage() {
   const [followerCount, setFollowerCount] = useState("");
   const [cards, setCards] = useState<string[]>([]);
   const [reason, setReason] = useState("");
+
+  // Earnings calculator state
+  const [referrals, setReferrals] = useState(100);
+  const [calcPlan, setCalcPlan] = useState<"monthly" | "lifetime">("monthly");
+
+  const MONTHLY_COMMISSION = 2.7;
+  const LIFETIME_COMMISSION = 8.7;
+
+  const monthlyEarnings = referrals * MONTHLY_COMMISSION;
+  const yearlyEarnings = monthlyEarnings * 12;
+  const lifetimeEarnings = referrals * LIFETIME_COMMISSION;
+
+  const PRESETS = [
+    { label: "100", value: 100 },
+    { label: "500", value: 500 },
+    { label: "1K", value: 1000 },
+    { label: "5K", value: 5000 },
+    { label: "10K", value: 10000 },
+  ];
 
   function toggleCard(card: string) {
     setCards((prev) =>
@@ -90,7 +109,7 @@ export default function ApplyPage() {
               <CreditCard className="w-4 h-4 text-white" />
             </div>
             <span className="text-base font-semibold text-[#1a1a2e] tracking-tight">
-              Amex OS
+              CreditOS
             </span>
           </div>
           <h1 className="text-2xl font-bold text-[#1a1a2e] mb-2">
@@ -98,7 +117,7 @@ export default function ApplyPage() {
           </h1>
           <p className="text-sm text-[#6b6b6b] leading-relaxed max-w-md mx-auto">
             Earn 30% commission on every Pro upgrade from your referral link.
-            Share Amex OS with your audience and help them maximize their card
+            Share CreditOS with your audience and help them maximize their card
             benefits.
           </p>
         </div>
@@ -122,6 +141,145 @@ export default function ApplyPage() {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Earnings Calculator */}
+        <div className="bg-white border border-[#e0ddd9] rounded-xl p-6 mb-8">
+          <style>{`
+            input[type="range"].calc-slider {
+              -webkit-appearance: none;
+              appearance: none;
+              width: 100%;
+              height: 6px;
+              border-radius: 3px;
+              background: #e0ddd9;
+              outline: none;
+            }
+            input[type="range"].calc-slider::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              appearance: none;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: #1a1a2e;
+              cursor: pointer;
+              border: 2px solid white;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            }
+            input[type="range"].calc-slider::-moz-range-thumb {
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: #1a1a2e;
+              cursor: pointer;
+              border: 2px solid white;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            }
+          `}</style>
+
+          <div className="flex items-center gap-2 mb-5">
+            <DollarSign className="w-4 h-4 text-[#1a1a2e]" />
+            <h2 className="text-sm font-semibold text-[#1a1a2e]">
+              Earnings Calculator
+            </h2>
+          </div>
+
+          {/* Plan Toggle */}
+          <div className="flex items-center gap-2 mb-5">
+            <button
+              type="button"
+              onClick={() => setCalcPlan("monthly")}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                calcPlan === "monthly"
+                  ? "bg-[#1a1a2e] text-white border-[#1a1a2e]"
+                  : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
+              }`}
+            >
+              Monthly ($9/mo)
+            </button>
+            <button
+              type="button"
+              onClick={() => setCalcPlan("lifetime")}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                calcPlan === "lifetime"
+                  ? "bg-[#1a1a2e] text-white border-[#1a1a2e]"
+                  : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
+              }`}
+            >
+              Lifetime ($29)
+            </button>
+          </div>
+
+          {/* Slider */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-medium text-[#6b6b6b]">
+                Referrals
+              </label>
+              <span className="text-xs font-semibold text-[#1a1a2e]">
+                {referrals.toLocaleString()}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={10}
+              max={10000}
+              step={10}
+              value={referrals}
+              onChange={(e) => setReferrals(Number(e.target.value))}
+              className="calc-slider"
+            />
+          </div>
+
+          {/* Preset Buttons */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {PRESETS.map(({ label, value }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setReferrals(value)}
+                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                  referrals === value
+                    ? "bg-[#1a1a2e]/5 border-[#1a1a2e] text-[#1a1a2e]"
+                    : "bg-white border-[#e0ddd9] text-[#6b6b6b] hover:border-[#ccc]"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Results */}
+          {calcPlan === "monthly" ? (
+            <div className="text-center">
+              <p className="text-xs text-[#6b6b6b] mb-1">
+                {referrals.toLocaleString()} referrals x $2.70/mo
+              </p>
+              <p className="text-3xl font-bold text-green-600 mb-1">
+                ${monthlyEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/mo
+              </p>
+              <p className="text-xs text-[#6b6b6b]">recurring</p>
+              <div className="mt-3 pt-3 border-t border-[#e0ddd9]">
+                <p className="text-sm text-[#444444]">
+                  That&apos;s{" "}
+                  <span className="font-semibold text-[#111111]">
+                    ${yearlyEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>{" "}
+                  per year
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-xs text-[#6b6b6b] mb-1">
+                {referrals.toLocaleString()} referrals x $8.70
+              </p>
+              <p className="text-3xl font-bold text-[#1a1a2e] mb-1">
+                ${lifetimeEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
+              <p className="text-xs text-[#6b6b6b]">one-time</p>
+            </div>
+          )}
         </div>
 
         {/* Form */}
@@ -224,7 +382,7 @@ export default function ApplyPage() {
           {/* Cards */}
           <fieldset>
             <legend className="block text-sm font-medium text-[#1a1a2e] mb-2">
-              Which Amex cards do you have?
+              Which cards do you have?
             </legend>
             <div className="flex flex-wrap gap-2">
               {CARD_OPTIONS.map((card) => (
@@ -251,7 +409,7 @@ export default function ApplyPage() {
           {/* Reason */}
           <div>
             <label className="block text-sm font-medium text-[#1a1a2e] mb-1.5">
-              Why do you want to be an Amex OS ambassador?{" "}
+              Why do you want to be a CreditOS ambassador?{" "}
               <span className="text-[#aaa] font-normal">(optional)</span>
             </label>
             <textarea

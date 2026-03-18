@@ -76,12 +76,17 @@ export default function ReferPage() {
       <div className="border border-[#e0ddd9] rounded-lg bg-white p-6 text-center">
         <Users className="h-8 w-8 text-[#1a1a2e] mx-auto mb-3" />
         <h1 className="text-xl font-semibold text-[#111111] mb-1">
-          Share Amex OS, earn 30% commission
+          Share CreditOS, earn 30% commission
         </h1>
-        <p className="text-sm text-[#666666] max-w-md mx-auto">
-          Refer friends to Amex OS and earn 30% of each Pro upgrade they make.
-          Your unique link tracks every signup automatically.
+        <p className="text-sm text-[#666666] max-w-md mx-auto mb-3">
+          Refer friends to CreditOS and earn 30% on every Pro upgrade — monthly
+          or lifetime. Your unique link tracks every signup automatically.
         </p>
+        <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
+          <span>Monthly referral: <strong className="text-[#111111]">$2.70/mo recurring</strong></span>
+          <span className="w-px h-3 bg-[#e0ddd9]" />
+          <span>Lifetime referral: <strong className="text-[#111111]">$8.70 one-time</strong></span>
+        </div>
       </div>
 
       {/* Referral link */}
