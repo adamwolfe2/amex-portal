@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amex OS — Manual Control Center</title>
+  <meta name="description" content="Personal manual-control rewards operating system for American Express Platinum and Gold cards. Track benefits, optimize spending, and manage Rakuten MR stacking.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231a1a2e'/><text x='16' y='22' font-family='sans-serif' font-size='16' font-weight='bold' fill='white' text-anchor='middle'>A</text></svg>">
+</head>
+<body>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button class="menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <a href="#" class="mobile-brand-link" onclick="navigate('dashboard'); return false;" aria-label="Go to dashboard">
+      <img src="assets/centurion-logo.png" alt="American Express Centurion mark" class="mobile-brand-logo">
+      <span class="mobile-brand">Amex OS</span>
+    </a>
+    <button class="mobile-search-btn" onclick="openSearch()" aria-label="Search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+  </header>
+
+  <div class="app-layout">
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="sidebar-brand" onclick="navigate('dashboard'); return false;">
+          <img src="assets/centurion-logo.png" alt="American Express Centurion mark" class="sidebar-brand-logo">
+          <div>
+            <span class="sidebar-brand-text">Amex OS</span>
+            <span class="sidebar-brand-sub">Manual Control</span>
+          </div>
+        </a>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Control Center</div>
+        <button class="sidebar-link active" data-view="dashboard" onclick="navigate('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Dashboard
+        </button>
+        <button class="sidebar-link" data-view="actions" onclick="navigate('actions')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Action Center
+        </button>
+        <button class="sidebar-link" data-view="bestcard" onclick="navigate('bestcard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Best Card
+        </button>
+        <button class="sidebar-link" data-view="portfolio" onclick="navigate('portfolio')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Portfolio
+        </button>
+
+        <div class="sidebar-section-label">Setup</div>
+        <button class="sidebar-link" data-view="checklist" onclick="navigate('checklist')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Setup Checklist
+        </button>
+        <button class="sidebar-link" data-view="onboarding" onclick="navigate('onboarding')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+          New Card Setup
+        </button>
+        <button class="sidebar-link" data-view="benefits" onclick="navigate('benefits')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="10" y1="3" x2="10" y2="21"/></svg>
+          Benefits Database
+        </button>
+        <button class="sidebar-link" data-view="calendar" onclick="navigate('calendar')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Calendar & Resets
+        </button>
+
+        <div class="sidebar-section-label">Tracking</div>
+        <button class="sidebar-link" data-view="vault" onclick="navigate('vault')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+          My Vault
+        </button>
+        <button class="sidebar-link" data-view="rakuten" onclick="navigate('rakuten')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
+          Rakuten MR
+        </button>
+
+        <div class="sidebar-section-label">Resources</div>
+        <button class="sidebar-link" data-view="travel" onclick="navigate('travel')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          Travel & Points
+        </button>
+        <button class="sidebar-link" data-view="tips" onclick="navigate('tips')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Tips & Data Points
+        </button>
+        <button class="sidebar-link" data-view="sources" onclick="navigate('sources')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Sources
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="storage-badge" id="storageBadge">
+          <span class="dot"></span>
+          <span id="storageLabel">localStorage active</span>
+        </div>
+        <div style="margin-top: 8px;">
+          <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- ============================================================ -->
+      <!-- DASHBOARD -->
+      <!-- ============================================================ -->
+      <div class="view active" id="view-dashboard">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Your Amex rewards control center</p>
+          </div>
+
+          <div class="stats-grid" id="dashStats"></div>
+
+          <div class="widgets-grid">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Platinum Setup</span>
+                <span class="checklist-count" id="platProgress">0 / 0</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill platinum" id="platBar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Gold Setup</span>
+                <span class="checklist-count" id="goldProgress">0 / 0</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill gold" id="goldBar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="card widget-full">
+              <div class="card-header">
+                <span class="card-title">What to Do Now</span>
+                <button class="btn btn-sm" onclick="navigate('actions')">View All →</button>
+              </div>
+              <div id="dashActionPreview"></div>
+            </div>
+            <div class="card widget-full">
+              <div class="card-header">
+                <span class="card-title">Upcoming Resets</span>
+              </div>
+              <ul class="upcoming-list" id="upcomingResets"></ul>
+            </div>
+            <div class="card widget-full">
+              <div class="card-header">
+                <span class="card-title">Not Yet Enrolled</span>
+              </div>
+              <div id="unenrolledList"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Quick Actions</span>
+            </div>
+            <div class="quick-actions">
+              <button class="btn btn-sm" onclick="navigate('bestcard')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/></svg>
+                Best Card
+              </button>
+              <button class="btn btn-sm" onclick="navigate('portfolio')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/></svg>
+                Portfolio
+              </button>
+              <button class="btn btn-sm" onclick="navigate('rakuten')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+                Rakuten
+              </button>
+              <button class="btn btn-sm" onclick="exportAllData()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+              </button>
+            </div>
+          </div>
+
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- ACTION CENTER -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-actions">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Action Center</h1>
+            <p class="page-subtitle">What to do right now based on your calendar and credit cycles</p>
+          </div>
+          <div id="actionsContent"></div>
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- BEST CARD -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-bestcard">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Best Card to Use</h1>
+            <p class="page-subtitle">Rule-based guidance for every spending category — with Rakuten stacking notes</p>
+          </div>
+          <div id="bestCardContent"></div>
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- PORTFOLIO -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-portfolio">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Portfolio</h1>
+            <p class="page-subtitle">Manual balances, valuations, and effective fee math</p>
+          </div>
+          <div id="portfolioContent"></div>
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SETUP CHECKLIST -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-checklist">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Setup Checklist</h1>
+            <p class="page-subtitle">Complete these steps to activate all your benefits</p>
+          </div>
+          <div id="checklistContent"></div>
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- ONBOARDING -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-onboarding">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">New Card Setup</h1>
+            <p class="page-subtitle">I just got my Platinum — what do I do first?</p>
+          </div>
+          <div id="onboardingContent"></div>
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- BENEFITS DATABASE -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-benefits">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Benefits Database</h1>
+            <p class="page-subtitle">All Platinum & Gold benefits, searchable and filterable</p>
+          </div>
+
+          <div class="search-bar" id="benefitSearchBar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" placeholder="Search benefits..." id="benefitSearch" oninput="filterBenefits()">
+          </div>
+
+          <div class="filter-row" id="benefitFilters">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+            <button class="filter-btn" data-filter="platinum" onclick="setFilter('platinum', this)">Platinum</button>
+            <button class="filter-btn" data-filter="gold" onclick="setFilter('gold', this)">Gold</button>
+            <button class="filter-btn" data-filter="monthly" onclick="setFilter('monthly', this)">Monthly</button>
+            <button class="filter-btn" data-filter="quarterly" onclick="setFilter('quarterly', this)">Quarterly</button>
+            <button class="filter-btn" data-filter="semiannual" onclick="setFilter('semiannual', this)">Semiannual</button>
+            <button class="filter-btn" data-filter="annual" onclick="setFilter('annual', this)">Annual</button>
+            <button class="filter-btn" data-filter="enrollment" onclick="setFilter('enrollment', this)">Enrollment Required</button>
+          </div>
+
+          <div id="benefitsList"></div>
+
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- CALENDAR & RESETS -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-calendar">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Calendar & Resets</h1>
+            <p class="page-subtitle">Track monthly, quarterly, semiannual, annual benefit resets + Rakuten payout dates</p>
+          </div>
+          <div id="calendarContent"></div>
+          <div class="ics-section">
+            <button class="btn btn-primary" onclick="downloadICS()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download ICS Reminders
+            </button>
+            <p style="font-size:0.73rem;color:var(--text-muted);margin-top:6px;">Generates a calendar file with all benefit reset reminders + Rakuten payout dates.</p>
+          </div>
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- MY VAULT -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-vault">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">My Vault</h1>
+            <p class="page-subtitle">Manual claim logs, captured credits, and secure notes</p>
+          </div>
+
+          <div class="vault-notice">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span id="vaultNotice">All data is stored locally in your browser. Nothing is sent to any server.</span>
+          </div>
+
+          <div class="vault-actions">
+            <button class="btn btn-sm" onclick="toggleVaultForm()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Entry
+            </button>
+            <button class="btn btn-sm" onclick="exportAllData()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export JSON
+            </button>
+            <button class="btn btn-sm" onclick="importData()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import JSON
+            </button>
+          </div>
+          <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImport(event)">
+
+          <div class="vault-add-form" id="vaultForm" style="display:none;">
+            <label for="vaultBenefit">Benefit</label>
+            <select id="vaultBenefit">
+              <option value="">Select a benefit...</option>
+            </select>
+            <label for="vaultDate">Date Claimed</label>
+            <input type="date" id="vaultDate">
+            <label for="vaultAmount">Amount Captured ($)</label>
+            <input type="number" id="vaultAmount" placeholder="0.00" step="0.01">
+            <label for="vaultUsername">Username / Login</label>
+            <input type="text" id="vaultUsername" placeholder="Optional">
+            <label for="vaultNotes">Notes</label>
+            <textarea class="vault-textarea" id="vaultNotes" placeholder="Optional notes..."></textarea>
+            <div class="vault-form-actions">
+              <button class="btn btn-primary btn-sm" onclick="saveVaultEntry()">Save Entry</button>
+              <button class="btn btn-sm" onclick="toggleVaultForm()">Cancel</button>
+            </div>
+          </div>
+
+          <div id="vaultEntries"></div>
+
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- RAKUTEN MR -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-rakuten">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Rakuten MR Tracker</h1>
+            <p class="page-subtitle">Official rules, payout schedule, and manual tracking for Rakuten → Membership Rewards</p>
+          </div>
+          <div id="rakutenContent"></div>
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- TRAVEL & POINTS -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-travel">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Travel & Points Tools</h1>
+            <p class="page-subtitle">Portals, search tools, and resources for Platinum & Gold travelers</p>
+          </div>
+
+          <div class="filter-row" id="travelFilters">
+            <button class="filter-btn active" data-filter="all" onclick="setTravelFilter('all', this)">All</button>
+            <button class="filter-btn" data-filter="Hotels" onclick="setTravelFilter('Hotels', this)">Hotels</button>
+            <button class="filter-btn" data-filter="Booking" onclick="setTravelFilter('Booking', this)">Booking</button>
+            <button class="filter-btn" data-filter="Points" onclick="setTravelFilter('Points', this)">Points</button>
+            <button class="filter-btn" data-filter="Dining" onclick="setTravelFilter('Dining', this)">Dining</button>
+            <button class="filter-btn" data-filter="Airport" onclick="setTravelFilter('Airport', this)">Airport</button>
+            <button class="filter-btn" data-filter="Transportation" onclick="setTravelFilter('Transportation', this)">Transportation</button>
+            <button class="filter-btn" data-filter="Shopping" onclick="setTravelFilter('Shopping', this)">Shopping</button>
+          </div>
+
+          <div class="tools-grid" id="travelTools"></div>
+
+          <div class="travel-checklist">
+            <h3>Before You Book Travel</h3>
+            <ul>
+              <li>Check if you've selected your preferred airline for the $200 fee credit</li>
+              <li>Search FHR/THC for hotels before booking elsewhere (use your $300 semiannual credit)</li>
+              <li>Use point.me to compare award flight options across transfer partners</li>
+              <li>Book through Amex Travel for 5X points on flights and prepaid hotels</li>
+              <li>Check Resy for restaurant reservations at your destination (earn Resy credit)</li>
+              <li>Verify your Priority Pass is active for lounge access</li>
+              <li>Confirm your CLEAR+ enrollment for expedited security</li>
+              <li>Check Rakuten for hotel chain cashback before booking direct</li>
+            </ul>
+          </div>
+
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- TIPS & DATA POINTS -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-tips">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Tips & Data Points</h1>
+            <p class="page-subtitle">Official rules, editor-tested strategies, and community reports</p>
+          </div>
+
+          <div class="filter-row" id="tipsFilters">
+            <button class="filter-btn active" data-filter="all" onclick="setTipFilter('all', this)">All</button>
+            <button class="filter-btn" data-filter="official" onclick="setTipFilter('official', this)">Official</button>
+            <button class="filter-btn" data-filter="editor-tested" onclick="setTipFilter('editor-tested', this)">Editor-Tested</button>
+            <button class="filter-btn" data-filter="community" onclick="setTipFilter('community', this)">Community</button>
+            <button class="filter-btn" data-filter="dead" onclick="setTipFilter('dead', this)">Dead / Unreliable</button>
+            <button class="filter-btn" data-filter="platinum" onclick="setTipFilter('platinum', this)">Platinum</button>
+            <button class="filter-btn" data-filter="gold" onclick="setTipFilter('gold', this)">Gold</button>
+          </div>
+
+          <div id="tipsList"></div>
+
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SOURCES -->
+      <!-- ============================================================ -->
+      <div class="view" id="view-sources">
+        <div class="page-content">
+          <div class="page-header">
+            <h1 class="page-title">Sources</h1>
+            <p class="page-subtitle">Official Amex documentation, editorial guides, and community references</p>
+          </div>
+
+          <div class="filter-row" id="sourceFilters">
+            <button class="filter-btn active" data-filter="all" onclick="setSourceFilter('all', this)">All</button>
+            <button class="filter-btn" data-filter="official" onclick="setSourceFilter('official', this)">Official</button>
+            <button class="filter-btn" data-filter="third-party" onclick="setSourceFilter('third-party', this)">Third-Party</button>
+            <button class="filter-btn" data-filter="community" onclick="setSourceFilter('community', this)">Community</button>
+          </div>
+
+          <div id="sourcesList"></div>
+
+          <div class="footer-attribution">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Global Search Modal -->
+  <div class="search-modal-overlay" id="searchOverlay" onclick="closeSearch(event)">
+    <div class="search-modal" onclick="event.stopPropagation()">
+      <input type="text" class="search-modal-input" id="globalSearchInput" placeholder="Search benefits, tips, tools, best-card..." oninput="globalSearch(this.value)">
+      <div class="search-results" id="searchResults">
+        <div class="search-hint">Type to search across all benefits, tips, and tools…</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
