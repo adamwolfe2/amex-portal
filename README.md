@@ -1,93 +1,36 @@
-# Amex OS — Benefits Portal
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Personal command center for maximizing American Express Platinum and Gold card benefits.
+## Getting Started
 
-## Features
-
-- **Dashboard** — KPI overview, setup progress, upcoming resets, quick actions
-- **Setup Checklist** — Card-by-card onboarding with priority levels and portal links
-- **Benefits Database** — Searchable/filterable database of all Platinum & Gold benefits
-- **Calendar & Resets** — Timeline view of all benefit reset dates with ICS export
-- **My Vault** — Local-only tracking for claimed benefits, credentials, and notes (masked fields, JSON export/import)
-- **Travel & Points Tools** — Curated link hub for FHR, point.me, Resy, CLEAR, and more
-- **Tips & Data Points** — Evidence-labeled strategies (Official, Editor-Tested, Community, Dead/Unreliable)
-- **Sources** — Full source library with official Amex docs, editorial guides, and community references
-
-## Tech Stack
-
-- Pure HTML, CSS, JavaScript (no build step)
-- localStorage with graceful in-memory fallback
-- Mobile-first responsive design
-- Hash-based routing
-
-## Run Locally
-
-Any static file server works:
+First, run the development server:
 
 ```bash
-# Python
-cd amex-portal
-python3 -m http.server 8000
-
-# Node.js (npx)
-npx serve .
-
-# VS Code Live Server extension also works
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Then open http://localhost:8000
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Deploy to Vercel
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-1. Push this folder to a GitHub repository
-2. Import the repo in Vercel
-3. Set:
-   - **Framework Preset**: Other
-   - **Output Directory**: `.` (root)
-   - **Build Command**: (leave empty)
-4. Deploy
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Alternatively, install the Vercel CLI:
+## Learn More
 
-```bash
-npm i -g vercel
-cd amex-portal
-vercel
-```
+To learn more about Next.js, take a look at the following resources:
 
-## Deploy to Any Static Host
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-This is a pure static site. Upload the entire folder (index.html, css/, js/) to any static host:
-- Netlify (drag and drop)
-- GitHub Pages
-- Cloudflare Pages
-- AWS S3 + CloudFront
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Data Storage
+## Deploy on Vercel
 
-All user data (checklist progress, vault entries) is stored in `localStorage`. If localStorage is unavailable (e.g., some embedded/private contexts), the app falls back to in-memory storage with a visible warning.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Use **Export JSON** to back up your data and **Import JSON** to restore it on another device or browser.
-
-## File Structure
-
-```
-amex-portal/
-├── index.html          # Main app entry point
-├── css/
-│   └── style.css       # All styles (mobile-first)
-├── js/
-│   ├── data.js         # Structured benefits, tips, sources, tools data
-│   ├── storage.js      # localStorage adapter with fallback
-│   └── app.js          # App logic, routing, rendering
-└── README.md           # This file
-```
-
-## Content Sources
-
-All benefit data is sourced from official Amex documentation and reputable third-party sources. See the Sources section in the app for the full list with URLs. Tips and strategies are clearly labeled with evidence levels:
-
-- **Official** — Confirmed by Amex terms
-- **Editor-Tested** — Verified by trusted editorial sources
-- **Community Reported** — User-reported, not guaranteed
-- **Dead / Unreliable** — Previously worked but no longer reliable
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
