@@ -146,7 +146,6 @@ export default function SettingsPage() {
               alt={`${user.fullName ?? "User"} profile photo`}
               width={48}
               height={48}
-              unoptimized
               className="h-12 w-12 rounded-full border border-[#e0ddd9]"
             />
           ) : (

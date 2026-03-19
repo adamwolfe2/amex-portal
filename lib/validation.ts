@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { BENEFITS } from "@/lib/data";
+
+const VALID_BENEFIT_IDS = BENEFITS.map((b) => b.id);
 
 export const applySchema = z.object({
   name: z.string().min(1).max(200),
@@ -13,7 +16,7 @@ export const applySchema = z.object({
     "Other",
   ]),
   followerCount: z.enum([
-    "<1K",
+    "Under 1K",
     "1K-10K",
     "10K-50K",
     "50K-100K",
@@ -38,7 +41,9 @@ export const checkoutSchema = z.object({
 });
 
 export const claimsCreateSchema = z.object({
-  benefitId: z.string().min(1).max(200),
+  benefitId: z.string().refine((id) => VALID_BENEFIT_IDS.includes(id), {
+    message: "Invalid benefit ID",
+  }),
   amount: z.string().max(50).optional(),
   period: z.string().max(50).optional(),
   notes: z.string().max(2000).optional(),

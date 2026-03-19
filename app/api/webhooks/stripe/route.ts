@@ -13,18 +13,22 @@ import { getStripe } from "@/lib/stripe";
 
 export async function POST(request: Request) {
   const body = await request.text();
-  const signature = request.headers.get("stripe-signature")!;
+  const signature = request.headers.get("stripe-signature");
+
+  if (!signature) {
+    return Response.json({ error: "Missing stripe-signature header" }, { status: 400 });
+  }
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("STRIPE_WEBHOOK_SECRET is not configured");
+    return Response.json({ error: "Webhook not configured" }, { status: 500 });
+  }
 
   let event: Stripe.Event;
   try {
-    event = getStripe().webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error(`Stripe webhook signature verification failed: ${message}`);
+    event = getStripe().webhooks.constructEvent(body, signature, webhookSecret);
+  } catch {
     return Response.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -88,7 +92,7 @@ export async function POST(request: Request) {
               // Unique constraint violation means referral already exists — safe to ignore
               const message = err instanceof Error ? err.message : String(err);
               if (message.includes("unique") || message.includes("duplicate")) {
-                console.log(`Referral already exists for user ${purchaser.id}, skipping`);
+                console.log("Duplicate referral skipped (idempotent)");
               } else {
                 throw err;
               }
@@ -158,7 +162,8 @@ export async function POST(request: Request) {
       }
     }
   } catch (err) {
-    console.error(`Stripe webhook handler error: ${err}`);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("Stripe webhook handler error:", message);
     return Response.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 

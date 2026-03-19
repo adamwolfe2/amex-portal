@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     }
 
     if (retries >= 5) {
-      console.error(`Referral code generation failed after 5 retries for clerk user ${clerkId}`);
+      console.error("Referral code generation failed after 5 retries");
       return Response.json(
         { error: "Referral code generation failed" },
         { status: 500 }

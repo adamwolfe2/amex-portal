@@ -4,8 +4,13 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { createCheckoutSession } from "@/lib/stripe";
 import { getUserByClerkId } from "@/lib/db/queries";
 import { checkoutSchema } from "@/lib/validation";
+import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const { ok } = rateLimit(ip);
+  if (!ok) return getRateLimitResponse();
+
   const { userId } = await auth();
 
   if (!userId) {
@@ -37,7 +42,8 @@ export async function POST(request: Request) {
 
     return Response.json({ url });
   } catch (error) {
-    console.error("Checkout session error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Checkout session error:", message);
     return Response.json(
       { error: "Failed to create checkout session" },
       { status: 500 }

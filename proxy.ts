@@ -16,7 +16,7 @@ export default clerkMiddleware(async (auth, req) => {
   const ref = url.searchParams.get("ref");
   const response = NextResponse.next();
 
-  if (ref) {
+  if (ref && ref.length <= 20) {
     response.cookies.set("amex_ref", ref, {
       maxAge: 60 * 60 * 24 * 90, // 90 days
       path: "/",
