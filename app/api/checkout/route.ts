@@ -21,18 +21,26 @@ export async function POST(request: Request) {
   const parsed = checkoutSchema.safeParse(body);
   const plan = parsed.success ? parsed.data.plan : "annual";
 
-  const dbUser = await getUserByClerkId(userId);
-  const referralCode = dbUser?.referredBy ?? undefined;
-  const email = user.emailAddresses[0]?.emailAddress ?? "";
+  try {
+    const dbUser = await getUserByClerkId(userId);
+    const referralCode = dbUser?.referredBy ?? undefined;
+    const email = user.emailAddresses[0]?.emailAddress ?? "";
 
-  const url = await createCheckoutSession(userId, email, referralCode, plan);
+    const url = await createCheckoutSession(userId, email, referralCode, plan);
 
-  if (!url) {
+    if (!url) {
+      return Response.json(
+        { error: "Failed to create checkout session" },
+        { status: 500 }
+      );
+    }
+
+    return Response.json({ url });
+  } catch (error) {
+    console.error("Checkout session error:", error);
     return Response.json(
       { error: "Failed to create checkout session" },
       { status: 500 }
     );
   }
-
-  return Response.json({ url });
 }

@@ -141,9 +141,12 @@ export default function SettingsPage() {
         </div>
         <div className="flex items-center gap-4">
           {user?.imageUrl ? (
-            <img
+            <Image
               src={user.imageUrl}
               alt={`${user.fullName ?? "User"} profile photo`}
+              width={48}
+              height={48}
+              unoptimized
               className="h-12 w-12 rounded-full border border-[#e0ddd9]"
             />
           ) : (

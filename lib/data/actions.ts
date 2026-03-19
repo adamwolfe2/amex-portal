@@ -1,4 +1,4 @@
-import type { ActionItem, CardKey } from './types';
+import type { ActionItem } from './types';
 
 /**
  * Generates context-aware action items based on the current date.

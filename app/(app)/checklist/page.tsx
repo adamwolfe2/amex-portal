@@ -4,11 +4,9 @@ import { useState, useEffect } from "react";
 import {
   CheckSquare,
   ExternalLink,
-  AlertCircle,
-  AlertTriangle,
-  Info,
   CreditCard,
 } from "lucide-react";
+import { toast } from "sonner";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 
 const priorityConfig = {
@@ -33,6 +31,7 @@ export default function ChecklistPage() {
 
   const toggle = async (itemId: string) => {
     const newCompleted = !completedIds.has(itemId);
+    const prev = new Set(completedIds);
     const next = new Set(completedIds);
     if (newCompleted) {
       next.add(itemId);
@@ -41,11 +40,20 @@ export default function ChecklistPage() {
     }
     setCompletedIds(next);
 
-    await fetch("/api/user/checklist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ itemId, completed: newCompleted }),
-    });
+    try {
+      const res = await fetch("/api/user/checklist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemId, completed: newCompleted }),
+      });
+      if (!res.ok) {
+        setCompletedIds(prev);
+        toast.error("Failed to save. Please try again.");
+      }
+    } catch {
+      setCompletedIds(prev);
+      toast.error("Failed to save. Please try again.");
+    }
   };
 
   const platItems = CHECKLIST_ITEMS.filter((t) => t.card === "platinum");

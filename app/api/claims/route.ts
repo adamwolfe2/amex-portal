@@ -48,15 +48,23 @@ export async function POST(request: Request) {
 
   const { benefitId, amount, period, notes } = parsed.data;
 
-  const claim = await createBenefitClaim({
-    userId: user.id,
-    benefitId,
-    amount: amount ?? undefined,
-    period: period ?? undefined,
-    notes: notes ?? undefined,
-  });
+  try {
+    const claim = await createBenefitClaim({
+      userId: user.id,
+      benefitId,
+      amount: amount ?? undefined,
+      period: period ?? undefined,
+      notes: notes ?? undefined,
+    });
 
-  return NextResponse.json(claim, { status: 201 });
+    return NextResponse.json(claim, { status: 201 });
+  } catch (error) {
+    console.error("Failed to create claim:", error);
+    return NextResponse.json(
+      { error: "Failed to create claim" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(request: Request) {

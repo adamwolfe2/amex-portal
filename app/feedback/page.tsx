@@ -128,7 +128,7 @@ export default function FeedbackPage() {
             Help Us Build CreditOS
           </h1>
           <p className="text-sm text-[#6b6b6b] leading-relaxed max-w-md mx-auto">
-            We're building the ultimate platform for maximizing your card
+            We&apos;re building the ultimate platform for maximizing your card
             benefits. Your feedback shapes what we build next.
           </p>
         </div>
@@ -186,7 +186,7 @@ export default function FeedbackPage() {
           {/* Main Problem */}
           <div>
             <label className="block text-sm font-medium text-[#1a1a2e] mb-1.5">
-              What's the #1 problem you have managing your card benefits?
+              What&apos;s the #1 problem you have managing your card benefits?
             </label>
             <textarea
               required
@@ -201,7 +201,7 @@ export default function FeedbackPage() {
           {/* Wish Feature */}
           <div>
             <label className="block text-sm font-medium text-[#1a1a2e] mb-1.5">
-              What's one thing you wish a platform like CreditOS could solve?
+              What&apos;s one thing you wish a platform like CreditOS could solve?
             </label>
             <textarea
               required
@@ -284,7 +284,7 @@ export default function FeedbackPage() {
           {/* Additional Notes */}
           <div>
             <label className="block text-sm font-medium text-[#1a1a2e] mb-1.5">
-              Anything else you'd like us to know?{" "}
+              Anything else you&apos;d like us to know?{" "}
               <span className="text-[#aaa] font-normal">(optional)</span>
             </label>
             <textarea

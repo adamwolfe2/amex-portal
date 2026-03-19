@@ -47,6 +47,15 @@ export async function POST(request: Request) {
   }
 
   const { itemId, completed } = parsed.data;
-  const result = await updateChecklistItem(user.id, itemId, completed);
-  return Response.json(result);
+
+  try {
+    const result = await updateChecklistItem(user.id, itemId, completed);
+    return Response.json(result);
+  } catch (error) {
+    console.error("Failed to update checklist:", error);
+    return Response.json(
+      { error: "Failed to update checklist item" },
+      { status: 500 }
+    );
+  }
 }
