@@ -67,6 +67,9 @@ export default function VaultPage() {
         setFormAmount("");
         setFormNotes("");
         fetchClaims();
+        toast.success("Claim saved.");
+      } else {
+        toast.error("Failed to save claim. Please try again.");
       }
     } finally {
       setSaving(false);
@@ -91,6 +94,7 @@ export default function VaultPage() {
     a.download = "creditos-vault.json";
     a.click();
     URL.revokeObjectURL(url);
+    toast.success(`Exported ${claims.length} claims.`);
   };
 
   const handleImport = () => {
@@ -114,7 +118,8 @@ export default function VaultPage() {
             }),
           });
         }
-        fetchClaims();
+        await fetchClaims();
+        toast.success(`Imported ${imported.length} claims.`);
       } catch {
         toast.error("Invalid file format. Please upload a valid CreditOS export.");
       }
@@ -165,7 +170,10 @@ export default function VaultPage() {
 
       {/* Add form */}
       {showForm && (
-        <div className="border border-[#e0ddd9] rounded-lg p-4 bg-white space-y-4">
+        <div
+          className="border border-[#e0ddd9] rounded-lg p-4 bg-white space-y-4"
+          onKeyDown={(e) => { if (e.key === "Escape") setShowForm(false); }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium text-[#111111]">
               New Claim Entry
