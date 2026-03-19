@@ -21,6 +21,7 @@ export default clerkMiddleware(async (auth, req) => {
       maxAge: 60 * 60 * 24 * 90, // 90 days
       path: "/",
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });
   }
