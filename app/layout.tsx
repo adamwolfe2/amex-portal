@@ -4,7 +4,10 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CreditOS",
+  title: {
+    default: "CreditOS",
+    template: "%s | CreditOS",
+  },
   description: "Your credit card rewards command center",
   openGraph: {
     title: "CreditOS",

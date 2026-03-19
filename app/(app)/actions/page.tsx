@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import { getActionItems } from "@/lib/data/actions";
+
+export const metadata: Metadata = { title: "Actions" };
 import {
   AlertCircle,
   AlertTriangle,

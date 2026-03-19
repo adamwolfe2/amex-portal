@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   BookOpen,
   ExternalLink,
@@ -6,6 +7,8 @@ import {
   Users,
 } from "lucide-react";
 import { SOURCES } from "@/lib/data/sources";
+
+export const metadata: Metadata = { title: "Sources" };
 
 const typeConfig = {
   official: {

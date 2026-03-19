@@ -1,4 +1,8 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
 import Image from "next/image";
+
+export const metadata: Metadata = { title: "Dashboard" };
 import { auth } from "@clerk/nextjs/server";
 import { getUserByClerkId, getChecklistProgress } from "@/lib/db/queries";
 import { BENEFITS, CARDS } from "@/lib/data";
@@ -61,7 +65,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-5xl">
-      <CheckoutToast />
+      <Suspense fallback={null}>
+        <CheckoutToast />
+      </Suspense>
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111111]">Dashboard</h1>
         <p className="text-sm text-[#777777] mt-1">

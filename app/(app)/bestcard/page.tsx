@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   CreditCard,
   ChevronDown,
@@ -11,6 +12,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { BEST_CARD_RULES } from "@/lib/data/best-card";
+
+export const metadata: Metadata = { title: "Best Card" };
 
 const categoryIcons: Record<string, React.ElementType> = {
   dining: UtensilsCrossed,
