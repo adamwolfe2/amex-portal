@@ -29,42 +29,31 @@ function computeUpcomingResets(benefits: Benefit[]): ResetItem[] {
         card: b.card,
         type: "Monthly reset",
       });
-    } else if (b.cadence === "quarterly" && b.resetMonths) {
-      b.resetMonths.forEach((m) => {
-        const d = new Date(now.getFullYear(), m - 1, 1);
-        if (d > now) {
-          resets.push({
-            date: d,
-            name: b.name,
-            card: b.card,
-            type: "Quarterly reset",
-          });
-        }
-      });
-    } else if (b.cadence === "semiannual" && b.resetMonths) {
-      b.resetMonths.forEach((m) => {
-        const d = new Date(now.getFullYear(), m - 1, 1);
-        if (d > now) {
-          resets.push({
-            date: d,
-            name: b.name,
-            card: b.card,
-            type: "Semiannual reset",
-          });
-        }
-      });
-    } else if (b.cadence === "annual" && b.resetMonths) {
-      b.resetMonths.forEach((m) => {
-        const d = new Date(now.getFullYear(), m - 1, 1);
-        if (d > now) {
-          resets.push({
-            date: d,
-            name: b.name,
-            card: b.card,
-            type: "Annual reset",
-          });
-        }
-      });
+    } else if (
+      (b.cadence === "quarterly" ||
+        b.cadence === "semiannual" ||
+        b.cadence === "annual") &&
+      b.resetMonths
+    ) {
+      const typeLabel =
+        b.cadence === "quarterly"
+          ? "Quarterly reset"
+          : b.cadence === "semiannual"
+            ? "Semiannual reset"
+            : "Annual reset";
+      for (let yearOffset = 0; yearOffset <= 1; yearOffset++) {
+        b.resetMonths.forEach((m) => {
+          const d = new Date(now.getFullYear() + yearOffset, m - 1, 1);
+          if (d > now) {
+            resets.push({
+              date: d,
+              name: b.name,
+              card: b.card,
+              type: typeLabel,
+            });
+          }
+        });
+      }
     }
   });
 

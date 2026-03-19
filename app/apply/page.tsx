@@ -3,6 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, CheckCircle2, Loader2, DollarSign } from "lucide-react";
+import {
+  COMMISSION_RATE,
+  MONTHLY_PRICE,
+  ANNUAL_PRICE,
+  LIFETIME_PRICE,
+} from "@/lib/referral";
 
 const PLATFORMS = ["Instagram", "TikTok", "YouTube", "Twitter/X", "Blog", "Other"];
 const FOLLOWER_RANGES = ["Under 1K", "1K-10K", "10K-50K", "50K-100K", "100K+"];
@@ -25,9 +31,9 @@ export default function ApplyPage() {
   const [referrals, setReferrals] = useState(100);
   const [calcPlan, setCalcPlan] = useState<"monthly" | "annual" | "lifetime">("monthly");
 
-  const MONTHLY_COMMISSION = 3;
-  const ANNUAL_COMMISSION = 15;
-  const LIFETIME_COMMISSION = 45;
+  const MONTHLY_COMMISSION = Math.round(MONTHLY_PRICE * COMMISSION_RATE);
+  const ANNUAL_COMMISSION = Math.round(ANNUAL_PRICE * COMMISSION_RATE);
+  const LIFETIME_COMMISSION = Math.round(LIFETIME_PRICE * COMMISSION_RATE);
 
   const monthlyEarnings = referrals * MONTHLY_COMMISSION;
   const yearlyEarnings = monthlyEarnings * 12;
@@ -192,7 +198,7 @@ export default function ApplyPage() {
                   : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
               }`}
             >
-              Monthly ($10/mo)
+              Monthly (${MONTHLY_PRICE}/mo)
             </button>
             <button
               type="button"
@@ -203,7 +209,7 @@ export default function ApplyPage() {
                   : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
               }`}
             >
-              Annual ($50/yr)
+              Annual (${ANNUAL_PRICE}/yr)
             </button>
             <button
               type="button"
@@ -214,7 +220,7 @@ export default function ApplyPage() {
                   : "bg-white text-[#6b6b6b] border-[#e0ddd9] hover:border-[#ccc]"
               }`}
             >
-              Lifetime ($150)
+              Lifetime (${LIFETIME_PRICE})
             </button>
           </div>
 
@@ -261,7 +267,7 @@ export default function ApplyPage() {
           {calcPlan === "monthly" ? (
             <div className="text-center">
               <p className="text-xs text-[#6b6b6b] mb-1">
-                {referrals.toLocaleString()} referrals x $3/mo
+                {referrals.toLocaleString()} referrals x ${MONTHLY_COMMISSION}/mo
               </p>
               <p className="text-3xl font-bold text-green-600 mb-1">
                 ${monthlyEarnings.toLocaleString()}/month
@@ -279,7 +285,7 @@ export default function ApplyPage() {
           ) : calcPlan === "annual" ? (
             <div className="text-center">
               <p className="text-xs text-[#6b6b6b] mb-1">
-                {referrals.toLocaleString()} referrals x $15/yr
+                {referrals.toLocaleString()} referrals x ${ANNUAL_COMMISSION}/yr
               </p>
               <p className="text-3xl font-bold text-green-600 mb-1">
                 ${annualEarnings.toLocaleString()}/year
@@ -288,7 +294,7 @@ export default function ApplyPage() {
           ) : (
             <div className="text-center">
               <p className="text-xs text-[#6b6b6b] mb-1">
-                {referrals.toLocaleString()} referrals x $45
+                {referrals.toLocaleString()} referrals x ${LIFETIME_COMMISSION}
               </p>
               <p className="text-3xl font-bold text-[#1a1a2e] mb-1">
                 ${lifetimeEarnings.toLocaleString()}

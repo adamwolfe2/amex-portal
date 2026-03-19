@@ -11,6 +11,7 @@ import { UpcomingResets } from "@/components/dashboard/upcoming-resets";
 import { ActionPreview } from "@/components/dashboard/action-preview";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { NotEnrolled } from "@/components/dashboard/not-enrolled";
+import { CheckoutToast } from "@/components/dashboard/checkout-toast";
 
 function computeStats() {
   const valuedBenefits = BENEFITS.filter((b) => b.value !== null);
@@ -60,6 +61,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-5xl">
+      <CheckoutToast />
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111111]">Dashboard</h1>
         <p className="text-sm text-[#777777] mt-1">

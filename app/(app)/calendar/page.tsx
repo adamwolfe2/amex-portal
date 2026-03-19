@@ -226,7 +226,7 @@ export default function CalendarPage() {
                             {e.name}
                           </span>
                           {e.value !== null && (
-                            <span className="text-xs font-semibold text-[#16a34a]">
+                            <span className="text-xs font-semibold text-[#1a1a2e]">
                               ${e.value}
                             </span>
                           )}

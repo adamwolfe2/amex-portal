@@ -86,6 +86,14 @@ export async function POST(request: Request) {
       retries++;
     }
 
+    if (retries >= 5) {
+      console.error(`Referral code generation failed after 5 retries for clerk user ${clerkId}`);
+      return Response.json(
+        { error: "Referral code generation failed" },
+        { status: 500 }
+      );
+    }
+
     // Check for referral from unsafe_metadata (set during sign-up from cookie)
     const refCode = (unsafe_metadata?.amex_ref as string) ?? undefined;
     let referredBy: string | undefined;

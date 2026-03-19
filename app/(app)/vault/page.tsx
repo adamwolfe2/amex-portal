@@ -12,6 +12,7 @@ import {
   Info,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 
 type Claim = {
   id: number;
@@ -73,6 +74,7 @@ export default function VaultPage() {
   };
 
   const handleDelete = async (id: number) => {
+    if (!window.confirm("Delete this claim? This cannot be undone.")) return;
     const res = await fetch(`/api/claims?id=${id}`, { method: "DELETE" });
     if (res.ok) {
       setClaims((prev) => prev.filter((c) => c.id !== id));
@@ -114,7 +116,7 @@ export default function VaultPage() {
         }
         fetchClaims();
       } catch {
-        // Invalid JSON — ignore
+        toast.error("Invalid file format. Please upload a valid CreditOS export.");
       }
     };
     input.click();
@@ -273,6 +275,7 @@ export default function VaultPage() {
               </div>
               <button
                 onClick={() => handleDelete(claim.id)}
+                aria-label="Delete claim"
                 className="p-1.5 hover:bg-red-50 rounded text-[#999999] hover:text-red-500 transition-colors shrink-0 ml-2"
               >
                 <Trash2 className="h-4 w-4" />

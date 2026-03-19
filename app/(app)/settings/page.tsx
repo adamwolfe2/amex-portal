@@ -15,6 +15,7 @@ import {
   Clock,
 } from "lucide-react";
 import Image from "next/image";
+import { MONTHLY_PRICE, ANNUAL_PRICE, LIFETIME_PRICE } from "@/lib/referral";
 
 type UserStatus = {
   planType: string;
@@ -219,7 +220,7 @@ export default function SettingsPage() {
                 className="border border-[#e0ddd9] rounded-lg p-3 text-left hover:border-[#1a1a2e] transition-colors"
               >
                 <p className="text-sm font-semibold text-[#111111]">
-                  $10/month
+                  ${MONTHLY_PRICE}/month
                 </p>
                 <p className="text-xs text-[#666666] mt-0.5">
                   Less than two cups of coffee you&apos;d buy with your Gold
@@ -234,9 +235,9 @@ export default function SettingsPage() {
                 <span className="absolute -top-2.5 left-3 bg-[#1a1a2e] text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
                   7-day free trial
                 </span>
-                <p className="text-sm font-semibold text-[#111111]">$50/year</p>
+                <p className="text-sm font-semibold text-[#111111]">${ANNUAL_PRICE}/year</p>
                 <p className="text-xs text-[#666666] mt-0.5">
-                  Save $70 vs monthly
+                  Save ${MONTHLY_PRICE * 12 - ANNUAL_PRICE} vs monthly
                 </p>
               </button>
               <button
@@ -248,7 +249,7 @@ export default function SettingsPage() {
                   Limited time
                 </span>
                 <p className="text-sm font-semibold text-[#111111]">
-                  $150 lifetime
+                  ${LIFETIME_PRICE} lifetime
                 </p>
                 <p className="text-xs text-[#666666] mt-0.5">
                   Pay once, yours forever

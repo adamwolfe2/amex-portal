@@ -3,6 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Users, Copy, Check, DollarSign, UserPlus, Clock } from "lucide-react";
+import {
+  COMMISSION_RATE,
+  MONTHLY_PRICE,
+  ANNUAL_PRICE,
+  LIFETIME_PRICE,
+} from "@/lib/referral";
 
 type Referral = {
   id: number;
@@ -84,13 +90,13 @@ export default function ReferPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-2 mt-3">
           <span className="inline-flex items-center px-3 py-1.5 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
-            Monthly: <strong className="text-[#111111] ml-1">$3/mo recurring</strong>
+            Monthly: <strong className="text-[#111111] ml-1">${Math.round(MONTHLY_PRICE * COMMISSION_RATE)}/mo recurring</strong>
           </span>
           <span className="inline-flex items-center px-3 py-1.5 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
-            Annual: <strong className="text-[#111111] ml-1">$15/yr</strong>
+            Annual: <strong className="text-[#111111] ml-1">${Math.round(ANNUAL_PRICE * COMMISSION_RATE)}/yr</strong>
           </span>
           <span className="inline-flex items-center px-3 py-1.5 bg-[#fafaf9] border border-[#e0ddd9] rounded-lg text-xs text-[#444444]">
-            Lifetime: <strong className="text-[#111111] ml-1">$45 one-time</strong>
+            Lifetime: <strong className="text-[#111111] ml-1">${Math.round(LIFETIME_PRICE * COMMISSION_RATE)} one-time</strong>
           </span>
         </div>
       </div>
@@ -104,7 +110,7 @@ export default function ReferPage() {
           <code className="flex-1 px-3 py-2 text-xs sm:text-sm bg-[#fafaf9] border border-[#e0ddd9] rounded-lg font-mono text-[#111111] truncate min-w-0">
             {referralLink || "Loading..."}
           </code>
-          <Button variant="outline" size="icon" onClick={copyLink}>
+          <Button variant="outline" size="icon" onClick={copyLink} aria-label="Copy referral link">
             {copied ? (
               <Check className="h-4 w-4 text-green-600" />
             ) : (

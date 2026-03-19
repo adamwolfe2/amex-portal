@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { CreditCard, Briefcase, ShoppingBag, Download } from "lucide-react";
+import { Gift, Calendar, Lock, Wrench } from "lucide-react";
 
 const ACTIONS = [
-  { href: "/benefits", label: "Benefits", icon: ShoppingBag },
-  { href: "/calendar", label: "Calendar", icon: CreditCard },
-  { href: "/vault", label: "Vault", icon: Briefcase },
-  { href: "/tools", label: "Tools", icon: Download },
+  { href: "/benefits", label: "Benefits", icon: Gift },
+  { href: "/calendar", label: "Calendar", icon: Calendar },
+  { href: "/vault", label: "Vault", icon: Lock },
+  { href: "/tools", label: "Tools", icon: Wrench },
 ] as const;
 
 export function QuickActions() {

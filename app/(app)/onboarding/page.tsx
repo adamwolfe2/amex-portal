@@ -4,9 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
+import { BENEFITS } from "@/lib/data";
 import { Check, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 import Image from "next/image";
 import type { CardKey } from "@/lib/data/types";
+
+const platBenefitCount = BENEFITS.filter((b) => b.card === "platinum").length;
+const goldBenefitCount = BENEFITS.filter((b) => b.card === "gold").length;
 
 type CardSelection = "platinum" | "gold" | "both" | null;
 
@@ -35,12 +40,18 @@ export default function OnboardingPage() {
 
     setSaving(true);
     try {
-      await fetch("/api/user/onboarding", {
+      const res = await fetch("/api/user/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cards: selectedCards }),
       });
+      if (!res.ok) {
+        toast.error("Failed to save your card selection. Please try again.");
+        return;
+      }
       router.push("/dashboard");
+    } catch {
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -92,7 +103,7 @@ export default function OnboardingPage() {
                         Platinum Card
                       </p>
                       <p className="text-xs text-[#666666]">
-                        $895/year — 29 benefits
+                        $895/year — {platBenefitCount} benefits
                       </p>
                     </div>
                     {selection === "platinum" && (
@@ -125,7 +136,7 @@ export default function OnboardingPage() {
                         Gold Card
                       </p>
                       <p className="text-xs text-[#666666]">
-                        $325/year — 20 benefits
+                        $325/year — {goldBenefitCount} benefits
                       </p>
                     </div>
                     {selection === "gold" && (

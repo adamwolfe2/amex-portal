@@ -8,7 +8,7 @@ import {
 } from "@/lib/db/queries";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 
 export async function GET() {
   const { userId } = await auth();
@@ -23,24 +23,29 @@ export async function GET() {
 
   const referralRows = await getReferralsByReferrer(user.id);
 
-  // Enrich referrals with referred user info
-  const referrals = await Promise.all(
-    referralRows.map(async (r) => {
-      const referred = await db
-        .select({ name: users.name, email: users.email })
-        .from(users)
-        .where(eq(users.id, r.referredUserId))
-        .limit(1);
-      return {
-        id: r.id,
-        name: referred[0]?.name ?? "Unknown",
-        email: referred[0]?.email ?? "",
-        date: r.createdAt,
-        status: r.status,
-        commission: r.commissionAmount ? Number(r.commissionAmount) : 0,
-      };
-    })
-  );
+  // Batch lookup all referred users in one query
+  const referredUserIds = referralRows.map((r) => r.referredUserId);
+  const referredUsers =
+    referredUserIds.length > 0
+      ? await db
+          .select({ id: users.id, name: users.name, email: users.email })
+          .from(users)
+          .where(inArray(users.id, referredUserIds))
+      : [];
+
+  const userMap = new Map(referredUsers.map((u) => [u.id, u]));
+
+  const referrals = referralRows.map((r) => {
+    const referred = userMap.get(r.referredUserId);
+    return {
+      id: r.id,
+      name: referred?.name ?? "Unknown",
+      email: referred?.email ?? "",
+      date: r.createdAt,
+      status: r.status,
+      commission: r.commissionAmount ? Number(r.commissionAmount) : 0,
+    };
+  });
 
   const totalReferrals = referrals.length;
   const paidReferrals = referrals.filter((r) => r.status === "paid").length;

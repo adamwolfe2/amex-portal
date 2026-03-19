@@ -69,20 +69,30 @@ export async function POST(request: Request) {
           subscriptionStatus: "pro",
         });
 
-        // Handle referral commission
+        // Handle referral commission (idempotent — duplicate webhook replays are safe)
         if (referralCode) {
           const referrer = await getUserByReferralCode(referralCode);
           const purchaser = await getUserByClerkId(userId);
 
           if (referrer && purchaser) {
             const commission = calculateCommission(plan);
-            await createReferral({
-              referrerId: referrer.id,
-              referredUserId: purchaser.id,
-              status: "paid",
-              stripePaymentId: session.payment_intent as string,
-              commissionAmount: commission.toFixed(2),
-            });
+            try {
+              await createReferral({
+                referrerId: referrer.id,
+                referredUserId: purchaser.id,
+                status: "paid",
+                stripePaymentId: session.payment_intent as string,
+                commissionAmount: commission.toFixed(2),
+              });
+            } catch (err) {
+              // Unique constraint violation means referral already exists — safe to ignore
+              const message = err instanceof Error ? err.message : String(err);
+              if (message.includes("unique") || message.includes("duplicate")) {
+                console.log(`Referral already exists for user ${purchaser.id}, skipping`);
+              } else {
+                throw err;
+              }
+            }
           }
         }
         break;
