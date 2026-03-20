@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = { title: "Dashboard" };
 import { auth } from "@clerk/nextjs/server";
-import { getUserByClerkId, getChecklistProgress } from "@/lib/db/queries";
+import { getUserByClerkId, getChecklistProgress, getUserClaims } from "@/lib/db/queries";
 import { BENEFITS, CARDS } from "@/lib/data";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 import { getActionItems } from "@/lib/data/actions";
@@ -16,6 +16,7 @@ import { ActionPreview } from "@/components/dashboard/action-preview";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { NotEnrolled } from "@/components/dashboard/not-enrolled";
 import { CheckoutToast } from "@/components/dashboard/checkout-toast";
+import { ActivityGrid } from "@/components/dashboard/activity-grid";
 
 function computeStats() {
   const valuedBenefits = BENEFITS.filter((b) => b.value !== null);
@@ -41,16 +42,23 @@ export default async function DashboardPage() {
     computeStats();
   const actions = getActionItems();
 
-  // Fetch real checklist progress from DB
+  // Fetch real checklist progress + claims from DB
   let completedIds = new Set<string>();
+  let claimDates: string[] = [];
   const { userId } = await auth();
   if (userId) {
     const dbUser = await getUserByClerkId(userId);
     if (dbUser) {
-      const progress = await getChecklistProgress(dbUser.id);
+      const [progress, claims] = await Promise.all([
+        getChecklistProgress(dbUser.id),
+        getUserClaims(dbUser.id),
+      ]);
       completedIds = new Set(
         progress.filter((p) => p.completed).map((p) => p.itemId)
       );
+      claimDates = claims
+        .map((c) => c.claimedAt?.toISOString() ?? "")
+        .filter(Boolean);
     }
   }
 
@@ -129,6 +137,11 @@ export default async function DashboardPage() {
           total={goldProgress.total}
           color="#8B6914"
         />
+      </div>
+
+      {/* Activity Grid */}
+      <div className="mb-6">
+        <ActivityGrid claimDates={claimDates} />
       </div>
 
       {/* Widgets Grid */}
