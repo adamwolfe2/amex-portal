@@ -139,7 +139,7 @@ export default function VaultPage() {
           <h1 className="text-xl font-semibold text-[#111111]">Vault</h1>
         </div>
         <p className="text-sm text-[#666666]">
-          Track your benefit claims and captured credits
+          Track your benefit redemptions over time
         </p>
       </div>
 
@@ -147,8 +147,8 @@ export default function VaultPage() {
       <div className="flex items-start gap-3 p-4 rounded-lg border border-[#e0ddd9] bg-[#fafaf9]">
         <Info className="h-4 w-4 text-[#1a1a2e] mt-0.5 shrink-0" />
         <p className="text-sm text-[#666666]">
-          Track your benefit claims and captured credits. Add entries as you
-          redeem benefits to see your total value captured over time.
+          Add entries as you redeem benefits to see your total value
+          captured over time. Export your data anytime as JSON.
         </p>
       </div>
 

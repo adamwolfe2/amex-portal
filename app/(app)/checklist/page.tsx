@@ -136,7 +136,7 @@ export default function ChecklistPage() {
 
   if (loading) {
     return (
-      <div className="max-w-3xl space-y-4">
+      <div className="max-w-3xl mx-auto space-y-4">
         {[1, 2].map((i) => (
           <div
             key={i}
@@ -148,7 +148,7 @@ export default function ChecklistPage() {
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-3xl mx-auto">
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
           <CheckSquare className="h-5 w-5 text-[#1a1a2e]" />

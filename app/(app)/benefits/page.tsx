@@ -81,7 +81,7 @@ export default function BenefitsPage() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[#111111]">
+        <h1 className="text-xl font-semibold text-[#111111]">
           Benefits Database
         </h1>
         <p className="text-sm text-[#777] mt-1">

@@ -69,7 +69,7 @@ export default async function DashboardPage() {
         <CheckoutToast />
       </Suspense>
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-[#111111]">Dashboard</h1>
+        <h1 className="text-xl font-semibold text-[#111111]">Dashboard</h1>
         <p className="text-sm text-[#777777] mt-1">
           Your credit card rewards command center
         </p>

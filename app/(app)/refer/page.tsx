@@ -78,12 +78,23 @@ export default function ReferPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <Users className="h-5 w-5 text-[#1a1a2e]" />
+          <h1 className="text-xl font-semibold text-[#111111]">Referrals</h1>
+        </div>
+        <p className="text-sm text-[#666666]">
+          Share CreditOS and earn 30% commission on every upgrade
+        </p>
+      </div>
+
       {/* Hero */}
       <div className="border border-[#e0ddd9] rounded-lg bg-white p-6 text-center">
         <Users className="h-8 w-8 text-[#1a1a2e] mx-auto mb-3" />
-        <h1 className="text-xl font-semibold text-[#111111] mb-1">
+        <p className="text-xl font-semibold text-[#111111] mb-1">
           Share CreditOS, earn 30% commission
-        </h1>
+        </p>
         <p className="text-sm text-[#666666] max-w-md mx-auto mb-3">
           Refer friends to CreditOS and earn 30% on every Pro upgrade — monthly
           or lifetime. Your unique link tracks every signup automatically.

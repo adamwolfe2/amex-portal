@@ -174,7 +174,7 @@ export default function CalendarPage() {
     <div className="max-w-3xl mx-auto">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-[#111111]">
+          <h1 className="text-xl font-semibold text-[#111111]">
             Calendar & Resets
           </h1>
           <p className="text-sm text-[#777] mt-1">

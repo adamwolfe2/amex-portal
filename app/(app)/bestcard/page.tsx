@@ -38,7 +38,7 @@ const recommendBadge = {
 
 export default function BestCardPage() {
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-3xl mx-auto">
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
           <CreditCard className="h-5 w-5 text-[#1a1a2e]" />

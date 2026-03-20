@@ -111,7 +111,6 @@ export type BestCardRecommendation = CardKey | 'varies';
 export type BestCardDecision = {
   id: string;
   category: string;
-  icon: string;
   recommended: BestCardRecommendation;
   why: string;
   earn: string;

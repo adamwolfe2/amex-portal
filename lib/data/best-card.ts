@@ -4,7 +4,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'dining',
     category: 'Dining / Restaurants',
-    icon: '🍽️',
     recommended: 'gold',
     why: 'Gold earns 4X MR at restaurants worldwide (up to $50K/yr). Platinum only earns 1X at restaurants.',
     earn: '4X MR per dollar (Gold) vs 1X MR (Platinum)',
@@ -14,7 +13,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'groceries',
     category: 'Groceries / U.S. Supermarkets',
-    icon: '🛒',
     recommended: 'gold',
     why: 'Gold earns 4X MR at U.S. supermarkets (up to $25K/yr). Platinum earns 1X.',
     earn: '4X MR per dollar (Gold) vs 1X MR (Platinum)',
@@ -24,7 +22,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'flights',
     category: 'Flights',
-    icon: '✈️',
     recommended: 'platinum',
     why: 'Platinum earns 5X MR on flights booked directly with airlines or through Amex Travel (up to $500K/yr).',
     earn: '5X MR per dollar (Platinum) vs 3X MR on flights via Amex Travel (Gold) or 1X direct',
@@ -34,7 +31,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'hotels',
     category: 'Hotels',
-    icon: '🏨',
     recommended: 'platinum',
     why: 'Platinum earns 5X MR on prepaid hotels booked through Amex Travel. Plus the $300 semiannual FHR/THC credit stacks.',
     earn: '5X MR per dollar on Amex Travel prepaid (Platinum) vs 1X direct bookings',
@@ -44,7 +40,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'portal-shopping',
     category: 'Portal Shopping (Amex Offers)',
-    icon: '🛍️',
     recommended: 'platinum',
     why: 'Platinum has more credit-eligible merchants (lululemon $75/quarter, Saks $50/semiannual, Walmart+, etc.). Use Platinum when the purchase triggers a specific credit.',
     earn: 'Both cards earn 1X on general shopping. The value comes from stacking statement credits.',
@@ -54,7 +49,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'rakuten',
     category: 'Rakuten Portal Purchases',
-    icon: '🔄',
     recommended: 'gold',
     why: 'For most Rakuten purchases at general retailers, both cards earn 1X on the card side, but Gold gives 4X at supermarkets and restaurants if the merchant qualifies. Pay with whichever card earns the best multiplier on that merchant.',
     earn: 'Rakuten MR (varies by retailer, e.g. 1-15X) + card earn (1X-5X depending on category)',
@@ -64,7 +58,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'non-bonus',
     category: 'Non-Bonus / General Spend',
-    icon: '💳',
     recommended: 'gold',
     why: 'Both earn 1X on non-category spend, so either works. Gold has a lower annual fee ($325 vs $895), so for non-bonus spend consider whether a different non-Amex card gives better returns.',
     earn: '1X MR per dollar (both cards)',
@@ -74,7 +67,6 @@ export const BEST_CARD_RULES: BestCardDecision[] = [
   {
     id: 'edge-cases',
     category: 'Edge Cases / YMMV',
-    icon: '⚠️',
     recommended: 'varies',
     why: 'Some spending situations require judgment. Gift cards, prepaid purchases, and third-party payment processors may not code in bonus categories.',
     earn: 'Varies by merchant coding and category',

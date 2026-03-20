@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Settings,
   Copy,
@@ -45,7 +46,9 @@ export default function SettingsPage() {
         setPlatChecked(data.cards?.includes("platinum") ?? false);
         setGoldChecked(data.cards?.includes("gold") ?? false);
       })
-      .catch(() => {});
+      .catch(() => {
+        toast.error("Failed to load account status. Please refresh.");
+      });
   }, []);
 
   const saveCards = useCallback(
