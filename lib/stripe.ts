@@ -9,11 +9,18 @@ export function getStripe() {
   return _stripe;
 }
 
-const PRICE_IDS: Record<PlanType, string> = {
-  monthly: process.env.STRIPE_MONTHLY_PRICE_ID ?? "",
-  annual: process.env.STRIPE_ANNUAL_PRICE_ID ?? "",
-  lifetime: process.env.STRIPE_PRICE_ID ?? "",
-};
+function getPriceId(plan: PlanType): string {
+  const ids: Record<PlanType, string | undefined> = {
+    monthly: process.env.STRIPE_MONTHLY_PRICE_ID,
+    annual: process.env.STRIPE_ANNUAL_PRICE_ID,
+    lifetime: process.env.STRIPE_PRICE_ID,
+  };
+  const id = ids[plan];
+  if (!id) {
+    throw new Error(`Missing Stripe price ID for plan: ${plan}`);
+  }
+  return id;
+}
 
 export async function createCheckoutSession(
   userId: string,
@@ -23,7 +30,7 @@ export async function createCheckoutSession(
 ): Promise<string | null> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const isRecurring = plan === "monthly" || plan === "annual";
-  const priceId = PRICE_IDS[plan];
+  const priceId = getPriceId(plan);
 
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
     mode: isRecurring ? "subscription" : "payment",

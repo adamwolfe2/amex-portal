@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { TRAVEL_TOOLS } from "@/lib/data";
-import { ExternalLink } from "lucide-react";
 
 type FilterKey =
   | "all"
@@ -25,15 +24,6 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "Shopping", label: "Shopping" },
 ];
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
-  Hotels: { bg: "#eff6ff", text: "#2563eb" },
-  Booking: { bg: "#f0fdf4", text: "#16a34a" },
-  Points: { bg: "#fefce8", text: "#a16207" },
-  Dining: { bg: "#fdf2f8", text: "#be185d" },
-  Airport: { bg: "#f5f3ff", text: "#7c3aed" },
-  Transportation: { bg: "#ecfeff", text: "#0e7490" },
-  Shopping: { bg: "#fff7ed", text: "#c2410c" },
-};
 
 export default function ToolsPage() {
   const [filter, setFilter] = useState<FilterKey>("all");
@@ -78,12 +68,7 @@ export default function ToolsPage() {
 
       {/* Tool cards — 2 cols desktop, 1 col mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {filtered.map((t) => {
-          const colors = CATEGORY_COLORS[t.category] || {
-            bg: "#f5f5f3",
-            text: "#555",
-          };
-          return (
+        {filtered.map((t) => (
             <a
               key={t.name}
               href={t.url}
@@ -91,24 +76,19 @@ export default function ToolsPage() {
               rel="noopener noreferrer"
               className="group rounded-lg border border-[#e0ddd9] bg-white px-4 py-3 hover:border-[#ccc] transition-colors block"
             >
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="font-medium text-sm text-[#111111] group-hover:text-[#2563eb] transition-colors">
+              <div className="flex items-start justify-between gap-2 mb-1">
+                <span className="font-medium text-sm text-[#111111] group-hover:text-[#1a1a2e] transition-colors">
                   {t.name}
                 </span>
-                <ExternalLink className="size-3 text-[#999] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="text-[11px] text-[#999999] shrink-0 mt-0.5">
+                  {t.category}
+                </span>
               </div>
-              <span
-                className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium mb-1.5"
-                style={{ backgroundColor: colors.bg, color: colors.text }}
-              >
-                {t.category}
-              </span>
               <p className="text-xs text-[#666] leading-relaxed">
                 {t.description}
               </p>
             </a>
-          );
-        })}
+          ))}
       </div>
 
       {filtered.length === 0 && (

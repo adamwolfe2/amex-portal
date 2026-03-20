@@ -9,10 +9,10 @@ import {
 import { toast } from "sonner";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 
-const priorityConfig = {
-  high: { dot: "bg-red-500", label: "High" },
-  medium: { dot: "bg-amber-500", label: "Medium" },
-  low: { dot: "bg-blue-400", label: "Low" },
+const priorityLabels = {
+  high: "Do first",
+  medium: "When ready",
+  low: "Optional",
 } as const;
 
 export default function ChecklistPage() {
@@ -80,7 +80,6 @@ export default function ChecklistPage() {
       <div className="divide-y divide-[#e0ddd9]">
         {items.map((item) => {
           const checked = completedIds.has(item.id);
-          const pConfig = priorityConfig[item.priority];
           return (
             <div
               key={item.id}
@@ -97,7 +96,7 @@ export default function ChecklistPage() {
                 aria-label={`Mark "${item.title}" as ${checked ? "incomplete" : "complete"}`}
               />
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-start justify-between gap-2">
                   <p
                     className={`text-sm font-medium ${
                       checked
@@ -107,10 +106,9 @@ export default function ChecklistPage() {
                   >
                     {item.title}
                   </p>
-                  <span
-                    className={`inline-flex items-center h-4 w-4 rounded-full shrink-0 ${pConfig.dot}`}
-                    title={`${pConfig.label} priority`}
-                  />
+                  <span className="text-[11px] text-[#999999] shrink-0 mt-0.5">
+                    {priorityLabels[item.priority]}
+                  </span>
                 </div>
                 <p className="text-xs text-[#666666] mt-0.5">
                   {item.description}

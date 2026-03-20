@@ -4,21 +4,13 @@ import { getActionItems } from "@/lib/data/actions";
 export const metadata: Metadata = { title: "Actions" };
 import {
   AlertCircle,
-  AlertTriangle,
   Info,
-  CreditCard,
 } from "lucide-react";
 
-const priorityConfig = {
-  high: { dot: "bg-red-500", label: "High", Icon: AlertCircle },
-  medium: { dot: "bg-amber-500", label: "Medium", Icon: AlertTriangle },
-  low: { dot: "bg-blue-400", label: "Low", Icon: Info },
-} as const;
-
-const cardBadge = {
-  platinum: { label: "Platinum", bg: "bg-[#1a1a2e]", text: "text-white" },
-  gold: { label: "Gold", bg: "bg-[#92702a]", text: "text-white" },
-  both: { label: "Both Cards", bg: "bg-[#f0efed]", text: "text-[#666666]" },
+const cardLabels = {
+  platinum: "Platinum",
+  gold: "Gold",
+  both: "Both Cards",
 } as const;
 
 export default function ActionsPage() {
@@ -57,47 +49,33 @@ export default function ActionsPage() {
       )}
 
       <div className="space-y-6">
-        {groups.map((group) => {
-          const config = priorityConfig[group.priority];
-          return (
+        {groups.map((group) => (
             <div key={group.priority}>
               <h2 className="text-xs font-medium text-[#999999] uppercase tracking-wider mb-3">
                 {group.label}
               </h2>
               <div className="space-y-2">
-                {group.items.map((item, i) => {
-                  const badge = cardBadge[item.card];
-                  return (
+                {group.items.map((item, i) => (
                     <div
                       key={`${group.priority}-${i}`}
-                      className="border border-[#e0ddd9] rounded-lg bg-white p-4 flex items-start gap-3"
+                      className="border border-[#e0ddd9] rounded-lg bg-white p-4"
                     >
-                      <span
-                        className={`mt-1.5 h-2.5 w-2.5 rounded-full shrink-0 ${config.dot}`}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
-                          <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${badge.bg} ${badge.text}`}
-                          >
-                            <CreditCard className="h-3 w-3" />
-                            {badge.label}
-                          </span>
-                        </div>
+                      <div className="flex items-start justify-between gap-3 mb-0.5">
                         <p className="text-sm font-medium text-[#111111]">
                           {item.title}
                         </p>
-                        <p className="text-xs text-[#666666] mt-0.5">
-                          {item.desc}
-                        </p>
+                        <span className="text-[11px] text-[#999999] shrink-0 mt-0.5">
+                          {cardLabels[item.card]}
+                        </span>
                       </div>
+                      <p className="text-xs text-[#666666]">
+                        {item.desc}
+                      </p>
                     </div>
-                  );
-                })}
+                  ))}
               </div>
             </div>
-          );
-        })}
+          ))}
       </div>
     </div>
   );

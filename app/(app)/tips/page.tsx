@@ -23,14 +23,11 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "gold", label: "Gold" },
 ];
 
-function EvidenceBadge({ evidence }: { evidence: string }) {
+function EvidenceLabel({ evidence }: { evidence: string }) {
   const meta = EVIDENCE_LEVELS[evidence];
   if (!meta) return null;
   return (
-    <span
-      className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
-      style={{ backgroundColor: meta.bg, color: meta.color }}
-    >
+    <span className="text-[11px] text-[#999999] shrink-0">
       {meta.label}
     </span>
   );
@@ -92,11 +89,11 @@ export default function TipsPage() {
                 isDead ? "opacity-50" : ""
               }`}
             >
-              <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              <div className="flex items-start justify-between gap-3 mb-1.5">
                 <span className="font-medium text-sm text-[#111111]">
                   {t.title}
                 </span>
-                <EvidenceBadge evidence={t.evidence} />
+                <EvidenceLabel evidence={t.evidence} />
               </div>
               <p className="text-xs text-[#666] leading-relaxed mb-2">
                 {t.description}

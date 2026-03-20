@@ -4,10 +4,10 @@ import type { ActionItem } from "@/lib/data/types";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-const PRIORITY_COLORS: Record<string, string> = {
-  high: "#e53e3e",
-  medium: "#d69e2e",
-  low: "#38a169",
+const PRIORITY_LABELS: Record<string, string> = {
+  high: "Urgent",
+  medium: "Soon",
+  low: "Tip",
 };
 
 interface ActionPreviewProps {
@@ -41,19 +41,18 @@ export function ActionPreview({ actions }: ActionPreviewProps) {
             {top3.map((a, i) => (
               <div
                 key={`action-${i}`}
-                className="flex items-start gap-2.5 py-2.5 border-b border-[#f0eeeb] last:border-b-0"
+                className="py-2.5 border-b border-[#f0eeeb] last:border-b-0"
               >
-                <span
-                  className="mt-1.5 size-2 rounded-full shrink-0"
-                  style={{ backgroundColor: PRIORITY_COLORS[a.priority] }}
-                />
-                <div className="min-w-0">
+                <div className="flex items-start justify-between gap-2">
                   <div className="text-[0.8rem] font-semibold text-[#111111]">
                     {a.title}
                   </div>
-                  <div className="text-[0.73rem] text-[#444444] mt-0.5">
-                    {a.desc}
-                  </div>
+                  <span className="text-[0.65rem] text-[#999999] shrink-0 mt-0.5">
+                    {PRIORITY_LABELS[a.priority]}
+                  </span>
+                </div>
+                <div className="text-[0.73rem] text-[#444444] mt-0.5">
+                  {a.desc}
                 </div>
               </div>
             ))}

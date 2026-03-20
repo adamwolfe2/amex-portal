@@ -92,8 +92,12 @@ export default function SettingsPage() {
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        toast.error(data.error ?? "Failed to start checkout. Please try again.");
+        setUpgrading(null);
       }
-    } finally {
+    } catch {
+      toast.error("Failed to connect. Please try again.");
       setUpgrading(null);
     }
   };
