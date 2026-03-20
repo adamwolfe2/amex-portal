@@ -118,46 +118,6 @@ export type BestCardDecision = {
   rakutenNote: string;
 };
 
-export type RakutenPaymentDate = {
-  date: string;
-  quarter: string;
-};
-
-export type RakutenConfirmationWindow = {
-  type: string;
-  window: string;
-};
-
-export type RakutenRules = {
-  conversion: string;
-  minimumTransfer: string;
-  carryOver: string;
-  firstTransfer: string;
-  linkRequirement: string;
-  paymentDates: RakutenPaymentDate[];
-  confirmationWindows: RakutenConfirmationWindow[];
-  stackingNotes: string[];
-};
-
-export type PortfolioCardState = {
-  active: boolean;
-  annualFeePaid: number;
-  pointsBalance: number;
-  cppValuation: number;
-  notes: string;
-};
-
-export type DefaultPortfolio = Record<CardKey, PortfolioCardState>;
-
-export type DefaultRakuten = {
-  linked: boolean;
-  pendingCashback: number;
-  confirmedPoints: number;
-  lifetimeMRTransferred: number;
-  lastTransferDate: string | null;
-  notes: string;
-};
-
 export type ActionPriority = 'high' | 'medium' | 'low';
 
 export type ActionItem = {
@@ -165,11 +125,4 @@ export type ActionItem = {
   card: CardKey | 'both';
   title: string;
   desc: string;
-};
-
-export type OnboardingStep = {
-  id: string;
-  title: string;
-  desc: string;
-  priority: SetupPriority;
 };
