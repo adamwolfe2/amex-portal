@@ -28,17 +28,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased" style={{ fontFamily: "'Satoshi', sans-serif" }}>
       <head>
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         <link
           href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body
-        className="min-h-full flex flex-col bg-[#fafaf9] text-[#111111]"
-        style={{ fontFamily: "'Satoshi', sans-serif" }}
-      >
+      <body className="min-h-full flex flex-col bg-[#fafaf9] text-[#111111]">
         <ClerkProvider>
           {children}
           <Toaster />

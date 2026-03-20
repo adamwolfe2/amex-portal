@@ -221,35 +221,6 @@ export async function updateChecklistItem(
   itemId: string,
   completed: boolean
 ) {
-  // Upsert: update if exists, insert if not
-  const existing = await db
-    .select()
-    .from(checklistProgress)
-    .where(
-      and(
-        eq(checklistProgress.userId, userId),
-        eq(checklistProgress.itemId, itemId)
-      )
-    )
-    .limit(1);
-
-  if (existing.length > 0) {
-    const result = await db
-      .update(checklistProgress)
-      .set({
-        completed,
-        completedAt: completed ? new Date() : null,
-      })
-      .where(
-        and(
-          eq(checklistProgress.userId, userId),
-          eq(checklistProgress.itemId, itemId)
-        )
-      )
-      .returning();
-    return result[0];
-  }
-
   const result = await db
     .insert(checklistProgress)
     .values({
@@ -257,6 +228,13 @@ export async function updateChecklistItem(
       itemId,
       completed,
       completedAt: completed ? new Date() : null,
+    })
+    .onConflictDoUpdate({
+      target: [checklistProgress.userId, checklistProgress.itemId],
+      set: {
+        completed,
+        completedAt: completed ? new Date() : null,
+      },
     })
     .returning();
   return result[0];
