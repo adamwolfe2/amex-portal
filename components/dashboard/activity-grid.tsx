@@ -102,7 +102,7 @@ export function ActivityGrid({ claimDates }: ActivityGridProps) {
           Benefit Activity
         </span>
         <span className="text-[11px] text-[#999999]">
-          {totalClaims} claims &middot; {activeDays} active days
+          {totalClaims} actions &middot; {activeDays} active days
         </span>
       </div>
 
@@ -141,7 +141,7 @@ export function ActivityGrid({ claimDates }: ActivityGridProps) {
                   title={
                     isFuture(day.date)
                       ? ""
-                      : `${day.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}: ${day.count} claim${day.count !== 1 ? "s" : ""}`
+                      : `${day.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}: ${day.count} action${day.count !== 1 ? "s" : ""}`
                   }
                 />
               ))}

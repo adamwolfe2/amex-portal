@@ -44,8 +44,11 @@ export async function POST(request: Request) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("Checkout session error:", message);
+    const isMissingConfig = message.includes("Missing Stripe price ID") || message.includes("STRIPE");
     return Response.json(
-      { error: "Failed to create checkout session" },
+      { error: isMissingConfig
+          ? "Payment system is not configured yet. Please try again later."
+          : "Failed to create checkout session" },
       { status: 500 }
     );
   }

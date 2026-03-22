@@ -5,9 +5,12 @@ import {
   CheckSquare,
   ExternalLink,
   CreditCard,
+  List,
+  Compass,
 } from "lucide-react";
 import { toast } from "sonner";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
+import { EnrollmentWizard } from "@/components/checklist/enrollment-wizard";
 
 const priorityLabels = {
   high: "Do first",
@@ -15,9 +18,12 @@ const priorityLabels = {
   low: "Optional",
 } as const;
 
+type ViewMode = "list" | "wizard";
+
 export default function ChecklistPage() {
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useState<ViewMode>("wizard");
 
   useEffect(() => {
     fetch("/api/user/checklist")
@@ -148,21 +154,58 @@ export default function ChecklistPage() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <CheckSquare className="h-5 w-5 text-[#1a1a2e]" />
-          <h1 className="text-xl font-semibold text-[#111111]">
-            Setup Checklist
-          </h1>
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <CheckSquare className="h-5 w-5 text-[#1a1a2e]" />
+            <h1 className="text-xl font-semibold text-[#111111]">
+              Setup Checklist
+            </h1>
+          </div>
+          {/* View toggle */}
+          <div className="flex items-center border border-[#e0ddd9] rounded-md overflow-hidden">
+            <button
+              onClick={() => setView("wizard")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+                view === "wizard"
+                  ? "bg-[#1a1a2e] text-white"
+                  : "bg-white text-[#666666] hover:text-[#111111]"
+              }`}
+            >
+              <Compass className="h-3 w-3" />
+              Guided
+            </button>
+            <button
+              onClick={() => setView("list")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+                view === "list"
+                  ? "bg-[#1a1a2e] text-white"
+                  : "bg-white text-[#666666] hover:text-[#111111]"
+              }`}
+            >
+              <List className="h-3 w-3" />
+              List
+            </button>
+          </div>
         </div>
         <p className="text-sm text-[#666666]">
-          Complete these one-time tasks to activate all your card benefits
+          {view === "wizard"
+            ? "Walk through each benefit setup step by step"
+            : "Complete these one-time tasks to activate all your card benefits"}
         </p>
       </div>
 
-      <div className="space-y-6">
-        {renderGroup("Platinum Card", platItems, platDone, "#1a1a2e")}
-        {renderGroup("Gold Card", goldItems, goldDone, "#8B6914")}
-      </div>
+      {view === "wizard" ? (
+        <EnrollmentWizard
+          items={CHECKLIST_ITEMS}
+          completedIds={completedIds}
+          onToggle={toggle}
+        />
+      ) : (
+        <div className="space-y-6">
+          {renderGroup("Platinum Card", platItems, platDone, "#1a1a2e")}
+          {renderGroup("Gold Card", goldItems, goldDone, "#8B6914")}
+        </div>
+      )}
     </div>
   );
 }

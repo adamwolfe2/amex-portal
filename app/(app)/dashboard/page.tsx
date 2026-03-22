@@ -56,9 +56,13 @@ export default async function DashboardPage() {
       completedIds = new Set(
         progress.filter((p) => p.completed).map((p) => p.itemId)
       );
-      claimDates = claims
+      const claimIsos = claims
         .map((c) => c.claimedAt?.toISOString() ?? "")
         .filter(Boolean);
+      const checklistIsos = progress
+        .filter((p) => p.completed && p.completedAt)
+        .map((p) => p.completedAt!.toISOString());
+      claimDates = [...claimIsos, ...checklistIsos];
     }
   }
 
