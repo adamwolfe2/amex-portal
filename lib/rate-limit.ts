@@ -1,24 +1,43 @@
-const store = new Map<string, { count: number; resetAt: number }>();
+import { Redis } from "@upstash/redis";
 
-const WINDOW_MS = 60_000; // 1 minute
+const WINDOW_SECONDS = 60;
 const MAX_REQUESTS = 5;
 
-// Cleanup stale entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, value] of store) {
-    if (value.resetAt < now) {
-      store.delete(key);
-    }
-  }
-}, 300_000);
+let _redis: Redis | null = null;
 
-export function rateLimit(ip: string): { ok: boolean; remaining: number } {
+function getRedis(): Redis | null {
+  if (_redis) return _redis;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  _redis = new Redis({ url, token });
+  return _redis;
+}
+
+// In-memory fallback for local dev or when Redis is not configured
+const memStore = new Map<string, { count: number; resetAt: number }>();
+
+async function rateLimitRedis(
+  ip: string
+): Promise<{ ok: boolean; remaining: number }> {
+  const redis = getRedis()!;
+  const key = `rl:${ip}`;
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, WINDOW_SECONDS);
+  }
+  if (count > MAX_REQUESTS) {
+    return { ok: false, remaining: 0 };
+  }
+  return { ok: true, remaining: MAX_REQUESTS - count };
+}
+
+function rateLimitMemory(ip: string): { ok: boolean; remaining: number } {
   const now = Date.now();
-  const entry = store.get(ip);
+  const entry = memStore.get(ip);
 
   if (!entry || entry.resetAt < now) {
-    store.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    memStore.set(ip, { count: 1, resetAt: now + WINDOW_SECONDS * 1000 });
     return { ok: true, remaining: MAX_REQUESTS - 1 };
   }
 
@@ -28,6 +47,15 @@ export function rateLimit(ip: string): { ok: boolean; remaining: number } {
   }
 
   return { ok: true, remaining: MAX_REQUESTS - entry.count };
+}
+
+export async function rateLimit(
+  ip: string
+): Promise<{ ok: boolean; remaining: number }> {
+  if (getRedis()) {
+    return rateLimitRedis(ip);
+  }
+  return rateLimitMemory(ip);
 }
 
 export function getRateLimitResponse() {

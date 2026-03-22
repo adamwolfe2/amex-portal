@@ -139,6 +139,10 @@ export async function updateUserCards(clerkId: string, cards: string[]) {
   return result[0] ?? null;
 }
 
+export async function getAllActiveUsers() {
+  return db.select().from(users);
+}
+
 // ── Benefit Claims ─────────────────────────────────────
 
 export async function createBenefitClaim(data: {

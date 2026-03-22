@@ -8,7 +8,7 @@ import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const { ok } = rateLimit(ip);
+  const { ok } = await rateLimit(ip);
   if (!ok) return getRateLimitResponse();
 
   const { userId } = await auth();
