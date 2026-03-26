@@ -4,67 +4,120 @@ import Image from "next/image";
 
 export const metadata: Metadata = { title: "Dashboard" };
 import { auth } from "@clerk/nextjs/server";
-import { getUserByClerkId, getChecklistProgress, getUserClaims } from "@/lib/db/queries";
+import {
+  getUserByClerkId,
+  getChecklistProgress,
+  getUserClaims,
+  getUserClaimsForYear,
+} from "@/lib/db/queries";
 import { BENEFITS, CARDS } from "@/lib/data";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 import { getActionItems } from "@/lib/data/actions";
+import { computeStreak } from "@/lib/data/streaks";
+import {
+  computeAvailableValue,
+  computeCapturedValue,
+  computeMonthlyProgress,
+} from "@/lib/data/roi";
+import { getUrgencyMessage, getDaysRemainingInMonth } from "@/lib/data/urgency";
 import type { CardKey } from "@/lib/data/types";
-import { StatCard } from "@/components/dashboard/stat-card";
+import { StreakCounter } from "@/components/dashboard/streak-counter";
+import { MonthlyProgress } from "@/components/dashboard/monthly-progress";
+import { MarkAsUsed } from "@/components/dashboard/mark-as-used";
+import { ValueCaptured } from "@/components/dashboard/value-captured";
+import { ROICard } from "@/components/dashboard/roi-card";
 import { ProgressWidget } from "@/components/dashboard/progress-widget";
 import { UpcomingResets } from "@/components/dashboard/upcoming-resets";
 import { ActionPreview } from "@/components/dashboard/action-preview";
-import { QuickActions } from "@/components/dashboard/quick-actions";
 import { NotEnrolled } from "@/components/dashboard/not-enrolled";
 import { CheckoutToast } from "@/components/dashboard/checkout-toast";
 import { ActivityGrid } from "@/components/dashboard/activity-grid";
 
-function computeStats() {
-  const valuedBenefits = BENEFITS.filter((b) => b.value !== null);
-
-  const totalAnnualValue = valuedBenefits.reduce(
-    (sum, b) => sum + (b.value ?? 0),
-    0
-  );
-
-  const benefitCount = BENEFITS.length;
-
-  const monthlyValue = Math.round(totalAnnualValue / 12);
+export default async function DashboardPage() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const actions = getActionItems();
 
   const totalFees =
     (CARDS as Record<CardKey, { annualFee: number }>).platinum.annualFee +
     (CARDS as Record<CardKey, { annualFee: number }>).gold.annualFee;
 
-  return { totalAnnualValue, benefitCount, monthlyValue, totalFees };
-}
+  const availableValue = computeAvailableValue(BENEFITS);
 
-export default async function DashboardPage() {
-  const { totalAnnualValue, benefitCount, monthlyValue, totalFees } =
-    computeStats();
-  const actions = getActionItems();
-
-  // Fetch real checklist progress + claims from DB
+  // Defaults for unauthenticated state
   let completedIds = new Set<string>();
   let claimDates: string[] = [];
+  let streakData = { current: 0, longest: 0 };
+  let capturedValue = 0;
+  let monthlyData = { captured: 0, available: 0 };
+  let monthlyBenefits: Array<{
+    id: string;
+    name: string;
+    card: "platinum" | "gold";
+    monthlyValue: number;
+  }> = [];
+  let claimedThisMonth: string[] = [];
+
   const { userId } = await auth();
   if (userId) {
     const dbUser = await getUserByClerkId(userId);
     if (dbUser) {
-      const [progress, claims] = await Promise.all([
+      const [progress, allClaims, yearClaims] = await Promise.all([
         getChecklistProgress(dbUser.id),
         getUserClaims(dbUser.id),
+        getUserClaimsForYear(dbUser.id, year),
       ]);
+
       completedIds = new Set(
         progress.filter((p) => p.completed).map((p) => p.itemId)
       );
-      const claimIsos = claims
+
+      // Activity grid dates (claims + checklist completions)
+      const claimIsos = allClaims
         .map((c) => c.claimedAt?.toISOString() ?? "")
         .filter(Boolean);
       const checklistIsos = progress
         .filter((p) => p.completed && p.completedAt)
         .map((p) => p.completedAt!.toISOString());
       claimDates = [...claimIsos, ...checklistIsos];
+
+      // Streak
+      const claimDateObjects = allClaims
+        .filter((c) => c.claimedAt)
+        .map((c) => c.claimedAt!);
+      streakData = computeStreak(claimDateObjects);
+
+      // ROI
+      capturedValue = computeCapturedValue(yearClaims, BENEFITS, year);
+      monthlyData = computeMonthlyProgress(yearClaims, BENEFITS, year, month);
+
+      // Monthly benefits for "Mark as Used"
+      monthlyBenefits = BENEFITS.filter(
+        (b) => b.cadence === "monthly" && b.value !== null
+      ).map((b) => ({
+        id: b.id,
+        name: b.name,
+        card: b.card,
+        monthlyValue: Math.round((b.value ?? 0) / 12),
+      }));
+
+      // Which monthly benefits are already claimed this month
+      const thisMonthClaims = yearClaims.filter((c) => {
+        if (!c.claimedAt) return false;
+        return c.claimedAt.getMonth() + 1 === month;
+      });
+      claimedThisMonth = thisMonthClaims.map((c) => c.benefitId);
     }
   }
+
+  const unclaimedCount = monthlyBenefits.filter(
+    (b) => !claimedThisMonth.includes(b.id)
+  ).length;
+  const urgencyMessage = getUrgencyMessage(
+    unclaimedCount,
+    getDaysRemainingInMonth()
+  );
 
   function computeProgress(card: CardKey) {
     const tasks = CHECKLIST_ITEMS.filter((t) => t.card === card);
@@ -80,6 +133,8 @@ export default async function DashboardPage() {
       <Suspense fallback={null}>
         <CheckoutToast />
       </Suspense>
+
+      {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-[#111111]">Dashboard</h1>
         <p className="text-sm text-[#777777] mt-1">
@@ -92,6 +147,7 @@ export default async function DashboardPage() {
             width={48}
             height={30}
             className="rounded shadow-sm"
+            priority
           />
           <Image
             src="/gold-card.png"
@@ -99,36 +155,45 @@ export default async function DashboardPage() {
             width={48}
             height={30}
             className="rounded shadow-sm"
+            priority
           />
         </div>
       </div>
 
-      {/* KPI Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard
-          label="Total Annual Value"
-          value={`$${totalAnnualValue.toLocaleString()}`}
-          subtitle={`Across ${benefitCount} benefits`}
+      {/* Streak + Monthly Progress */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <StreakCounter
+          currentStreak={streakData.current}
+          longestStreak={streakData.longest}
         />
-        <StatCard
-          label="Benefits Count"
-          value={String(benefitCount)}
-          subtitle="Platinum + Gold"
-        />
-        <StatCard
-          label="Monthly Value"
-          value={`$${monthlyValue.toLocaleString()}`}
-          subtitle="Average per month"
-        />
-        <StatCard
-          label="Combined Fees"
-          value={`$${totalFees.toLocaleString()}`}
-          subtitle={`$${CARDS.platinum.annualFee} + $${CARDS.gold.annualFee}`}
+        <MonthlyProgress
+          captured={monthlyData.captured}
+          available={monthlyData.available}
+          urgencyMessage={urgencyMessage}
         />
       </div>
 
+      {/* Mark as Used — primary CTA */}
+      <div className="mb-4">
+        <MarkAsUsed
+          benefits={monthlyBenefits}
+          claimedIds={claimedThisMonth}
+        />
+      </div>
+
+      {/* ROI row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <ValueCaptured captured={capturedValue} available={availableValue} />
+        <ROICard captured={capturedValue} totalFees={totalFees} />
+      </div>
+
+      {/* Activity Grid */}
+      <div className="mb-4">
+        <ActivityGrid claimDates={claimDates} />
+      </div>
+
       {/* Setup Progress */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <ProgressWidget
           title="Platinum Setup"
           completed={platProgress.completed}
@@ -143,22 +208,14 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* Activity Grid */}
-      <div className="mb-6">
-        <ActivityGrid claimDates={claimDates} />
-      </div>
-
       {/* Widgets Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <ActionPreview actions={actions} />
         <UpcomingResets benefits={BENEFITS} />
         <div className="md:col-span-2">
           <NotEnrolled benefits={BENEFITS} />
         </div>
       </div>
-
-      {/* Quick Actions */}
-      <QuickActions />
     </div>
   );
 }

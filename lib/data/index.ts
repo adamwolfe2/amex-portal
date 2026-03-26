@@ -33,3 +33,6 @@ export { TRAVEL_TOOLS } from './tools';
 export { SOURCES } from './sources';
 export { BEST_CARD_RULES } from './best-card';
 export { getActionItems } from './actions';
+export { computeStreak } from './streaks';
+export { computeAvailableValue, computeCapturedValue, computeMonthlyProgress } from './roi';
+export { getUrgencyMessage, getDaysRemainingInMonth } from './urgency';

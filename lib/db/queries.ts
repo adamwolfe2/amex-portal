@@ -1,4 +1,4 @@
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, gte, lt } from "drizzle-orm";
 import { db } from "./index";
 import { users, benefitClaims, referrals, checklistProgress } from "./schema";
 
@@ -172,6 +172,40 @@ export async function getUserClaims(userId: number) {
     .select()
     .from(benefitClaims)
     .where(eq(benefitClaims.userId, userId));
+}
+
+export async function getUserClaimsForYear(userId: number, year: number) {
+  const start = new Date(year, 0, 1);
+  const end = new Date(year + 1, 0, 1);
+  return db
+    .select()
+    .from(benefitClaims)
+    .where(
+      and(
+        eq(benefitClaims.userId, userId),
+        gte(benefitClaims.claimedAt, start),
+        lt(benefitClaims.claimedAt, end)
+      )
+    );
+}
+
+export async function getClaimForPeriod(
+  userId: number,
+  benefitId: string,
+  period: string
+) {
+  const result = await db
+    .select()
+    .from(benefitClaims)
+    .where(
+      and(
+        eq(benefitClaims.userId, userId),
+        eq(benefitClaims.benefitId, benefitId),
+        eq(benefitClaims.period, period)
+      )
+    )
+    .limit(1);
+  return result[0] ?? null;
 }
 
 export async function deleteBenefitClaim(id: number, userId: number) {
