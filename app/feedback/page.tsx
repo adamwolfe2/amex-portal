@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CreditCard, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { feedbackSchema } from "@/lib/validation";
 
 const CARD_OPTIONS = [
   "Platinum",
@@ -60,21 +61,30 @@ export default function FeedbackPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    const formData = {
+      email,
+      cards,
+      mainProblem,
+      wishFeature,
+      priceWillingness,
+      currentTracking,
+      additionalNotes: additionalNotes || undefined,
+    };
+
+    const parsed = feedbackSchema.safeParse(formData);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? "Invalid input");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          cards,
-          mainProblem,
-          wishFeature,
-          priceWillingness,
-          currentTracking,
-          additionalNotes: additionalNotes || null,
-        }),
+        body: JSON.stringify(parsed.data),
       });
 
       if (!res.ok) {

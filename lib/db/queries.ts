@@ -1,17 +1,18 @@
+import { cache } from "react";
 import { eq, and, inArray, gte, lt } from "drizzle-orm";
 import { db } from "./index";
 import { users, benefitClaims, referrals, checklistProgress } from "./schema";
 
 // ── Users ──────────────────────────────────────────────
 
-export async function getUserByClerkId(clerkId: string) {
+export const getUserByClerkId = cache(async (clerkId: string) => {
   const result = await db
     .select()
     .from(users)
     .where(eq(users.clerkId, clerkId))
     .limit(1);
   return result[0] ?? null;
-}
+});
 
 export async function createUser(data: {
   clerkId: string;
@@ -167,12 +168,12 @@ export async function createBenefitClaim(data: {
   return result[0];
 }
 
-export async function getUserClaims(userId: number) {
+export const getUserClaims = cache(async (userId: number) => {
   return db
     .select()
     .from(benefitClaims)
     .where(eq(benefitClaims.userId, userId));
-}
+});
 
 export async function getUserClaimsForYear(userId: number, year: number) {
   const start = new Date(year, 0, 1);
@@ -249,12 +250,12 @@ export async function getReferralsByReferrer(userId: number) {
 
 // ── Checklist Progress ─────────────────────────────────
 
-export async function getChecklistProgress(userId: number) {
+export const getChecklistProgress = cache(async (userId: number) => {
   return db
     .select()
     .from(checklistProgress)
     .where(eq(checklistProgress.userId, userId));
-}
+});
 
 export async function updateChecklistItem(
   userId: number,

@@ -20,7 +20,7 @@ export default clerkMiddleware(async (auth, req) => {
     response.cookies.set("amex_ref", ref, {
       maxAge: 60 * 60 * 24 * 90, // 90 days
       path: "/",
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });

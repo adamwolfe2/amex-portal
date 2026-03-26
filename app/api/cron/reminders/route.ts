@@ -50,7 +50,12 @@ export async function GET(request: Request) {
     for (const user of users) {
       if (!user.email) continue;
 
-      const reminders = resettingBenefits.map((b) => ({
+      // Filter benefits to only those matching the user's cards
+      const userCards = (user.cards as string[]) ?? ["platinum", "gold"];
+      const userBenefits = resettingBenefits.filter(b => userCards.includes(b.card));
+      if (userBenefits.length === 0) continue;
+
+      const reminders = userBenefits.map((b) => ({
         name: b.name,
         value: b.value,
         cadence: b.cadence,

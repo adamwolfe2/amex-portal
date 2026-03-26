@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import type { Benefit, CardKey } from "@/lib/data/types";
 
 interface ResetItem {
@@ -65,11 +65,7 @@ interface UpcomingResetsProps {
 }
 
 export function UpcomingResets({ benefits }: UpcomingResetsProps) {
-  const [resets, setResets] = useState<ResetItem[]>([]);
-
-  useEffect(() => {
-    setResets(computeUpcomingResets(benefits));
-  }, [benefits]);
+  const resets = useMemo(() => computeUpcomingResets(benefits), [benefits]);
 
   return (
     <div className="border border-[#e0ddd9] rounded-lg bg-white">

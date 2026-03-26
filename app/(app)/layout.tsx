@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserByClerkId, getUserClaims, getChecklistProgress } from "@/lib/db/queries";
 import { Sidebar } from "@/components/sidebar";
 import { UserProvider } from "@/lib/user-context";
+import { OnboardingGuard } from "@/components/onboarding-guard";
 import type { CardKey } from "@/lib/data/types";
 import { BENEFITS } from "@/lib/data/benefits";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
@@ -14,6 +15,7 @@ export default async function AppLayout({
 }) {
   let plan: "free" | "pro" = "free";
   let cards: CardKey[] = ["platinum", "gold"];
+  let hasCompletedOnboarding = false;
   let serializedNotifications: Array<{
     id: string;
     title: string;
@@ -30,8 +32,9 @@ export default async function AppLayout({
       const status = user.subscriptionStatus;
       plan = status === "pro" || status === "past_due" ? "pro" : "free";
       const dbCards = user.cards as string[] | null;
-      if (dbCards && dbCards.length > 0) {
-        cards = dbCards.filter(
+      hasCompletedOnboarding = Boolean(dbCards && dbCards.length > 0);
+      if (hasCompletedOnboarding) {
+        cards = dbCards!.filter(
           (c): c is CardKey => c === "platinum" || c === "gold"
         );
       }
@@ -69,7 +72,8 @@ export default async function AppLayout({
     <div className="flex min-h-screen bg-[#fafaf9]">
       <Sidebar plan={plan} notifications={serializedNotifications} />
       <main className="flex-1 min-w-0 px-4 pb-6 pt-16 md:pt-8 md:px-8 md:pb-8 md:ml-64 pb-[env(safe-area-inset-bottom)]">
-        <UserProvider cards={cards} plan={plan}>
+        <UserProvider cards={cards} plan={plan} hasCompletedOnboarding={hasCompletedOnboarding}>
+          <OnboardingGuard />
           {children}
         </UserProvider>
       </main>

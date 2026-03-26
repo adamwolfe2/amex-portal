@@ -9,6 +9,7 @@ import {
   ANNUAL_PRICE,
   LIFETIME_PRICE,
 } from "@/lib/referral";
+import { applySchema } from "@/lib/validation";
 
 const PLATFORMS = ["Instagram", "TikTok", "YouTube", "Twitter/X", "Blog", "Other"];
 const FOLLOWER_RANGES = ["Under 1K", "1K-10K", "10K-50K", "50K-100K", "100K+"];
@@ -57,21 +58,30 @@ export default function ApplyPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    const formData = {
+      name,
+      email,
+      handle,
+      platform,
+      followerCount,
+      cards,
+      reason: reason || undefined,
+    };
+
+    const parsed = applySchema.safeParse(formData);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? "Invalid input");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          handle,
-          platform,
-          followerCount,
-          cards,
-          reason: reason || null,
-        }),
+        body: JSON.stringify(parsed.data),
       });
 
       if (!res.ok) {
