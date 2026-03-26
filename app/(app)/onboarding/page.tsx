@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 import { BENEFITS } from "@/lib/data";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import type { CardKey } from "@/lib/data/types";
@@ -32,9 +32,27 @@ export default function OnboardingPage() {
     selectedCards.includes(t.card)
   );
 
+  const relevantBenefits = BENEFITS.filter(
+    (b) => selectedCards.includes(b.card) && b.value !== null
+  );
+
+  const totalAnnualValue = relevantBenefits.reduce(
+    (sum, b) => sum + (b.value ?? 0),
+    0
+  );
+
+  const topBenefits = [...relevantBenefits]
+    .sort((a, b) => (b.value ?? 0) - (a.value ?? 0))
+    .slice(0, 3);
+
   const handleContinue = async () => {
     if (step === 1 && selection) {
       setStep(2);
+      return;
+    }
+
+    if (step === 2) {
+      setStep(3);
       return;
     }
 
@@ -72,9 +90,14 @@ export default function OnboardingPage() {
               step >= 2 ? "bg-[#1a1a2e]" : "bg-[#e0ddd9]"
             }`}
           />
+          <span
+            className={`h-2 w-8 rounded-full transition-colors ${
+              step >= 3 ? "bg-[#1a1a2e]" : "bg-[#e0ddd9]"
+            }`}
+          />
         </div>
 
-        {step === 1 ? (
+        {step === 1 && (
           <>
             {/* Step 1: Card selection */}
             <div className="text-center">
@@ -206,7 +229,9 @@ export default function OnboardingPage() {
               <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </>
-        ) : (
+        )}
+
+        {step === 2 && (
           <>
             {/* Step 2: Setup checklist */}
             <div className="text-center">
@@ -261,14 +286,63 @@ export default function OnboardingPage() {
               </Button>
               <Button
                 onClick={handleContinue}
-                disabled={saving}
                 className="flex-1"
                 size="lg"
               >
-                {saving ? "Saving..." : "Continue to Dashboard"}
+                Continue
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            {/* Step 3: Celebration / value summary */}
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Sparkles className="h-6 w-6 text-[#8B6914]" />
+                <h1 className="text-xl font-semibold text-[#111111]">
+                  You&apos;re all set
+                </h1>
+              </div>
+              <p className="text-2xl font-bold text-[#1a1a2e] mt-3">
+                ${totalAnnualValue.toLocaleString()}/year in benefits
+              </p>
+              <p className="text-sm text-[#666666] mt-1">
+                Let&apos;s start tracking
+              </p>
+            </div>
+
+            <div className="border border-[#e0ddd9] rounded-lg bg-white divide-y divide-[#e0ddd9]">
+              {topBenefits.map((benefit) => (
+                <div
+                  key={benefit.id}
+                  className="p-4 flex items-center justify-between"
+                >
+                  <p className="text-sm font-medium text-[#111111]">
+                    {benefit.name}
+                  </p>
+                  <p className="text-sm font-semibold text-[#1a1a2e]">
+                    ${benefit.value?.toLocaleString()}/yr
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <Button
+              onClick={handleContinue}
+              disabled={saving}
+              className="w-full min-h-[44px]"
+              size="lg"
+            >
+              {saving ? "Saving..." : "Go to Dashboard"}
+              <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+
+            <p className="text-center text-xs text-[#666666]">
+              You can set up each benefit from the checklist anytime
+            </p>
           </>
         )}
       </div>
