@@ -61,6 +61,14 @@ function rateLimitMemory(ip: string): { ok: boolean; remaining: number } {
   return { ok: true, remaining: MAX_REQUESTS - entry.count };
 }
 
+export function getClientIp(request: Request): string {
+  return (
+    request.headers.get("x-real-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown"
+  );
+}
+
 export async function rateLimit(
   ip: string
 ): Promise<{ ok: boolean; remaining: number }> {

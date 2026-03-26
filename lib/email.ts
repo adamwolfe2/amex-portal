@@ -13,6 +13,14 @@ function getResend(): Resend | null {
 
 const FROM_ADDRESS = "CreditOS <reminders@creditos.app>";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 interface BenefitReminder {
   name: string;
   value: number | null;
@@ -32,15 +40,15 @@ export async function sendResetReminder(
   }
 
   const totalValue = benefits.reduce((s, b) => s + (b.value ?? 0), 0);
-  const greeting = userName ? `Hi ${userName}` : "Hi there";
+  const greeting = userName ? `Hi ${escapeHtml(userName)}` : "Hi there";
 
   const benefitRows = benefits
     .map(
       (b) =>
         `<tr>
-          <td style="padding:8px 12px;border-bottom:1px solid #e0ddd9;font-size:14px;color:#111111;">${b.name}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e0ddd9;font-size:14px;color:#111111;">${escapeHtml(b.name)}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #e0ddd9;font-size:14px;color:#111111;text-align:right;">${b.value ? `$${b.value}` : "—"}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #e0ddd9;font-size:13px;color:#666666;">${b.action}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e0ddd9;font-size:13px;color:#666666;">${escapeHtml(b.action)}</td>
         </tr>`
     )
     .join("");

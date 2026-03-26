@@ -8,26 +8,30 @@ interface StreakResult {
   longest: number;
 }
 
-function toMonthKey(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+function toMonthKey(year: number, month: number): string {
+  return `${year}-${String(month + 1).padStart(2, "0")}`;
 }
 
 export function computeStreak(claimDates: Date[]): StreakResult {
   if (claimDates.length === 0) return { current: 0, longest: 0 };
 
-  const activeMonths = new Set(claimDates.map(toMonthKey));
+  const activeMonths = new Set(
+    claimDates.map((d) => toMonthKey(d.getFullYear(), d.getMonth()))
+  );
 
   // Walk backwards from current month to find current streak
   const now = new Date();
   let current = 0;
-  let cursor = new Date(now.getFullYear(), now.getMonth(), 1);
+  let monthsBack = 0;
 
-  while (activeMonths.has(toMonthKey(cursor))) {
+  while (true) {
+    const check = new Date(now.getFullYear(), now.getMonth() - monthsBack, 1);
+    if (!activeMonths.has(toMonthKey(check.getFullYear(), check.getMonth()))) break;
     current++;
-    cursor.setMonth(cursor.getMonth() - 1);
+    monthsBack++;
   }
 
-  // Find longest streak by walking forward through all months from earliest to latest
+  // Find longest streak by walking forward through sorted month keys
   const sortedMonths = [...activeMonths].sort();
   if (sortedMonths.length === 0) return { current, longest: current };
 
@@ -36,11 +40,8 @@ export function computeStreak(claimDates: Date[]): StreakResult {
 
   for (let i = 1; i < sortedMonths.length; i++) {
     const [prevY, prevM] = sortedMonths[i - 1].split("-").map(Number);
-    const [curY, curM] = sortedMonths[i].split("-").map(Number);
-
-    const prevDate = new Date(prevY, prevM - 1, 1);
-    prevDate.setMonth(prevDate.getMonth() + 1);
-    const expectedKey = toMonthKey(prevDate);
+    const expected = new Date(prevY, prevM - 1 + 1, 1); // next month from prev
+    const expectedKey = toMonthKey(expected.getFullYear(), expected.getMonth());
 
     if (sortedMonths[i] === expectedKey) {
       run++;
@@ -50,7 +51,5 @@ export function computeStreak(claimDates: Date[]): StreakResult {
     }
   }
 
-  longest = Math.max(longest, current);
-
-  return { current, longest };
+  return { current: Math.max(current, 0), longest: Math.max(longest, current) };
 }

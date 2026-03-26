@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { feedbackResponses } from "@/lib/db/schema";
 import { feedbackSchema } from "@/lib/validation";
-import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
+import { rateLimit, getRateLimitResponse, getClientIp } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = getClientIp(req);
   const { ok } = await rateLimit(ip);
   if (!ok) return getRateLimitResponse();
 

@@ -4,11 +4,11 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { createCheckoutSession } from "@/lib/stripe";
 import { getUserByClerkId } from "@/lib/db/queries";
 import { checkoutSchema } from "@/lib/validation";
-import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
+import { rateLimit, getRateLimitResponse, getClientIp } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = getClientIp(request);
   const { ok } = await rateLimit(ip);
   if (!ok) return getRateLimitResponse();
 

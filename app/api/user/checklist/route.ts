@@ -7,7 +7,7 @@ import {
   updateChecklistItem,
 } from "@/lib/db/queries";
 import { checklistSchema } from "@/lib/validation";
-import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
+import { rateLimit, getRateLimitResponse, getClientIp } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
 export async function GET() {
@@ -30,7 +30,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = getClientIp(request);
   const { ok } = await rateLimit(ip);
   if (!ok) return getRateLimitResponse();
 

@@ -42,12 +42,19 @@ export async function quickClaimBenefit(
   }
 
   const benefit = BENEFITS.find((b) => b.id === benefitId);
-  const perPeriodValue =
-    benefit?.value && benefit.cadence === "monthly"
-      ? (benefit.value / 12).toFixed(2)
-      : benefit?.value
-        ? String(benefit.value)
-        : undefined;
+
+  const CADENCE_DIVISOR: Record<string, number> = {
+    monthly: 12,
+    quarterly: 4,
+    semiannual: 2,
+    annual: 1,
+    "multi-year": 0.25,
+    ongoing: 1,
+  };
+  const divisor = CADENCE_DIVISOR[benefit?.cadence ?? "annual"] ?? 1;
+  const perPeriodValue = benefit?.value
+    ? (benefit.value / divisor).toFixed(2)
+    : undefined;
 
   await createBenefitClaim({
     userId: user.id,
