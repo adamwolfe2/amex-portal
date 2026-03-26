@@ -105,7 +105,7 @@ export default function BenefitsPage() {
           placeholder="Search benefits..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-[#e0ddd9] bg-white py-2 pl-10 pr-4 text-sm text-[#111111] placeholder:text-[#999] outline-none focus:border-[#bbb] transition-colors"
+          className="w-full rounded-lg border border-[#e0ddd9] bg-white py-2 pl-10 pr-4 text-base sm:text-sm text-[#111111] placeholder:text-[#999] outline-none focus:border-[#bbb] transition-colors"
         />
       </div>
 
@@ -115,7 +115,7 @@ export default function BenefitsPage() {
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors min-h-[44px] flex items-center ${
               filter === f.key
                 ? "bg-[#1a1a2e] text-white"
                 : "bg-white border border-[#e0ddd9] text-[#555] hover:bg-[#f5f5f3]"

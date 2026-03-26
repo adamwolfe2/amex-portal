@@ -127,13 +127,13 @@ export function ActivityGrid({ claimDates }: ActivityGridProps) {
         </div>
 
         {/* Grid */}
-        <div className="flex gap-[3px]">
+        <div className="flex gap-0.5 sm:gap-[3px]">
           {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[3px]">
+            <div key={wi} className="flex flex-col gap-0.5 sm:gap-[3px]">
               {week.map((day) => (
                 <div
                   key={day.key}
-                  className={`w-[11px] h-[11px] rounded-[2px] transition-colors ${
+                  className={`w-2.5 h-2.5 sm:w-[11px] sm:h-[11px] rounded-[2px] transition-colors ${
                     isFuture(day.date)
                       ? "bg-transparent"
                       : getCellColor(day.count)
@@ -156,7 +156,7 @@ export function ActivityGrid({ claimDates }: ActivityGridProps) {
         {[0, 1, 2, 3, 4].map((level) => (
           <div
             key={level}
-            className={`w-[11px] h-[11px] rounded-[2px] ${getCellColor(level)}`}
+            className={`w-2.5 h-2.5 sm:w-[11px] sm:h-[11px] rounded-[2px] ${getCellColor(level)}`}
           />
         ))}
         <span className="text-[10px] text-[#999999]">More</span>

@@ -291,6 +291,7 @@ export default function SettingsPage() {
             size="icon"
             onClick={copyReferralCode}
             aria-label="Copy referral code"
+            className="min-h-[44px] min-w-[44px]"
           >
             {copied ? (
               <Check className="h-4 w-4 text-green-600" />

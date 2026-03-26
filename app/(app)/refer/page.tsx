@@ -121,7 +121,7 @@ export default function ReferPage() {
           <code className="flex-1 px-3 py-2 text-xs sm:text-sm bg-[#fafaf9] border border-[#e0ddd9] rounded-lg font-mono text-[#111111] truncate min-w-0">
             {referralLink || "Loading..."}
           </code>
-          <Button variant="outline" size="icon" onClick={copyLink} aria-label="Copy referral link">
+          <Button variant="outline" size="icon" onClick={copyLink} aria-label="Copy referral link" className="min-h-[44px] min-w-[44px]">
             {copied ? (
               <Check className="h-4 w-4 text-green-600" />
             ) : (

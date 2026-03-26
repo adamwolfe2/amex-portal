@@ -50,7 +50,7 @@ export default function ToolsPage() {
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors min-h-[44px] flex items-center ${
               filter === f.key
                 ? "bg-[#1a1a2e] text-white"
                 : "bg-white border border-[#e0ddd9] text-[#555] hover:bg-[#f5f5f3]"

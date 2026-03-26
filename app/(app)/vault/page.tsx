@@ -200,7 +200,7 @@ export default function VaultPage() {
                 value={formBenefitId}
                 onChange={(e) => setFormBenefitId(e.target.value)}
                 required
-                className="w-full h-8 px-2 text-sm border border-[#e0ddd9] rounded-lg bg-white text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/20 focus:border-[#1a1a2e]"
+                className="w-full h-8 px-2 text-base sm:text-sm border border-[#e0ddd9] rounded-lg bg-white text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/20 focus:border-[#1a1a2e]"
               >
                 <option value="">Select a benefit...</option>
                 {BENEFITS.map((b) => (
@@ -220,7 +220,7 @@ export default function VaultPage() {
                 value={formAmount}
                 onChange={(e) => setFormAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full h-8 px-2 text-sm border border-[#e0ddd9] rounded-lg bg-white text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/20 focus:border-[#1a1a2e]"
+                className="w-full h-8 px-2 text-base sm:text-sm border border-[#e0ddd9] rounded-lg bg-white text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/20 focus:border-[#1a1a2e]"
               />
             </div>
             <div>
@@ -232,7 +232,7 @@ export default function VaultPage() {
                 value={formNotes}
                 onChange={(e) => setFormNotes(e.target.value)}
                 placeholder="Optional notes..."
-                className="w-full h-8 px-2 text-sm border border-[#e0ddd9] rounded-lg bg-white text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/20 focus:border-[#1a1a2e]"
+                className="w-full h-8 px-2 text-base sm:text-sm border border-[#e0ddd9] rounded-lg bg-white text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/20 focus:border-[#1a1a2e]"
               />
             </div>
             <Button type="submit" size="sm" disabled={saving}>
@@ -290,7 +290,7 @@ export default function VaultPage() {
               <button
                 onClick={() => handleDelete(claim.id)}
                 aria-label="Delete claim"
-                className="p-1.5 hover:bg-red-50 rounded text-[#999999] hover:text-red-500 transition-colors shrink-0 ml-2"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-red-50 rounded text-[#999999] hover:text-red-500 transition-colors shrink-0 ml-2"
               >
                 <Trash2 className="h-4 w-4" />
               </button>

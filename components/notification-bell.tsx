@@ -135,7 +135,7 @@ export function NotificationBell({
   if (notifications.length === 0) {
     return (
       <button
-        className="p-1.5 rounded-md hover:bg-[#f0efed] transition-colors"
+        className="p-2.5 rounded-md hover:bg-[#f0efed] transition-colors"
         aria-label="No notifications"
         disabled
       >
@@ -148,7 +148,7 @@ export function NotificationBell({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleToggle}
-        className="relative p-1.5 rounded-md hover:bg-[#f0efed] transition-colors"
+        className="relative p-2.5 rounded-md hover:bg-[#f0efed] transition-colors"
         aria-label={`${unreadCount} unread notifications`}
         aria-expanded={isOpen}
       >
@@ -161,7 +161,7 @@ export function NotificationBell({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-[#e0ddd9] rounded-lg shadow-lg z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white border border-[#e0ddd9] rounded-lg shadow-lg z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#e0ddd9]">
             <span className="text-sm font-semibold text-[#111111]">
@@ -170,7 +170,7 @@ export function NotificationBell({
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="text-[11px] text-[#999999] hover:text-[#666666] transition-colors"
+                className="text-[11px] text-[#999999] hover:text-[#666666] transition-colors py-2 px-1"
               >
                 Mark all read
               </button>
@@ -214,7 +214,7 @@ export function NotificationBell({
                         </p>
                         <button
                           onClick={() => handleDismiss(notification.id)}
-                          className="shrink-0 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[#f0efed] transition-all"
+                          className="shrink-0 p-1.5 rounded opacity-100 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-[#f0efed] transition-all"
                           aria-label="Dismiss notification"
                         >
                           <X className="h-3 w-3 text-[#999999]" />

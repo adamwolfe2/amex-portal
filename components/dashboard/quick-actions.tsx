@@ -24,7 +24,7 @@ export function QuickActions() {
             <Link
               key={action.label}
               href={action.href}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#e0ddd9] px-3 py-2 text-xs font-medium text-[#444444] hover:text-[#111111] hover:bg-[#f5f4f1] transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#e0ddd9] px-3 py-2 text-xs font-medium text-[#444444] hover:text-[#111111] hover:bg-[#f5f4f1] transition-colors min-h-[44px]"
             >
               <action.icon className="size-3.5" />
               {action.label}

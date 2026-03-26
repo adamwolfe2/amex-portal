@@ -180,7 +180,7 @@ export default async function Home() {
                   See How It Works
                 </a>
               </div>
-              <div className="flex items-center gap-6 pt-2">
+              <div className="flex items-center flex-wrap gap-6 gap-y-2 pt-2">
                 <div className="flex items-center gap-2 text-sm text-[#666666]">
                   <Check className="h-4 w-4 text-[#8B6914]" />
                   <span>No credit card required</span>
@@ -192,7 +192,7 @@ export default async function Home() {
               </div>
             </div>
             <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-md">
+              <div className="relative w-full max-w-md overflow-hidden">
                 <Image
                   src="/platinum-card.png"
                   alt="Amex Platinum Card"

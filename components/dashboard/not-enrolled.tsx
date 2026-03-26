@@ -47,7 +47,7 @@ export function NotEnrolled({ benefits }: NotEnrolledProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Enroll in ${b.name}`}
-                  className="text-[#777777] hover:text-[#111111] transition-colors shrink-0"
+                  className="flex items-center justify-center min-h-[44px] min-w-[44px] text-[#777777] hover:text-[#111111] transition-colors shrink-0"
                 >
                   <ExternalLink className="size-3.5" />
                 </a>

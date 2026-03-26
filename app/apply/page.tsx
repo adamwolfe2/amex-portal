@@ -188,7 +188,7 @@ export default function ApplyPage() {
           </div>
 
           {/* Plan Toggle */}
-          <div className="flex items-center gap-2 mb-5">
+          <div className="flex flex-wrap items-center gap-2 mb-5">
             <button
               type="button"
               onClick={() => setCalcPlan("monthly")}

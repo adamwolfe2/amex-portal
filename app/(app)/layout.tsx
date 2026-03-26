@@ -68,7 +68,7 @@ export default async function AppLayout({
   return (
     <div className="flex min-h-screen bg-[#fafaf9]">
       <Sidebar plan={plan} notifications={serializedNotifications} />
-      <main className="flex-1 min-w-0 px-4 pb-6 pt-16 md:pt-8 md:px-8 md:pb-8 md:ml-64">
+      <main className="flex-1 min-w-0 px-4 pb-6 pt-16 md:pt-8 md:px-8 md:pb-8 md:ml-64 pb-[env(safe-area-inset-bottom)]">
         <UserProvider cards={cards} plan={plan}>
           {children}
         </UserProvider>

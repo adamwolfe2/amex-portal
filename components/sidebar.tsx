@@ -117,12 +117,12 @@ function NavContent({
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     className={`
-                      relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+                      relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                       transition-colors duration-150
                       ${
                         isActive
                           ? "bg-[#f0efed] text-[#111111]"
-                          : "text-[#666666] hover:bg-[#f0efed] hover:text-[#111111]"
+                          : "text-[#666666] hover:bg-[#f0efed] active:bg-[#e5e3e0] hover:text-[#111111]"
                       }
                     `}
                   >
@@ -187,10 +187,10 @@ export function Sidebar({
       </aside>
 
       {/* Mobile hamburger + sheet */}
-      <div className="fixed top-0 left-0 right-0 z-40 flex items-center h-14 px-4 bg-[#fafaf9] border-b border-[#e0ddd9] md:hidden">
+      <div className="fixed top-0 left-0 right-0 z-40 flex items-center h-14 px-4 bg-[#fafaf9] border-b border-[#e0ddd9] md:hidden pt-[env(safe-area-inset-top)]">
         <Sheet>
           <SheetTrigger
-            className="p-2 -ml-2 rounded-md hover:bg-[#f0efed]"
+            className="p-3 -ml-3 rounded-md hover:bg-[#f0efed] active:bg-[#e5e3e0]"
             aria-label="Open navigation menu"
           >
             <Menu className="h-5 w-5 text-[#111111]" />

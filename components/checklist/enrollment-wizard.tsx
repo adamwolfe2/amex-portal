@@ -211,7 +211,7 @@ export function EnrollmentWizard({
               ) : (
                 <button
                   onClick={handleComplete}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md"
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white rounded-md"
                   style={{ backgroundColor: "#1a1a2e" }}
                 >
                   <Check className="h-4 w-4" />
@@ -222,7 +222,7 @@ export function EnrollmentWizard({
                 <button
                   onClick={goNext}
                   disabled={stepIdx === totalItems - 1}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#666666] hover:text-[#111111] transition-colors disabled:opacity-40"
+                  className="flex items-center gap-1.5 px-3 py-2.5 text-sm text-[#666666] hover:text-[#111111] transition-colors disabled:opacity-40"
                 >
                   <SkipForward className="h-3.5 w-3.5" />
                   Skip for now
@@ -236,7 +236,7 @@ export function EnrollmentWizard({
             <button
               onClick={goPrev}
               disabled={stepIdx === 0}
-              className="flex items-center gap-1 text-xs text-[#666666] hover:text-[#111111] transition-colors disabled:opacity-40"
+              className="flex items-center gap-1 text-xs text-[#666666] hover:text-[#111111] transition-colors disabled:opacity-40 py-3 min-h-[44px]"
             >
               <ArrowLeft className="h-3 w-3" />
               Previous
@@ -247,7 +247,7 @@ export function EnrollmentWizard({
                 <button
                   key={t.id}
                   onClick={() => setStepIdx(i)}
-                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                  className={`w-2 h-2 p-2 rounded-full transition-colors ${
                     i === stepIdx
                       ? "bg-[#1a1a2e]"
                       : completedIds.has(t.id)
@@ -261,7 +261,7 @@ export function EnrollmentWizard({
             <button
               onClick={goNext}
               disabled={stepIdx === totalItems - 1}
-              className="flex items-center gap-1 text-xs text-[#666666] hover:text-[#111111] transition-colors disabled:opacity-40"
+              className="flex items-center gap-1 text-xs text-[#666666] hover:text-[#111111] transition-colors disabled:opacity-40 py-3 min-h-[44px]"
             >
               Next
               <ArrowRight className="h-3 w-3" />
