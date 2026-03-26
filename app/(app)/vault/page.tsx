@@ -78,9 +78,15 @@ export default function VaultPage() {
 
   const handleDelete = async (id: number) => {
     if (!window.confirm("Delete this claim? This cannot be undone.")) return;
-    const res = await fetch(`/api/claims?id=${id}`, { method: "DELETE" });
-    if (res.ok) {
-      setClaims((prev) => prev.filter((c) => c.id !== id));
+    try {
+      const res = await fetch(`/api/claims?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setClaims((prev) => prev.filter((c) => c.id !== id));
+      } else {
+        toast.error("Failed to delete claim. Please try again.");
+      }
+    } catch {
+      toast.error("Failed to delete claim. Please try again.");
     }
   };
 

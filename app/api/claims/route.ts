@@ -13,18 +13,23 @@ import { rateLimit, getRateLimitResponse, getClientIp } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  const user = await getUserByClerkId(userId);
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
+    const user = await getUserByClerkId(userId);
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
-  const claims = await getUserClaims(user.id);
-  return NextResponse.json(claims);
+    const claims = await getUserClaims(user.id);
+    return NextResponse.json(claims);
+  } catch (error) {
+    logger.error("Failed to fetch claims", { error: error instanceof Error ? error.message : String(error) });
+    return NextResponse.json({ error: "Failed to fetch claims" }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
@@ -95,10 +100,14 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Valid id is required" }, { status: 400 });
   }
 
-  const deleted = await deleteBenefitClaim(Number(id), user.id);
-  if (!deleted) {
-    return NextResponse.json({ error: "Claim not found" }, { status: 404 });
+  try {
+    const deleted = await deleteBenefitClaim(Number(id), user.id);
+    if (!deleted) {
+      return NextResponse.json({ error: "Claim not found" }, { status: 404 });
+    }
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    logger.error("Failed to delete claim", { error: error instanceof Error ? error.message : String(error) });
+    return NextResponse.json({ error: "Failed to delete claim" }, { status: 500 });
   }
-
-  return NextResponse.json({ success: true });
 }

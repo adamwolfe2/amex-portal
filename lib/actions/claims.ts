@@ -43,15 +43,8 @@ export async function quickClaimBenefit(
 
   const benefit = BENEFITS.find((b) => b.id === benefitId);
 
-  const CADENCE_DIVISOR: Record<string, number> = {
-    monthly: 12,
-    quarterly: 4,
-    semiannual: 2,
-    annual: 1,
-    "multi-year": 0.25,
-    ongoing: 1,
-  };
-  const divisor = CADENCE_DIVISOR[benefit?.cadence ?? "annual"] ?? 1;
+  const { PERIODS_PER_YEAR } = await import("@/lib/data/roi");
+  const divisor = PERIODS_PER_YEAR[benefit?.cadence ?? "annual"] || 1;
   const perPeriodValue = benefit?.value
     ? (benefit.value / divisor).toFixed(2)
     : undefined;

@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   if (!ok) return getRateLimitResponse();
 
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const parsed = applySchema.safeParse(body);
 
     if (!parsed.success) {

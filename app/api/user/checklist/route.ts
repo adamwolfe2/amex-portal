@@ -11,22 +11,27 @@ import { rateLimit, getRateLimitResponse, getClientIp } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await getUserByClerkId(userId);
+    if (!user) {
+      return Response.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const progress = await getChecklistProgress(user.id);
+    const completedIds = progress
+      .filter((p) => p.completed)
+      .map((p) => p.itemId);
+
+    return Response.json({ completedIds });
+  } catch (error) {
+    logger.error("Failed to fetch checklist", { error: error instanceof Error ? error.message : String(error) });
+    return Response.json({ error: "Failed to fetch checklist" }, { status: 500 });
   }
-
-  const user = await getUserByClerkId(userId);
-  if (!user) {
-    return Response.json({ error: "User not found" }, { status: 404 });
-  }
-
-  const progress = await getChecklistProgress(user.id);
-  const completedIds = progress
-    .filter((p) => p.completed)
-    .map((p) => p.itemId);
-
-  return Response.json({ completedIds });
 }
 
 export async function POST(request: Request) {

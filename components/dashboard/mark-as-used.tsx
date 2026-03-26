@@ -4,7 +4,6 @@ import { useOptimistic, useTransition } from "react";
 import { Check, CheckCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { quickClaimBenefit } from "@/lib/actions/claims";
-import type { Benefit } from "@/lib/data/types";
 
 interface MarkAsUsedProps {
   benefits: Array<{
@@ -29,6 +28,7 @@ export function MarkAsUsed({ benefits, claimedIds }: MarkAsUsedProps) {
       const result = await quickClaimBenefit(benefitId);
       if (!result.success) {
         toast.error(result.error ?? "Failed to record. Please try again.");
+        throw new Error(result.error ?? "Claim failed");
       }
     });
   };

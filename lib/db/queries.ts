@@ -141,7 +141,7 @@ export async function updateUserCards(clerkId: string, cards: string[]) {
 
 export async function getPaidUsers() {
   return db.select().from(users).where(
-    inArray(users.subscriptionStatus, ["pro", "past_due"])
+    inArray(users.subscriptionStatus, ["pro", "active", "trialing", "past_due"])
   );
 }
 

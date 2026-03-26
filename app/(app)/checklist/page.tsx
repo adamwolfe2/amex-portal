@@ -31,7 +31,9 @@ export default function ChecklistPage() {
       .then((data) => {
         setCompletedIds(new Set(data.completedIds ?? []));
       })
-      .catch(() => {})
+      .catch(() => {
+        toast.error("Failed to load progress. Please refresh.");
+      })
       .finally(() => setLoading(false));
   }, []);
 
