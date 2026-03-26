@@ -4,8 +4,13 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { getUserByClerkId, updateUserCards } from "@/lib/db/queries";
 import { onboardingSchema } from "@/lib/validation";
+import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const { ok } = await rateLimit(ip);
+  if (!ok) return getRateLimitResponse();
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

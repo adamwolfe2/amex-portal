@@ -3,10 +3,13 @@
  * Throws if critical env vars are missing; warns for optional ones.
  */
 
+import { logger } from "@/lib/logger";
+
 const required = [
   "DATABASE_URL",
   "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
   "CLERK_SECRET_KEY",
+  "NEXT_PUBLIC_APP_URL",
 ] as const;
 
 const optional = [
@@ -20,7 +23,6 @@ const optional = [
   "UPSTASH_REDIS_REST_TOKEN",
   "RESEND_API_KEY",
   "CRON_SECRET",
-  "NEXT_PUBLIC_APP_URL",
 ] as const;
 
 export function validateEnv() {
@@ -44,7 +46,7 @@ export function validateEnv() {
   if (process.env.NODE_ENV === "production") {
     for (const key of optional) {
       if (!process.env[key]) {
-        console.warn(`[env] Optional variable not set: ${key}`);
+        logger.warn("Optional variable not set", { key });
       }
     }
   }

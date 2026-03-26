@@ -28,7 +28,10 @@ export async function createCheckoutSession(
   referralCode?: string,
   plan: PlanType = "annual"
 ): Promise<string | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!baseUrl) {
+    throw new Error("NEXT_PUBLIC_APP_URL is not configured");
+  }
   const isRecurring = plan === "monthly" || plan === "annual";
   const priceId = getPriceId(plan);
 

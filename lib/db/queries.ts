@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { db } from "./index";
 import { users, benefitClaims, referrals, checklistProgress } from "./schema";
 
@@ -139,8 +139,10 @@ export async function updateUserCards(clerkId: string, cards: string[]) {
   return result[0] ?? null;
 }
 
-export async function getAllActiveUsers() {
-  return db.select().from(users);
+export async function getPaidUsers() {
+  return db.select().from(users).where(
+    inArray(users.subscriptionStatus, ["pro", "past_due"])
+  );
 }
 
 // ── Benefit Claims ─────────────────────────────────────

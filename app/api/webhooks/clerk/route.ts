@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { generateReferralCode } from "@/lib/referral";
+import { logger } from "@/lib/logger";
 
 interface ClerkWebhookEvent {
   type: string;
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
 
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
   if (!webhookSecret) {
-    console.error("CLERK_WEBHOOK_SECRET is not set");
+    logger.error("CLERK_WEBHOOK_SECRET is not set");
     return Response.json(
       { error: "Webhook secret not configured" },
       { status: 500 }
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
       "svix-signature": svixSignature,
     }) as ClerkWebhookEvent;
   } catch (err) {
-    console.error("Clerk webhook verification failed:", err);
+    logger.error("Clerk webhook verification failed", { error: err instanceof Error ? err.message : String(err) });
     return Response.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -90,7 +91,7 @@ export async function POST(request: Request) {
     }
 
     if (retries >= 5) {
-      console.error("Referral code generation failed after 5 retries");
+      logger.error("Referral code generation failed after 5 retries");
       return Response.json(
         { error: "Referral code generation failed" },
         { status: 500 }

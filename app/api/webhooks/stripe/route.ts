@@ -10,6 +10,7 @@ import {
 import { calculateCommission } from "@/lib/referral";
 import type { PlanType } from "@/lib/referral";
 import { getStripe } from "@/lib/stripe";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
-    console.error("STRIPE_WEBHOOK_SECRET is not configured");
+    logger.error("STRIPE_WEBHOOK_SECRET is not configured");
     return Response.json({ error: "Webhook not configured" }, { status: 500 });
   }
 
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
             : undefined;
 
         if (!userId) {
-          console.error("Stripe webhook: missing userId in session metadata");
+          logger.error("Stripe webhook: missing userId in session metadata");
           return Response.json(
             { error: "Missing userId metadata" },
             { status: 400 }
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
               // Unique constraint violation means referral already exists — safe to ignore
               const message = err instanceof Error ? err.message : String(err);
               if (message.includes("unique") || message.includes("duplicate")) {
-                console.log("Duplicate referral skipped (idempotent)");
+                logger.info("Duplicate referral skipped (idempotent)");
               } else {
                 throw err;
               }
@@ -167,7 +168,7 @@ export async function POST(request: Request) {
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Stripe webhook handler error:", message);
+    logger.error("Stripe webhook handler error", { error: message });
     return Response.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 

@@ -7,6 +7,8 @@ import {
   updateChecklistItem,
 } from "@/lib/db/queries";
 import { checklistSchema } from "@/lib/validation";
+import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
   const { userId } = await auth();
@@ -28,6 +30,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const { ok } = await rateLimit(ip);
+  if (!ok) return getRateLimitResponse();
+
   const { userId } = await auth();
   if (!userId) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -54,7 +60,7 @@ export async function POST(request: Request) {
     const result = await updateChecklistItem(user.id, itemId, completed);
     return Response.json(result);
   } catch (error) {
-    console.error("Failed to update checklist:", error);
+    logger.error("Failed to update checklist", { error: error instanceof Error ? error.message : String(error) });
     return Response.json(
       { error: "Failed to update checklist item" },
       { status: 500 }

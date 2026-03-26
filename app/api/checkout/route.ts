@@ -5,6 +5,7 @@ import { createCheckoutSession } from "@/lib/stripe";
 import { getUserByClerkId } from "@/lib/db/queries";
 import { checkoutSchema } from "@/lib/validation";
 import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
     return Response.json({ url });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    console.error("Checkout session error:", message);
+    logger.error("Checkout session error", { error: message });
     const isMissingConfig = message.includes("Missing Stripe price ID") || message.includes("STRIPE");
     return Response.json(
       { error: isMissingConfig

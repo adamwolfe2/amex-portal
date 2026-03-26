@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { logger } from "@/lib/logger";
 
 let _resend: Resend | null = null;
 
@@ -26,7 +27,7 @@ export async function sendResetReminder(
 ): Promise<boolean> {
   const resend = getResend();
   if (!resend) {
-    console.warn("Resend not configured — skipping email");
+    logger.warn("Resend not configured — skipping email");
     return false;
   }
 
@@ -84,7 +85,7 @@ export async function sendResetReminder(
     });
     return true;
   } catch (error) {
-    console.error("Failed to send email:", error);
+    logger.error("Failed to send email", { error: error instanceof Error ? error.message : String(error) });
     return false;
   }
 }

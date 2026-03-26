@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { feedbackResponses } from "@/lib/db/schema";
 import { feedbackSchema } from "@/lib/validation";
 import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
-    console.error("Feedback submission error:", error);
+    logger.error("Feedback submission error", { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to submit feedback" },
       { status: 500 }

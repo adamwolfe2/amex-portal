@@ -9,6 +9,8 @@ import {
   deleteBenefitClaim,
 } from "@/lib/db/queries";
 import { claimsCreateSchema } from "@/lib/validation";
+import { rateLimit, getRateLimitResponse } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
   const { userId } = await auth();
@@ -26,6 +28,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const { ok } = await rateLimit(ip);
+  if (!ok) return getRateLimitResponse();
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -59,7 +65,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(claim, { status: 201 });
   } catch (error) {
-    console.error("Failed to create claim:", error);
+    logger.error("Failed to create claim", { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to create claim" },
       { status: 500 }
@@ -68,6 +74,10 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const { ok } = await rateLimit(ip);
+  if (!ok) return getRateLimitResponse();
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

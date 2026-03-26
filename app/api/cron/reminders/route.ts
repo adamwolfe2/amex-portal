@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { BENEFITS } from "@/lib/data";
-import { getAllActiveUsers } from "@/lib/db/queries";
+import { getPaidUsers } from "@/lib/db/queries";
 import { sendResetReminder } from "@/lib/email";
 
 /**
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     return Response.json({ message: "No benefits resetting", sent: 0 });
   }
 
-  const users = await getAllActiveUsers();
+  const users = await getPaidUsers();
   let sent = 0;
   let failed = 0;
 
