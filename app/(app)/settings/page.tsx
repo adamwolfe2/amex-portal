@@ -254,7 +254,7 @@ export default function SettingsPage() {
                 disabled={upgrading !== null}
                 className="border border-[#e0ddd9] rounded-lg p-3 text-left hover:border-[#1a1a2e] transition-colors relative"
               >
-                <span className="absolute -top-2.5 left-3 bg-[#92702a] text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
+                <span className="absolute -top-2.5 left-3 bg-[#1a1a2e] text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
                   Limited time
                 </span>
                 <p className="text-sm font-semibold text-[#111111]">
