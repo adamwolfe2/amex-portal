@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { getActionItems } from "@/lib/data/actions";
+import { auth } from "@clerk/nextjs/server";
+import { getUserByClerkId } from "@/lib/db/queries";
+import type { CardKey } from "@/lib/data/types";
 
 export const metadata: Metadata = { title: "Actions" };
 import {
@@ -13,8 +16,24 @@ const cardLabels = {
   both: "Both Cards",
 } as const;
 
-export default function ActionsPage() {
-  const actions = getActionItems();
+export default async function ActionsPage() {
+  let userCards: CardKey[] = ["platinum", "gold"];
+  const { userId } = await auth();
+  if (userId) {
+    const dbUser = await getUserByClerkId(userId);
+    if (dbUser) {
+      const dbCards = dbUser.cards as string[] | null;
+      if (dbCards && dbCards.length > 0) {
+        userCards = dbCards.filter(
+          (c): c is CardKey => c === "platinum" || c === "gold"
+        );
+      }
+    }
+  }
+
+  const actions = getActionItems().filter(
+    (a) => a.card === "both" || userCards.includes(a.card as CardKey)
+  );
 
   const high = actions.filter((a) => a.priority === "high");
   const medium = actions.filter((a) => a.priority === "medium");

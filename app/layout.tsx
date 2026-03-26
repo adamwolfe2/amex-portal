@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
+import { ServiceWorkerRegister } from "@/components/sw-register";
 import { validateEnv } from "@/lib/env";
 import "./globals.css";
 
@@ -33,6 +34,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" style={{ fontFamily: "'Satoshi', sans-serif" }}>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1a1a2e" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         <link
@@ -44,6 +49,7 @@ export default function RootLayout({
         <ClerkProvider>
           {children}
           <Toaster />
+          <ServiceWorkerRegister />
         </ClerkProvider>
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { BENEFITS, CARDS } from "@/lib/data";
+import { useUser } from "@/lib/user-context";
 import {
   Search,
   ExternalLink,
@@ -53,12 +54,19 @@ function CadenceBadge({ cadence }: { cadence: string }) {
 }
 
 export default function BenefitsPage() {
+  const { cards: userCards } = useUser();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  // Only show benefits for the user's selected cards
+  const userBenefits = useMemo(
+    () => BENEFITS.filter((b) => userCards.includes(b.card)),
+    [userCards]
+  );
+
   const filtered = useMemo(() => {
-    return BENEFITS.filter((b) => {
+    return userBenefits.filter((b) => {
       // search
       if (search) {
         const q = search.toLowerCase();
@@ -76,7 +84,7 @@ export default function BenefitsPage() {
       if (filter === "enrollment") return b.enrollmentRequired;
       return b.cadence === filter;
     });
-  }, [search, filter]);
+  }, [search, filter, userBenefits]);
 
   return (
     <div className="max-w-3xl mx-auto">

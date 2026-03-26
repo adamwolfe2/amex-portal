@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   CheckSquare,
   ExternalLink,
@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
 import { EnrollmentWizard } from "@/components/checklist/enrollment-wizard";
+import { useUser } from "@/lib/user-context";
 
 const priorityLabels = {
   high: "Do first",
@@ -21,9 +22,16 @@ const priorityLabels = {
 type ViewMode = "list" | "wizard";
 
 export default function ChecklistPage() {
+  const { cards: userCards } = useUser();
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<ViewMode>("wizard");
+
+  // Filter checklist items to user's selected cards
+  const userItems = useMemo(
+    () => CHECKLIST_ITEMS.filter((t) => userCards.includes(t.card)),
+    [userCards]
+  );
 
   useEffect(() => {
     fetch("/api/user/checklist")
@@ -64,8 +72,8 @@ export default function ChecklistPage() {
     }
   };
 
-  const platItems = CHECKLIST_ITEMS.filter((t) => t.card === "platinum");
-  const goldItems = CHECKLIST_ITEMS.filter((t) => t.card === "gold");
+  const platItems = userItems.filter((t) => t.card === "platinum");
+  const goldItems = userItems.filter((t) => t.card === "gold");
   const platDone = platItems.filter((t) => completedIds.has(t.id)).length;
   const goldDone = goldItems.filter((t) => completedIds.has(t.id)).length;
 
@@ -198,14 +206,16 @@ export default function ChecklistPage() {
 
       {view === "wizard" ? (
         <EnrollmentWizard
-          items={CHECKLIST_ITEMS}
+          items={userItems}
           completedIds={completedIds}
           onToggle={toggle}
         />
       ) : (
         <div className="space-y-6">
-          {renderGroup("Platinum Card", platItems, platDone, "#1a1a2e")}
-          {renderGroup("Gold Card", goldItems, goldDone, "#8B6914")}
+          {userCards.includes("platinum") &&
+            renderGroup("Platinum Card", platItems, platDone, "#1a1a2e")}
+          {userCards.includes("gold") &&
+            renderGroup("Gold Card", goldItems, goldDone, "#8B6914")}
         </div>
       )}
     </div>

@@ -25,6 +25,16 @@ import {
   SheetContent,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { NotificationBell } from "@/components/notification-bell";
+
+interface SerializedNotification {
+  id: string;
+  title: string;
+  body: string;
+  type: "reset" | "streak" | "action" | "setup";
+  priority: "high" | "medium" | "low";
+  createdAt: string;
+}
 
 const navSections = [
   {
@@ -64,9 +74,11 @@ const navSections = [
 function NavContent({
   pathname,
   plan,
+  notifications,
 }: {
   pathname: string;
   plan: "free" | "pro";
+  notifications: SerializedNotification[];
 }) {
   return (
     <div className="flex flex-col h-full">
@@ -127,7 +139,7 @@ function NavContent({
         ))}
       </nav>
 
-      {/* Footer: Plan badge + User */}
+      {/* Footer: Plan badge + Notifications + User */}
       <div className="px-5 py-4 border-t border-[#e0ddd9] flex items-center justify-between">
         <span
           className={`
@@ -141,28 +153,37 @@ function NavContent({
         >
           {plan === "pro" ? "Pro" : "Free"}
         </span>
-        <Show when="signed-in">
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: "h-7 w-7",
-              },
-            }}
-          />
-        </Show>
+        <div className="flex items-center gap-2">
+          <NotificationBell notifications={notifications} />
+          <Show when="signed-in">
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "h-7 w-7",
+                },
+              }}
+            />
+          </Show>
+        </div>
       </div>
     </div>
   );
 }
 
-export function Sidebar({ plan = "free" }: { plan?: "free" | "pro" }) {
+export function Sidebar({
+  plan = "free",
+  notifications = [],
+}: {
+  plan?: "free" | "pro";
+  notifications?: SerializedNotification[];
+}) {
   const pathname = usePathname();
 
   return (
     <>
       {/* Desktop sidebar */}
       <aside className="hidden md:flex md:fixed md:inset-y-0 md:left-0 md:w-64 md:flex-col border-r border-[#e0ddd9] bg-[#fafaf9]">
-        <NavContent pathname={pathname} plan={plan} />
+        <NavContent pathname={pathname} plan={plan} notifications={notifications} />
       </aside>
 
       {/* Mobile hamburger + sheet */}
@@ -176,7 +197,7 @@ export function Sidebar({ plan = "free" }: { plan?: "free" | "pro" }) {
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0 bg-[#fafaf9]">
             <SheetTitle className="sr-only">Navigation</SheetTitle>
-            <NavContent pathname={pathname} plan={plan} />
+            <NavContent pathname={pathname} plan={plan} notifications={notifications} />
           </SheetContent>
         </Sheet>
         <div className="ml-3 flex items-center gap-2">
@@ -191,7 +212,8 @@ export function Sidebar({ plan = "free" }: { plan?: "free" | "pro" }) {
             CreditOS
           </span>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          <NotificationBell notifications={notifications} />
           <Show when="signed-in">
             <UserButton
               appearance={{

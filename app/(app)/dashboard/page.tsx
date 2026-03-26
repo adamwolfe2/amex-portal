@@ -37,13 +37,39 @@ export default async function DashboardPage() {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
-  const actions = getActionItems();
 
-  const totalFees =
-    (CARDS as Record<CardKey, { annualFee: number }>).platinum.annualFee +
-    (CARDS as Record<CardKey, { annualFee: number }>).gold.annualFee;
+  // Determine user's cards for filtering
+  let userCards: CardKey[] = ["platinum", "gold"];
+  const { userId } = await auth();
+  let dbUser: Awaited<ReturnType<typeof getUserByClerkId>> | null = null;
+  if (userId) {
+    dbUser = await getUserByClerkId(userId);
+    if (dbUser) {
+      const dbCards = dbUser.cards as string[] | null;
+      if (dbCards && dbCards.length > 0) {
+        userCards = dbCards.filter(
+          (c): c is CardKey => c === "platinum" || c === "gold"
+        );
+      }
+    }
+  }
 
-  const availableValue = computeAvailableValue(BENEFITS);
+  // Filter benefits and checklist items to user's cards
+  const userBenefits = BENEFITS.filter((b) => userCards.includes(b.card));
+  const userChecklistItems = CHECKLIST_ITEMS.filter((t) =>
+    userCards.includes(t.card)
+  );
+  const actions = getActionItems().filter(
+    (a) => a.card === "both" || userCards.includes(a.card as CardKey)
+  );
+
+  const totalFees = userCards.reduce(
+    (sum, key) =>
+      sum + (CARDS as Record<CardKey, { annualFee: number }>)[key].annualFee,
+    0
+  );
+
+  const availableValue = computeAvailableValue(userBenefits);
 
   // Defaults for unauthenticated state
   let completedIds = new Set<string>();
@@ -59,56 +85,52 @@ export default async function DashboardPage() {
   }> = [];
   let claimedThisMonth: string[] = [];
 
-  const { userId } = await auth();
-  if (userId) {
-    const dbUser = await getUserByClerkId(userId);
-    if (dbUser) {
-      const [progress, allClaims, yearClaims] = await Promise.all([
-        getChecklistProgress(dbUser.id),
-        getUserClaims(dbUser.id),
-        getUserClaimsForYear(dbUser.id, year),
-      ]);
+  if (dbUser) {
+    const [progress, allClaims, yearClaims] = await Promise.all([
+      getChecklistProgress(dbUser.id),
+      getUserClaims(dbUser.id),
+      getUserClaimsForYear(dbUser.id, year),
+    ]);
 
-      completedIds = new Set(
-        progress.filter((p) => p.completed).map((p) => p.itemId)
-      );
+    completedIds = new Set(
+      progress.filter((p) => p.completed).map((p) => p.itemId)
+    );
 
-      // Activity grid dates (claims + checklist completions)
-      const claimIsos = allClaims
-        .map((c) => c.claimedAt?.toISOString() ?? "")
-        .filter(Boolean);
-      const checklistIsos = progress
-        .filter((p) => p.completed && p.completedAt)
-        .map((p) => p.completedAt!.toISOString());
-      claimDates = [...claimIsos, ...checklistIsos];
+    // Activity grid dates (claims + checklist completions)
+    const claimIsos = allClaims
+      .map((c) => c.claimedAt?.toISOString() ?? "")
+      .filter(Boolean);
+    const checklistIsos = progress
+      .filter((p) => p.completed && p.completedAt)
+      .map((p) => p.completedAt!.toISOString());
+    claimDates = [...claimIsos, ...checklistIsos];
 
-      // Streak
-      const claimDateObjects = allClaims
-        .filter((c) => c.claimedAt)
-        .map((c) => c.claimedAt!);
-      streakData = computeStreak(claimDateObjects);
+    // Streak
+    const claimDateObjects = allClaims
+      .filter((c) => c.claimedAt)
+      .map((c) => c.claimedAt!);
+    streakData = computeStreak(claimDateObjects);
 
-      // ROI
-      capturedValue = computeCapturedValue(yearClaims, BENEFITS, year);
-      monthlyData = computeMonthlyProgress(yearClaims, BENEFITS, year, month);
+    // ROI — use filtered benefits
+    capturedValue = computeCapturedValue(yearClaims, userBenefits, year);
+    monthlyData = computeMonthlyProgress(yearClaims, userBenefits, year, month);
 
-      // Monthly benefits for "Mark as Used"
-      monthlyBenefits = BENEFITS.filter(
-        (b) => b.cadence === "monthly" && b.value !== null
-      ).map((b) => ({
+    // Monthly benefits for "Mark as Used" — filtered to user's cards
+    monthlyBenefits = userBenefits
+      .filter((b) => b.cadence === "monthly" && b.value !== null)
+      .map((b) => ({
         id: b.id,
         name: b.name,
         card: b.card,
         monthlyValue: Math.round((b.value ?? 0) / 12),
       }));
 
-      // Which monthly benefits are already claimed this month
-      const thisMonthClaims = yearClaims.filter((c) => {
-        if (!c.claimedAt) return false;
-        return c.claimedAt.getMonth() + 1 === month;
-      });
-      claimedThisMonth = thisMonthClaims.map((c) => c.benefitId);
-    }
+    // Which monthly benefits are already claimed this month
+    const thisMonthClaims = yearClaims.filter((c) => {
+      if (!c.claimedAt) return false;
+      return c.claimedAt.getMonth() + 1 === month;
+    });
+    claimedThisMonth = thisMonthClaims.map((c) => c.benefitId);
   }
 
   const unclaimedCount = monthlyBenefits.filter(
@@ -120,13 +142,15 @@ export default async function DashboardPage() {
   );
 
   function computeProgress(card: CardKey) {
-    const tasks = CHECKLIST_ITEMS.filter((t) => t.card === card);
+    const tasks = userChecklistItems.filter((t) => t.card === card);
     const completed = tasks.filter((t) => completedIds.has(t.id)).length;
     return { completed, total: tasks.length };
   }
 
-  const platProgress = computeProgress("platinum");
-  const goldProgress = computeProgress("gold");
+  const progressWidgets = userCards.map((card) => ({
+    card,
+    ...computeProgress(card),
+  }));
 
   return (
     <div className="max-w-5xl">
@@ -141,22 +165,26 @@ export default async function DashboardPage() {
           Your credit card rewards command center
         </p>
         <div className="flex items-center gap-2 mt-3">
-          <Image
-            src="/platinum-card.png"
-            alt="American Express Platinum Card"
-            width={48}
-            height={30}
-            className="rounded shadow-sm"
-            priority
-          />
-          <Image
-            src="/gold-card.png"
-            alt="American Express Gold Card"
-            width={48}
-            height={30}
-            className="rounded shadow-sm"
-            priority
-          />
+          {userCards.includes("platinum") && (
+            <Image
+              src="/platinum-card.png"
+              alt="American Express Platinum Card"
+              width={48}
+              height={30}
+              className="rounded shadow-sm"
+              priority
+            />
+          )}
+          {userCards.includes("gold") && (
+            <Image
+              src="/gold-card.png"
+              alt="American Express Gold Card"
+              width={48}
+              height={30}
+              className="rounded shadow-sm"
+              priority
+            />
+          )}
         </div>
       </div>
 
@@ -194,26 +222,23 @@ export default async function DashboardPage() {
 
       {/* Setup Progress */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <ProgressWidget
-          title="Platinum Setup"
-          completed={platProgress.completed}
-          total={platProgress.total}
-          color="#1a1a2e"
-        />
-        <ProgressWidget
-          title="Gold Setup"
-          completed={goldProgress.completed}
-          total={goldProgress.total}
-          color="#8B6914"
-        />
+        {progressWidgets.map((pw) => (
+          <ProgressWidget
+            key={pw.card}
+            title={`${pw.card === "platinum" ? "Platinum" : "Gold"} Setup`}
+            completed={pw.completed}
+            total={pw.total}
+            color={pw.card === "platinum" ? "#1a1a2e" : "#8B6914"}
+          />
+        ))}
       </div>
 
       {/* Widgets Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <ActionPreview actions={actions} />
-        <UpcomingResets benefits={BENEFITS} />
+        <UpcomingResets benefits={userBenefits} />
         <div className="md:col-span-2">
-          <NotEnrolled benefits={BENEFITS} />
+          <NotEnrolled benefits={userBenefits} />
         </div>
       </div>
     </div>

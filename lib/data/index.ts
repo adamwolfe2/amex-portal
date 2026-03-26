@@ -36,3 +36,5 @@ export { getActionItems } from './actions';
 export { computeStreak } from './streaks';
 export { computeAvailableValue, computeCapturedValue, computeMonthlyProgress } from './roi';
 export { getUrgencyMessage, getDaysRemainingInMonth } from './urgency';
+export { generateNotifications } from './notifications';
+export type { AppNotification } from './notifications';
