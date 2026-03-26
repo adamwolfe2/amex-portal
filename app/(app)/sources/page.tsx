@@ -8,7 +8,11 @@ import {
 } from "lucide-react";
 import { SOURCES } from "@/lib/data/sources";
 
-export const metadata: Metadata = { title: "Sources" };
+export const metadata: Metadata = {
+  title: "Sources",
+  description:
+    "Trusted sources and references behind CreditOS benefit data and credit valuations.",
+};
 
 const typeConfig = {
   official: {

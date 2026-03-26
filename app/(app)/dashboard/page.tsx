@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Image from "next/image";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description:
+    "Your Amex benefits command center. Track credit usage, streaks, and ROI at a glance.",
+};
 import { auth } from "@clerk/nextjs/server";
 import {
   getUserByClerkId,
@@ -32,6 +36,7 @@ import { ActionPreview } from "@/components/dashboard/action-preview";
 import { NotEnrolled } from "@/components/dashboard/not-enrolled";
 import { CheckoutToast } from "@/components/dashboard/checkout-toast";
 import { ActivityGrid } from "@/components/dashboard/activity-grid";
+import { UpgradePrompt } from "@/components/upgrade-prompt";
 
 export default async function DashboardPage() {
   const now = new Date();
@@ -53,6 +58,13 @@ export default async function DashboardPage() {
       }
     }
   }
+
+  // Determine Pro status for feature gating
+  const isPro =
+    dbUser?.subscriptionStatus === "pro" ||
+    dbUser?.subscriptionStatus === "active" ||
+    dbUser?.subscriptionStatus === "trialing" ||
+    dbUser?.subscriptionStatus === "past_due";
 
   // Filter benefits and checklist items to user's cards
   const userBenefits = BENEFITS.filter((b) => userCards.includes(b.card));
@@ -201,18 +213,40 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* Mark as Used — primary CTA */}
+      {/* Mark as Used — primary CTA (Pro only) */}
       <div className="mb-4">
-        <MarkAsUsed
-          benefits={monthlyBenefits}
-          claimedIds={claimedThisMonth}
-        />
+        {isPro ? (
+          <MarkAsUsed
+            benefits={monthlyBenefits}
+            claimedIds={claimedThisMonth}
+          />
+        ) : (
+          <UpgradePrompt
+            feature="Quick Claim"
+            description="One-tap benefit tracking to never miss a monthly credit. Track what you've used and see your savings grow."
+          />
+        )}
       </div>
 
-      {/* ROI row */}
+      {/* ROI row (Pro only) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <ValueCaptured captured={capturedValue} available={availableValue} />
-        <ROICard captured={capturedValue} totalFees={totalFees} />
+        {isPro ? (
+          <>
+            <ValueCaptured captured={capturedValue} available={availableValue} />
+            <ROICard captured={capturedValue} totalFees={totalFees} />
+          </>
+        ) : (
+          <>
+            <UpgradePrompt
+              feature="Value Captured"
+              description="See exactly how much of your annual benefits you've captured this year."
+            />
+            <UpgradePrompt
+              feature="Card ROI"
+              description="Know if your cards are paying for themselves with real-time ROI tracking."
+            />
+          </>
+        )}
       </div>
 
       {/* Activity Grid */}

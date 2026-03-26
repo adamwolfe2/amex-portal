@@ -39,32 +39,34 @@ export default async function AppLayout({
         );
       }
 
-      // Compute notifications from existing data
-      const [claims, checklistProgress] = await Promise.all([
-        getUserClaims(user.id),
-        getChecklistProgress(user.id),
-      ]);
+      // Compute notifications only for Pro users
+      if (plan === "pro") {
+        const [claims, checklistProgress] = await Promise.all([
+          getUserClaims(user.id),
+          getChecklistProgress(user.id),
+        ]);
 
-      const userBenefits = BENEFITS.filter((b) => cards.includes(b.card));
-      const userChecklist = CHECKLIST_ITEMS.filter((t) => cards.includes(t.card));
+        const userBenefits = BENEFITS.filter((b) => cards.includes(b.card));
+        const userChecklist = CHECKLIST_ITEMS.filter((t) => cards.includes(t.card));
 
-      const notifications = generateNotifications({
-        benefits: userBenefits,
-        claims: claims.map((c) => ({
-          benefitId: c.benefitId,
-          claimedAt: c.claimedAt,
-        })),
-        checklistProgress: checklistProgress.map((p) => ({
-          itemId: p.itemId,
-          completed: p.completed,
-        })),
-        checklistItems: userChecklist,
-      });
+        const notifications = generateNotifications({
+          benefits: userBenefits,
+          claims: claims.map((c) => ({
+            benefitId: c.benefitId,
+            claimedAt: c.claimedAt,
+          })),
+          checklistProgress: checklistProgress.map((p) => ({
+            itemId: p.itemId,
+            completed: p.completed,
+          })),
+          checklistItems: userChecklist,
+        });
 
-      serializedNotifications = notifications.map((n) => ({
-        ...n,
-        createdAt: n.createdAt.toISOString(),
-      }));
+        serializedNotifications = notifications.map((n) => ({
+          ...n,
+          createdAt: n.createdAt.toISOString(),
+        }));
+      }
     }
   }
 

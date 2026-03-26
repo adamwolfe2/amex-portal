@@ -8,21 +8,41 @@ import "./globals.css";
 validateEnv();
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://amex-portal.vercel.app"),
   title: {
-    default: "CreditOS",
+    default: "CreditOS — Maximize Your Amex Card Benefits",
     template: "%s | CreditOS",
   },
-  description: "Your credit card rewards command center",
+  description:
+    "Stop leaving money on the table. Track and maximize $4,500+/year in Amex Platinum & Gold card credits with smart reminders, streak tracking, and ROI analytics.",
+  keywords: [
+    "amex",
+    "american express",
+    "platinum card",
+    "gold card",
+    "credit card benefits",
+    "rewards tracker",
+    "membership rewards",
+  ],
   openGraph: {
-    title: "CreditOS",
-    description: "Your credit card rewards command center",
+    title: "CreditOS — Maximize Your Amex Card Benefits",
+    description:
+      "Track and maximize $4,500+/year in Amex Platinum & Gold card credits.",
     siteName: "CreditOS",
     type: "website",
+    url: "https://amex-portal.vercel.app",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CreditOS",
-    description: "Your credit card rewards command center",
+    title: "CreditOS — Maximize Your Amex Card Benefits",
+    description:
+      "Track and maximize $4,500+/year in Amex Platinum & Gold card credits.",
+    images: ["/opengraph-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

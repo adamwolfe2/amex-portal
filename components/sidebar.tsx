@@ -26,6 +26,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notification-bell";
+import { SearchCommand } from "@/components/search-command";
 
 interface SerializedNotification {
   id: string;
@@ -82,7 +83,7 @@ function NavContent({
 }) {
   return (
     <div className="flex flex-col h-full">
-      {/* Logo */}
+      {/* Logo + Search */}
       <div className="flex items-center gap-3 px-5 py-6">
         <Image
           src="/logo.png"
@@ -91,10 +92,11 @@ function NavContent({
           height={24}
           className="rounded"
         />
-        <div>
+        <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold text-[#111111]">CreditOS</div>
           <div className="text-xs text-[#666666]">Rewards Command Center</div>
         </div>
+        <SearchCommand />
       </div>
 
       {/* Navigation */}
@@ -214,7 +216,8 @@ export function Sidebar({
             CreditOS
           </span>
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1">
+          <SearchCommand />
           <NotificationBell notifications={notifications} />
           <Show when="signed-in">
             <UserButton

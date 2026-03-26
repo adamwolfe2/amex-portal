@@ -13,7 +13,11 @@ import {
 } from "lucide-react";
 import { BEST_CARD_RULES } from "@/lib/data/best-card";
 
-export const metadata: Metadata = { title: "Best Card" };
+export const metadata: Metadata = {
+  title: "Best Card",
+  description:
+    "Find the best Amex card for your spending habits with personalized category recommendations.",
+};
 
 const categoryIcons: Record<string, React.ElementType> = {
   dining: UtensilsCrossed,

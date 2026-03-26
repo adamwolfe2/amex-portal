@@ -4,7 +4,11 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserByClerkId } from "@/lib/db/queries";
 import type { CardKey } from "@/lib/data/types";
 
-export const metadata: Metadata = { title: "Actions" };
+export const metadata: Metadata = {
+  title: "Actions",
+  description:
+    "Personalized action items to claim expiring credits and maximize your Amex card value.",
+};
 import {
   AlertCircle,
   Info,
