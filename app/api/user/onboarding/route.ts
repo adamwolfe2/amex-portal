@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { getUserByClerkId, updateUserCards } from "@/lib/db/queries";
 import { onboardingSchema } from "@/lib/validation";
 import { rateLimit, getRateLimitResponse, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -31,6 +32,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const updated = await updateUserCards(userId, parsed.data.cards);
-  return NextResponse.json(updated);
+  try {
+    const updated = await updateUserCards(userId, parsed.data.cards);
+    return NextResponse.json(updated);
+  } catch (error) {
+    logger.error("Failed to save cards", { error: error instanceof Error ? error.message : String(error) });
+    return NextResponse.json({ error: "Failed to save cards" }, { status: 500 });
+  }
 }

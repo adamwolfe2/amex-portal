@@ -262,9 +262,17 @@ export function generateNotifications(params: {
   }
 
   // ── End-of-period nudges for non-monthly benefits ──
+  // Skip benefits that already have a reset-soon or reset-today notification
+  const alreadyNotifiedIds = new Set(
+    notifications
+      .filter((n) => n.id.startsWith("reset-soon-") || n.id.startsWith("reset-today-"))
+      .map((n) => n.id.replace("reset-soon-", "").replace("reset-today-", ""))
+  );
+
   for (const benefit of benefits) {
     if (benefit.value === null) continue;
     if (benefit.cadence === "monthly" || benefit.cadence === "ongoing" || benefit.cadence === "multi-year") continue;
+    if (alreadyNotifiedIds.has(benefit.id)) continue;
 
     const periodEnd = getCurrentPeriodEnd(benefit, now);
     if (!periodEnd) continue;

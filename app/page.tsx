@@ -20,6 +20,7 @@ import {
   ANNUAL_PRICE,
   LIFETIME_PRICE,
 } from "@/lib/referral";
+import { CARDS } from "@/lib/data";
 
 const features = [
   {
@@ -73,7 +74,7 @@ const pricingPlans = [
     name: "Annual",
     price: ANNUAL_PRICE,
     period: "/yr",
-    description: "Save $70 vs monthly",
+    description: `Save $${MONTHLY_PRICE * 12 - ANNUAL_PRICE} vs monthly`,
     highlight: true,
     label: "BEST VALUE",
   },
@@ -218,13 +219,13 @@ export default async function Home() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">
-              You are paying $1,400+/year in annual fees.
+              You are paying ${(CARDS.platinum.annualFee + CARDS.gold.annualFee).toLocaleString()}+/year in annual fees.
               <br className="hidden sm:block" />
               Are you getting your money&apos;s worth?
             </h2>
             <p className="text-lg text-[#666666] leading-relaxed">
-              Between the Platinum ($695) and Gold ($325) cards, you are paying
-              over $1,000 in annual fees alone. These cards pack over 40
+              Between the Platinum (${CARDS.platinum.annualFee}) and Gold (${CARDS.gold.annualFee}) cards, you are paying
+              over ${(CARDS.platinum.annualFee + CARDS.gold.annualFee).toLocaleString()} in annual fees alone. These cards pack over 40
               benefits with monthly, quarterly, and annual reset windows. The
               problem? Most cardholders miss 60%+ of their available credits.
             </p>
@@ -262,7 +263,7 @@ export default async function Home() {
       </section>
 
       {/* ── Feature Grid ── */}
-      <section id="features" className="py-24 sm:py-32 border-t border-[#e0ddd9]">
+      <section id="features" className="py-24 sm:py-32 border-t border-[#e0ddd9] scroll-mt-20">
         <div className="max-w-5xl mx-auto px-6">
           <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">

@@ -1,7 +1,7 @@
 const CACHE_NAME = "creditos-v1";
 
 const PRECACHE_URLS = [
-  "/dashboard",
+  "/",
   "/manifest.json",
   "/icon-192.png",
   "/icon-512.png",
@@ -41,27 +41,26 @@ self.addEventListener("fetch", (event) => {
   // Skip cross-origin requests
   if (url.origin !== self.location.origin) return;
 
-  // Network-first for API routes and navigation
-  if (url.pathname.startsWith("/api/") || request.mode === "navigate") {
+  // Never cache API responses (may contain authenticated data)
+  if (url.pathname.startsWith("/api/")) return;
+
+  // Network-first for navigation (HTML pages)
+  if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        })
-        .catch(() => caches.match(request))
+      fetch(request).catch(() => caches.match(request))
     );
     return;
   }
 
-  // Cache-first for static assets
+  // Cache-first for static assets, only cache successful responses
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
         return response;
       });
     })

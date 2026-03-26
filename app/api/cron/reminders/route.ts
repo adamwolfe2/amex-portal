@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { BENEFITS } from "@/lib/data";
 import { getPaidUsers } from "@/lib/db/queries";
 import { sendResetReminder } from "@/lib/email";
+import { logger } from "@/lib/logger";
 
 /**
  * Vercel Cron job that runs on the 1st of each month.
@@ -41,29 +42,34 @@ export async function GET(request: Request) {
     return Response.json({ message: "No benefits resetting", sent: 0 });
   }
 
-  const users = await getPaidUsers();
-  let sent = 0;
-  let failed = 0;
+  try {
+    const users = await getPaidUsers();
+    let sent = 0;
+    let failed = 0;
 
-  for (const user of users) {
-    if (!user.email) continue;
+    for (const user of users) {
+      if (!user.email) continue;
 
-    const reminders = resettingBenefits.map((b) => ({
-      name: b.name,
-      value: b.value,
-      cadence: b.cadence,
-      action: b.action,
-    }));
+      const reminders = resettingBenefits.map((b) => ({
+        name: b.name,
+        value: b.value,
+        cadence: b.cadence,
+        action: b.action,
+      }));
 
-    const ok = await sendResetReminder(user.email, user.name, reminders);
-    if (ok) sent++;
-    else failed++;
+      const ok = await sendResetReminder(user.email, user.name, reminders);
+      if (ok) sent++;
+      else failed++;
+    }
+
+    return Response.json({
+      message: `Sent ${sent} reminders, ${failed} failed`,
+      sent,
+      failed,
+      benefitsReset: resettingBenefits.length,
+    });
+  } catch (error) {
+    logger.error("Cron reminders failed", { error: error instanceof Error ? error.message : String(error) });
+    return Response.json({ error: "Cron job failed" }, { status: 500 });
   }
-
-  return Response.json({
-    message: `Sent ${sent} reminders, ${failed} failed`,
-    sent,
-    failed,
-    benefitsReset: resettingBenefits.length,
-  });
 }

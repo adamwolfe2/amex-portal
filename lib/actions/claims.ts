@@ -33,6 +33,13 @@ export async function quickClaimBenefit(
     return { success: false, error: "User not found" };
   }
 
+  // Validate user owns this card
+  const benefit = BENEFITS.find((b) => b.id === benefitId);
+  const userCards = (user.cards as string[]) ?? [];
+  if (benefit && userCards.length > 0 && !userCards.includes(benefit.card)) {
+    return { success: false, error: "Benefit not available for your cards" };
+  }
+
   const period = currentPeriod();
 
   // Idempotent — if already claimed this period, return success
@@ -40,8 +47,6 @@ export async function quickClaimBenefit(
   if (existing) {
     return { success: true };
   }
-
-  const benefit = BENEFITS.find((b) => b.id === benefitId);
 
   const { PERIODS_PER_YEAR } = await import("@/lib/data/roi");
   const divisor = PERIODS_PER_YEAR[benefit?.cadence ?? "annual"] || 1;
