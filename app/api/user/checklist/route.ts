@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "User not found" }, { status: 404 });
   }
 
-  const body = await request.json();
+  const body = await request.json().catch(() => ({}));
   const parsed = checklistSchema.safeParse(body);
 
   if (!parsed.success) {

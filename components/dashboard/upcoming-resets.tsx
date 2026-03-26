@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import type { Benefit, CardKey } from "@/lib/data/types";
-import { Badge } from "@/components/ui/badge";
 
 interface ResetItem {
   date: Date;
@@ -101,15 +100,9 @@ export function UpcomingResets({ benefits }: UpcomingResetsProps) {
                   })}
                 </span>
                 <span className="flex-1 text-[#444444]">{r.name}</span>
-                <Badge
-                  className={
-                    r.card === "platinum"
-                      ? "bg-[#1a1a2e] text-white border-transparent text-[0.65rem]"
-                      : "bg-[#8B6914] text-white border-transparent text-[0.65rem]"
-                  }
-                >
+                <span className="text-[11px] text-[#999999] shrink-0">
                   {CARD_LABELS[r.card]}
-                </Badge>
+                </span>
               </li>
             ))}
           </ul>

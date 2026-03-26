@@ -4,6 +4,9 @@ import {
   getUserByClerkId,
   getUserByReferralCode,
 } from "@/lib/db/queries";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { generateReferralCode } from "@/lib/referral";
 
 interface ClerkWebhookEvent {
@@ -101,7 +104,7 @@ export async function POST(request: Request) {
     if (refCode) {
       const referrer = await getUserByReferralCode(refCode);
       if (referrer) {
-        referredBy = referrer.referralCode;
+        referredBy = refCode;
       }
     }
 
@@ -127,10 +130,6 @@ export async function POST(request: Request) {
       [first_name, last_name].filter(Boolean).join(" ") || undefined;
 
     if (email || name) {
-      const { db } = await import("@/lib/db");
-      const { users } = await import("@/lib/db/schema");
-      const { eq } = await import("drizzle-orm");
-
       await db
         .update(users)
         .set({

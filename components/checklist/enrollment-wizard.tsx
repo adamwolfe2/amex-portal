@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -43,13 +43,15 @@ export function EnrollmentWizard({
   onToggle,
 }: EnrollmentWizardProps) {
   // Sort: high priority first, then medium, then low. Completed items go to end.
-  const sorted = [...items].sort((a, b) => {
-    const aCompleted = completedIds.has(a.id);
-    const bCompleted = completedIds.has(b.id);
-    if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
+  const sorted = useMemo(() => {
     const order = { high: 0, medium: 1, low: 2 };
-    return order[a.priority] - order[b.priority];
-  });
+    return [...items].sort((a, b) => {
+      const aCompleted = completedIds.has(a.id);
+      const bCompleted = completedIds.has(b.id);
+      if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
+      return order[a.priority] - order[b.priority];
+    });
+  }, [items, completedIds]);
 
   // Find first incomplete item as starting point
   const firstIncompleteIdx = sorted.findIndex((t) => !completedIds.has(t.id));
@@ -58,19 +60,22 @@ export function EnrollmentWizard({
   );
 
   const totalItems = sorted.length;
-  const completedCount = sorted.filter((t) => completedIds.has(t.id)).length;
   const current = sorted[stepIdx];
   const isComplete = completedIds.has(current.id);
 
-  // Calculate unlocked value
-  const unlockedValue = sorted
-    .filter((t) => completedIds.has(t.id))
-    .reduce((sum, t) => sum + (ITEM_VALUES[t.id] ?? 0), 0);
-
-  const totalValue = sorted.reduce(
-    (sum, t) => sum + (ITEM_VALUES[t.id] ?? 0),
-    0
-  );
+  const { completedCount, unlockedValue, totalValue } = useMemo(() => {
+    let completed = 0;
+    let unlocked = 0;
+    let total = 0;
+    for (const t of sorted) {
+      total += ITEM_VALUES[t.id] ?? 0;
+      if (completedIds.has(t.id)) {
+        completed++;
+        unlocked += ITEM_VALUES[t.id] ?? 0;
+      }
+    }
+    return { completedCount: completed, unlockedValue: unlocked, totalValue: total };
+  }, [sorted, completedIds]);
 
   const currentValue = ITEM_VALUES[current.id];
   const progressPercent = Math.round((completedCount / totalItems) * 100);

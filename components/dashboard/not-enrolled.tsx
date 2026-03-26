@@ -1,7 +1,6 @@
 "use client";
 
 import type { Benefit, CardKey } from "@/lib/data/types";
-import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
 
 const CARD_LABELS: Record<CardKey, string> = {
@@ -35,18 +34,12 @@ export function NotEnrolled({ benefits }: NotEnrolledProps) {
               className="flex items-center justify-between gap-2 py-2 border-b border-[#f0eeeb] last:border-b-0 text-[0.8rem]"
             >
               <div className="flex items-center gap-2 min-w-0 flex-1">
-                <span className="text-[#111111] font-medium truncate">
+                <span className="text-[#111111] font-medium truncate" title={b.name}>
                   {b.name}
                 </span>
-                <Badge
-                  className={
-                    b.card === "platinum"
-                      ? "bg-[#1a1a2e] text-white border-transparent text-[0.65rem] shrink-0"
-                      : "bg-[#8B6914] text-white border-transparent text-[0.65rem] shrink-0"
-                  }
-                >
+                <span className="text-[11px] text-[#999999] shrink-0">
                   {CARD_LABELS[b.card]}
-                </Badge>
+                </span>
               </div>
               {b.portalLink && (
                 <a

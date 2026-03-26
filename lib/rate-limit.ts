@@ -17,6 +17,17 @@ function getRedis(): Redis | null {
 // In-memory fallback for local dev or when Redis is not configured
 const memStore = new Map<string, { count: number; resetAt: number }>();
 
+// Periodic cleanup of stale entries to prevent memory leak
+let lastCleanup = Date.now();
+function cleanupMemStore() {
+  const now = Date.now();
+  if (now - lastCleanup < 300_000) return; // every 5 min
+  lastCleanup = now;
+  for (const [key, entry] of memStore) {
+    if (entry.resetAt < now) memStore.delete(key);
+  }
+}
+
 async function rateLimitRedis(
   ip: string
 ): Promise<{ ok: boolean; remaining: number }> {
@@ -33,6 +44,7 @@ async function rateLimitRedis(
 }
 
 function rateLimitMemory(ip: string): { ok: boolean; remaining: number } {
+  cleanupMemStore();
   const now = Date.now();
   const entry = memStore.get(ip);
 

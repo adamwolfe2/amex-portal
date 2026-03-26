@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
+import { validateEnv } from "@/lib/env";
 import "./globals.css";
+
+validateEnv();
 
 export const metadata: Metadata = {
   title: {

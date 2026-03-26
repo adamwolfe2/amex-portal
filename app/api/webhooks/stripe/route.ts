@@ -57,11 +57,15 @@ export async function POST(request: Request) {
         // Determine trial end if applicable
         let trialEndsAt: Date | null = null;
         if (plan === "annual" && stripeSubscriptionId) {
-          const sub = await getStripe().subscriptions.retrieve(
-            stripeSubscriptionId
-          );
-          if (sub.trial_end) {
-            trialEndsAt = new Date(sub.trial_end * 1000);
+          try {
+            const sub = await getStripe().subscriptions.retrieve(
+              stripeSubscriptionId
+            );
+            if (sub.trial_end) {
+              trialEndsAt = new Date(sub.trial_end * 1000);
+            }
+          } catch {
+            // Continue without trial info if retrieval fails
           }
         }
 
