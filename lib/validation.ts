@@ -56,6 +56,15 @@ export const onboardingSchema = z.object({
     .max(2),
 });
 
+export const communityTipSchema = z.object({
+  title: z.string().min(5).max(200),
+  body: z.string().min(20).max(1000),
+  card: z.enum(["platinum", "gold", "both"]),
+  category: z
+    .enum(["earning", "redeeming", "stacking", "general"])
+    .optional(),
+});
+
 export const checklistSchema = z.object({
   itemId: z.string().min(1).max(200),
   completed: z.boolean(),

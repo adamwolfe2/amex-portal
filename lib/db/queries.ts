@@ -8,6 +8,7 @@ import {
   checklistProgress,
   ambassadorApplications,
   feedbackResponses,
+  communityTips,
 } from "./schema";
 
 // ── Users ──────────────────────────────────────────────
@@ -353,4 +354,56 @@ export async function getRecentApplications(limit = 5) {
     .from(ambassadorApplications)
     .orderBy(desc(ambassadorApplications.createdAt))
     .limit(limit);
+}
+
+// ── Community Tips ──────────────────────────────────────
+
+export async function createCommunityTip(data: {
+  userId: number;
+  title: string;
+  body: string;
+  card: string;
+  category?: string;
+}) {
+  const result = await db
+    .insert(communityTips)
+    .values({
+      userId: data.userId,
+      title: data.title,
+      body: data.body,
+      card: data.card,
+      category: data.category ?? null,
+    })
+    .returning();
+  return result[0];
+}
+
+export async function getPendingTips(limit = 20) {
+  return db
+    .select({
+      id: communityTips.id,
+      userId: communityTips.userId,
+      title: communityTips.title,
+      body: communityTips.body,
+      card: communityTips.card,
+      category: communityTips.category,
+      status: communityTips.status,
+      createdAt: communityTips.createdAt,
+      userName: users.name,
+      userEmail: users.email,
+    })
+    .from(communityTips)
+    .leftJoin(users, eq(communityTips.userId, users.id))
+    .where(eq(communityTips.status, "pending"))
+    .orderBy(desc(communityTips.createdAt))
+    .limit(limit);
+}
+
+export async function updateTipStatus(id: number, status: string) {
+  const result = await db
+    .update(communityTips)
+    .set({ status })
+    .where(eq(communityTips.id, id))
+    .returning();
+  return result[0] ?? null;
 }

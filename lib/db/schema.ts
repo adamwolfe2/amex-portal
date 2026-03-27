@@ -102,6 +102,26 @@ export const feedbackResponses = pgTable("feedback_responses", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const communityTips = pgTable(
+  "community_tips",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .references(() => users.id)
+      .notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    card: text("card").notNull(),
+    category: text("category"),
+    status: text("status").default("pending"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [
+    index("community_tips_user_id_idx").on(table.userId),
+    index("community_tips_status_idx").on(table.status),
+  ]
+);
+
 export const checklistProgress = pgTable(
   "checklist_progress",
   {

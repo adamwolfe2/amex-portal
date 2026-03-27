@@ -5,8 +5,9 @@ import {
   getAdminStats,
   getRecentUsers,
   getRecentApplications,
+  getPendingTips,
 } from "@/lib/db/queries";
-import { Users, CreditCard, GitFork, FileText } from "lucide-react";
+import { Users, CreditCard, GitFork, FileText, MessageSquare } from "lucide-react";
 
 export default async function AdminPage() {
   const { userId } = await auth();
@@ -15,11 +16,13 @@ export default async function AdminPage() {
     redirect("/dashboard");
   }
 
-  const [stats, recentUsers, recentApplications] = await Promise.all([
-    getAdminStats(),
-    getRecentUsers(10),
-    getRecentApplications(5),
-  ]);
+  const [stats, recentUsers, recentApplications, pendingTips] =
+    await Promise.all([
+      getAdminStats(),
+      getRecentUsers(10),
+      getRecentApplications(5),
+      getPendingTips(10),
+    ]);
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
@@ -110,6 +113,79 @@ export default async function AdminPage() {
                     className="px-4 py-6 text-center text-[#999999]"
                   >
                     No users yet
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Pending Community Tips */}
+      <section>
+        <h2 className="mb-3 text-xl font-semibold text-[#1a1a2e] flex items-center gap-2">
+          <MessageSquare className="h-5 w-5 text-[#8B6914]" />
+          Pending Tips
+          {pendingTips.length > 0 && (
+            <span className="rounded-full bg-[#8B6914]/10 px-2 py-0.5 text-xs font-medium text-[#8B6914]">
+              {pendingTips.length}
+            </span>
+          )}
+        </h2>
+        <div className="overflow-x-auto rounded-lg border border-[#e0ddd9] bg-white">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#e0ddd9] text-left text-[#666666]">
+                <th className="px-4 py-3 font-medium">Title</th>
+                <th className="px-4 py-3 font-medium">Submitted By</th>
+                <th className="px-4 py-3 font-medium">Card</th>
+                <th className="px-4 py-3 font-medium">Category</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingTips.map((tip) => (
+                <tr
+                  key={tip.id}
+                  className="border-b border-[#e0ddd9] last:border-0"
+                >
+                  <td className="px-4 py-3">
+                    <div className="text-[#1a1a2e] font-medium">
+                      {tip.title}
+                    </div>
+                    <div className="text-xs text-[#999] mt-0.5 line-clamp-2">
+                      {tip.body}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-[#666666]">
+                    {tip.userName ?? tip.userEmail}
+                  </td>
+                  <td className="px-4 py-3 text-[#666666] capitalize">
+                    {tip.card}
+                  </td>
+                  <td className="px-4 py-3 text-[#666666] capitalize">
+                    {tip.category ?? "--"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="inline-flex items-center rounded-full bg-[#8B6914]/10 px-2 py-0.5 text-xs font-medium text-[#8B6914]">
+                      {tip.status ?? "pending"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-[#666666]">
+                    {tip.createdAt
+                      ? new Date(tip.createdAt).toLocaleDateString()
+                      : "--"}
+                  </td>
+                </tr>
+              ))}
+              {pendingTips.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-4 py-6 text-center text-[#999999]"
+                  >
+                    No pending tips
                   </td>
                 </tr>
               )}

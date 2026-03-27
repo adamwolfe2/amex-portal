@@ -10,6 +10,7 @@ import {
   Gift,
   Calendar,
   CheckSquare,
+  ArrowLeftRight,
   Lightbulb,
   Wrench,
   BookOpen,
@@ -53,6 +54,7 @@ const navSections = [
       { label: "Benefits", href: "/benefits", icon: Gift },
       { label: "Calendar", href: "/calendar", icon: Calendar },
       { label: "Checklist", href: "/checklist", icon: CheckSquare },
+      { label: "Compare", href: "/compare", icon: ArrowLeftRight },
     ],
   },
   {
