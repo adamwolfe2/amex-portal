@@ -8,6 +8,7 @@ import {
   getUserByStripeCustomerId,
 } from "@/lib/db/queries";
 import { calculateCommission } from "@/lib/referral";
+import { sendReferralNotification } from "@/lib/email";
 import type { PlanType } from "@/lib/referral";
 import { getStripe } from "@/lib/stripe";
 import { logger } from "@/lib/logger";
@@ -93,6 +94,18 @@ export async function POST(request: Request) {
                 stripePaymentId: session.payment_intent as string,
                 commissionAmount: commission.toFixed(2),
               });
+
+              // Send referral notification email
+              if (referrer.email) {
+                const purchaserName = purchaser.name ?? purchaser.email;
+                sendReferralNotification(
+                  referrer.email,
+                  referrer.name,
+                  purchaserName,
+                  commission,
+                  plan
+                ).catch(() => {}); // Fire and forget — don't block webhook response
+              }
             } catch (err) {
               // Unique constraint violation means referral already exists — safe to ignore
               const message = err instanceof Error ? err.message : String(err);

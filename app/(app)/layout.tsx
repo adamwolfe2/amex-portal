@@ -3,6 +3,7 @@ import { getUserByClerkId, getUserClaims, getChecklistProgress } from "@/lib/db/
 import { Sidebar } from "@/components/sidebar";
 import { UserProvider } from "@/lib/user-context";
 import { OnboardingGuard } from "@/components/onboarding-guard";
+import { isAdmin } from "@/lib/admin";
 import type { CardKey } from "@/lib/data/types";
 import { BENEFITS } from "@/lib/data/benefits";
 import { CHECKLIST_ITEMS } from "@/lib/data/checklist";
@@ -72,7 +73,7 @@ export default async function AppLayout({
 
   return (
     <div className="flex min-h-screen bg-[#fafaf9]">
-      <Sidebar plan={plan} notifications={serializedNotifications} />
+      <Sidebar plan={plan} notifications={serializedNotifications} isAdmin={userId ? isAdmin(userId) : false} />
       <main className="flex-1 min-w-0 px-4 pb-6 pt-16 md:pt-8 md:px-8 md:pb-8 md:ml-64 pb-[env(safe-area-inset-bottom)]">
         <UserProvider cards={cards} plan={plan} hasCompletedOnboarding={hasCompletedOnboarding}>
           <OnboardingGuard />

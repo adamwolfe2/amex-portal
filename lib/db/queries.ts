@@ -1,7 +1,14 @@
 import { cache } from "react";
-import { eq, and, inArray, gte, lt } from "drizzle-orm";
+import { eq, and, inArray, gte, lt, desc, sql } from "drizzle-orm";
 import { db } from "./index";
-import { users, benefitClaims, referrals, checklistProgress } from "./schema";
+import {
+  users,
+  benefitClaims,
+  referrals,
+  checklistProgress,
+  ambassadorApplications,
+  feedbackResponses,
+} from "./schema";
 
 // ── Users ──────────────────────────────────────────────
 
@@ -279,4 +286,67 @@ export async function updateChecklistItem(
     })
     .returning();
   return result[0];
+}
+
+// ── Admin ─────────────────────────────────────────────
+
+export async function getAdminStats() {
+  const [userCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(users);
+
+  const [paidCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(users)
+    .where(
+      inArray(users.subscriptionStatus, ["pro", "active", "trialing"])
+    );
+
+  const [referralCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(referrals);
+
+  const [paidReferralCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(referrals)
+    .where(eq(referrals.status, "paid"));
+
+  const [applicationCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(ambassadorApplications);
+
+  const [pendingApplicationCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(ambassadorApplications)
+    .where(eq(ambassadorApplications.status, "pending"));
+
+  const [feedbackCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(feedbackResponses);
+
+  return {
+    totalUsers: Number(userCount.count),
+    paidUsers: Number(paidCount.count),
+    totalReferrals: Number(referralCount.count),
+    paidReferrals: Number(paidReferralCount.count),
+    totalApplications: Number(applicationCount.count),
+    pendingApplications: Number(pendingApplicationCount.count),
+    totalFeedback: Number(feedbackCount.count),
+  };
+}
+
+export async function getRecentUsers(limit = 10) {
+  return db
+    .select()
+    .from(users)
+    .orderBy(desc(users.createdAt))
+    .limit(limit);
+}
+
+export async function getRecentApplications(limit = 5) {
+  return db
+    .select()
+    .from(ambassadorApplications)
+    .orderBy(desc(ambassadorApplications.createdAt))
+    .limit(limit);
 }

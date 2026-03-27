@@ -97,3 +97,112 @@ export async function sendResetReminder(
     return false;
   }
 }
+
+export async function sendReferralNotification(
+  to: string,
+  referrerName: string | null,
+  referredName: string,
+  commission: number,
+  plan: string
+): Promise<boolean> {
+  const resend = getResend();
+  if (!resend) return false;
+
+  const greeting = referrerName ? `Hi ${escapeHtml(referrerName)}` : "Hi there";
+
+  const html = `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:600px;margin:0 auto;background:#fafaf9;">
+      <div style="padding:32px 24px;background:#1a1a2e;border-radius:8px 8px 0 0;">
+        <h1 style="color:white;font-size:20px;font-weight:600;margin:0;">You earned a referral commission</h1>
+      </div>
+      <div style="padding:24px;background:white;border:1px solid #e0ddd9;border-top:none;border-radius:0 0 8px 8px;">
+        <p style="font-size:15px;color:#111111;margin:0 0 16px;">${greeting},</p>
+        <p style="font-size:14px;color:#444444;margin:0 0 20px;">
+          <strong>${escapeHtml(referredName)}</strong> just signed up for the <strong>${escapeHtml(plan)}</strong> plan using your referral link. You earned <strong>$${commission.toFixed(2)}</strong> in commission.
+        </p>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://amex-portal.vercel.app"}/refer"
+           style="display:inline-block;padding:10px 20px;background:#1a1a2e;color:white;text-decoration:none;border-radius:6px;font-size:14px;font-weight:500;">
+          View Referrals
+        </a>
+        <p style="font-size:12px;color:#999999;margin:20px 0 0;">
+          You're receiving this because someone used your CreditOS referral link.
+        </p>
+      </div>
+    </div>`;
+
+  try {
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: `You earned $${commission.toFixed(2)} from a referral`,
+      html,
+    });
+    return true;
+  } catch (error) {
+    logger.error("Failed to send referral notification", { error: error instanceof Error ? error.message : String(error) });
+    return false;
+  }
+}
+
+export async function sendMonthlyRecap(
+  to: string,
+  userName: string | null,
+  month: string,
+  captured: number,
+  available: number,
+  claimCount: number,
+  streak: number
+): Promise<boolean> {
+  const resend = getResend();
+  if (!resend) return false;
+
+  const greeting = userName ? `Hi ${escapeHtml(userName)}` : "Hi there";
+  const pct = available > 0 ? Math.round((captured / available) * 100) : 0;
+  const streakText = streak > 0 ? `${streak} month${streak !== 1 ? "s" : ""}` : "No active streak";
+
+  const html = `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:600px;margin:0 auto;background:#fafaf9;">
+      <div style="padding:32px 24px;background:#1a1a2e;border-radius:8px 8px 0 0;">
+        <h1 style="color:white;font-size:20px;font-weight:600;margin:0;">Your ${escapeHtml(month)} Savings Recap</h1>
+        <p style="color:#c0c0c0;font-size:14px;margin:8px 0 0;">Here's how you did this month</p>
+      </div>
+      <div style="padding:24px;background:white;border:1px solid #e0ddd9;border-top:none;border-radius:0 0 8px 8px;">
+        <p style="font-size:15px;color:#111111;margin:0 0 20px;">${greeting},</p>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+          <tr style="background:#f5f3f0;">
+            <td style="padding:12px;font-size:13px;color:#666666;font-weight:600;">Value Captured</td>
+            <td style="padding:12px;font-size:16px;color:#111111;text-align:right;font-weight:700;">$${captured} of $${available} (${pct}%)</td>
+          </tr>
+          <tr>
+            <td style="padding:12px;border-bottom:1px solid #e0ddd9;font-size:13px;color:#666666;font-weight:600;">Claims Made</td>
+            <td style="padding:12px;border-bottom:1px solid #e0ddd9;font-size:16px;color:#111111;text-align:right;font-weight:700;">${claimCount}</td>
+          </tr>
+          <tr>
+            <td style="padding:12px;border-bottom:1px solid #e0ddd9;font-size:13px;color:#666666;font-weight:600;">Current Streak</td>
+            <td style="padding:12px;border-bottom:1px solid #e0ddd9;font-size:16px;color:#111111;text-align:right;font-weight:700;">${escapeHtml(streakText)}</td>
+          </tr>
+        </table>
+        ${available > 0 && captured < available ? `<p style="font-size:14px;color:#444444;margin:0 0 20px;">You still have <strong>$${available - captured}</strong> in unclaimed benefits. There's still time to use them before the month ends!</p>` : ""}
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://amex-portal.vercel.app"}/dashboard"
+           style="display:inline-block;padding:10px 20px;background:#1a1a2e;color:white;text-decoration:none;border-radius:6px;font-size:14px;font-weight:500;">
+          View Dashboard
+        </a>
+        <p style="font-size:12px;color:#999999;margin:20px 0 0;">
+          You're receiving this because you use CreditOS to track your Amex benefits.
+        </p>
+      </div>
+    </div>`;
+
+  try {
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: `Your ${month} savings recap — $${captured} captured`,
+      html,
+    });
+    return true;
+  } catch (error) {
+    logger.error("Failed to send monthly recap", { error: error instanceof Error ? error.message : String(error) });
+    return false;
+  }
+}

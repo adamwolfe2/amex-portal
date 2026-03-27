@@ -36,6 +36,7 @@ import { ActionPreview } from "@/components/dashboard/action-preview";
 import { NotEnrolled } from "@/components/dashboard/not-enrolled";
 import { CheckoutToast } from "@/components/dashboard/checkout-toast";
 import { ActivityGrid } from "@/components/dashboard/activity-grid";
+import { ShareCard } from "@/components/dashboard/share-card";
 import { UpgradePrompt } from "@/components/upgrade-prompt";
 
 export default async function DashboardPage() {
@@ -96,6 +97,7 @@ export default async function DashboardPage() {
     monthlyValue: number;
   }> = [];
   let claimedThisMonth: string[] = [];
+  let yearClaimCount = 0;
 
   if (dbUser) {
     const [progress, allClaims, yearClaims] = await Promise.all([
@@ -126,6 +128,7 @@ export default async function DashboardPage() {
     // ROI — use filtered benefits
     capturedValue = computeCapturedValue(yearClaims, userBenefits, year);
     monthlyData = computeMonthlyProgress(yearClaims, userBenefits, year, month);
+    yearClaimCount = yearClaims.length;
 
     // Monthly benefits for "Mark as Used" — filtered to user's cards
     monthlyBenefits = userBenefits
@@ -248,6 +251,18 @@ export default async function DashboardPage() {
           </>
         )}
       </div>
+
+      {/* Share Your Savings (Pro only) */}
+      {isPro && capturedValue > 0 && (
+        <div className="mb-4">
+          <ShareCard
+            captured={capturedValue}
+            available={availableValue}
+            streak={streakData.current}
+            claimCount={yearClaimCount}
+          />
+        </div>
+      )}
 
       {/* Activity Grid */}
       <div className="mb-4">

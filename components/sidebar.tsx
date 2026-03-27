@@ -17,6 +17,7 @@ import {
   Settings,
   Users,
   Menu,
+  Shield,
 } from "lucide-react";
 import { UserButton, Show } from "@clerk/nextjs";
 import {
@@ -76,10 +77,12 @@ function NavContent({
   pathname,
   plan,
   notifications,
+  isAdmin,
 }: {
   pathname: string;
   plan: "free" | "pro";
   notifications: SerializedNotification[];
+  isAdmin: boolean;
 }) {
   return (
     <div className="flex flex-col h-full">
@@ -141,6 +144,36 @@ function NavContent({
             </div>
           </div>
         ))}
+
+        {/* Admin link */}
+        {isAdmin && (
+          <div>
+            <p className="px-3 mb-1 text-[10px] font-medium text-[#999999] uppercase tracking-wider">
+              Admin
+            </p>
+            <div className="space-y-0.5">
+              <Link
+                href="/admin"
+                aria-current={pathname === "/admin" ? "page" : undefined}
+                className={`
+                  relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                  transition-colors duration-150
+                  ${
+                    pathname === "/admin"
+                      ? "bg-[#f0efed] text-[#111111]"
+                      : "text-[#666666] hover:bg-[#f0efed] active:bg-[#e5e3e0] hover:text-[#111111]"
+                  }
+                `}
+              >
+                {pathname === "/admin" && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#1a1a2e] rounded-r-full" />
+                )}
+                <Shield className="h-4 w-4 shrink-0" />
+                Admin
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Footer: Plan badge + Notifications + User */}
@@ -177,9 +210,11 @@ function NavContent({
 export function Sidebar({
   plan = "free",
   notifications = [],
+  isAdmin = false,
 }: {
   plan?: "free" | "pro";
   notifications?: SerializedNotification[];
+  isAdmin?: boolean;
 }) {
   const pathname = usePathname();
 
@@ -187,7 +222,7 @@ export function Sidebar({
     <>
       {/* Desktop sidebar */}
       <aside className="hidden md:flex md:fixed md:inset-y-0 md:left-0 md:w-64 md:flex-col border-r border-[#e0ddd9] bg-[#fafaf9]">
-        <NavContent pathname={pathname} plan={plan} notifications={notifications} />
+        <NavContent pathname={pathname} plan={plan} notifications={notifications} isAdmin={isAdmin} />
       </aside>
 
       {/* Mobile hamburger + sheet */}
@@ -201,7 +236,7 @@ export function Sidebar({
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0 bg-[#fafaf9]">
             <SheetTitle className="sr-only">Navigation</SheetTitle>
-            <NavContent pathname={pathname} plan={plan} notifications={notifications} />
+            <NavContent pathname={pathname} plan={plan} notifications={notifications} isAdmin={isAdmin} />
           </SheetContent>
         </Sheet>
         <div className="ml-3 flex items-center gap-2">
