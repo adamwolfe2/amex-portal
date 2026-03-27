@@ -19,6 +19,7 @@ import {
   Users,
   Menu,
   Shield,
+  BarChart3,
 } from "lucide-react";
 import { UserButton, Show } from "@clerk/nextjs";
 import {
@@ -68,6 +69,7 @@ const navSections = [
   {
     label: "Personal",
     items: [
+      { label: "Report", href: "/report", icon: BarChart3 },
       { label: "Claim History", href: "/vault", icon: Lock },
       { label: "Settings", href: "/settings", icon: Settings },
       { label: "Refer", href: "/refer", icon: Users },
