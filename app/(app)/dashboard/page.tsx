@@ -25,6 +25,9 @@ import {
 } from "@/lib/data/roi";
 import { getUrgencyMessage, getDaysRemainingInMonth } from "@/lib/data/urgency";
 import type { CardKey } from "@/lib/data/types";
+import { ACHIEVEMENTS, getUnlockedAchievements } from "@/lib/data/achievements";
+import type { UserStats } from "@/lib/data/achievements";
+import { Achievements } from "@/components/dashboard/achievements";
 import { StreakCounter } from "@/components/dashboard/streak-counter";
 import { MonthlyProgress } from "@/components/dashboard/monthly-progress";
 import { MarkAsUsed } from "@/components/dashboard/mark-as-used";
@@ -38,6 +41,7 @@ import { CheckoutToast } from "@/components/dashboard/checkout-toast";
 import { ActivityGrid } from "@/components/dashboard/activity-grid";
 import { ShareCard } from "@/components/dashboard/share-card";
 import { RecommendedNext } from "@/components/dashboard/recommended-next";
+import { SpendingTip } from "@/components/dashboard/spending-tip";
 import { UpgradePrompt } from "@/components/upgrade-prompt";
 
 export default async function DashboardPage() {
@@ -170,6 +174,29 @@ export default async function DashboardPage() {
       cadence: b.cadence,
     }));
 
+  // Compute achievement badges
+  const checklistCompleted = userChecklistItems.filter((t) =>
+    completedIds.has(t.id)
+  ).length;
+  const userStatsForAchievements: UserStats = {
+    totalClaims: yearClaimCount,
+    currentStreak: streakData.current,
+    longestStreak: streakData.longest,
+    checklistCompleted,
+    checklistTotal: userChecklistItems.length,
+    capturedValue,
+    benefitsClaimed: new Set(claimedThisMonth),
+  };
+  const unlockedAchievements = getUnlockedAchievements(userStatsForAchievements);
+  const unlockedIds = new Set(unlockedAchievements.map((a) => a.id));
+  const achievementBadges = ACHIEVEMENTS.map((a) => ({
+    id: a.id,
+    name: a.name,
+    description: a.description,
+    iconName: a.icon.displayName ?? "Star",
+    unlocked: unlockedIds.has(a.id),
+  }));
+
   function computeProgress(card: CardKey) {
     const tasks = userChecklistItems.filter((t) => t.card === card);
     const completed = tasks.filter((t) => completedIds.has(t.id)).length;
@@ -283,6 +310,16 @@ export default async function DashboardPage() {
         <ActivityGrid claimDates={claimDates} />
       </div>
 
+      {/* Achievement Badges (Pro only) */}
+      {isPro && (
+        <div className="mb-4">
+          <Achievements
+            badges={achievementBadges}
+            totalCount={ACHIEVEMENTS.length}
+          />
+        </div>
+      )}
+
       {/* Setup Progress */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {progressWidgets.map((pw) => (
@@ -301,6 +338,7 @@ export default async function DashboardPage() {
         <RecommendedNext benefits={recommendedBenefits} />
         <ActionPreview actions={actions} />
         <UpcomingResets benefits={userBenefits} />
+        <SpendingTip />
         <div className="md:col-span-2">
           <NotEnrolled benefits={userBenefits} />
         </div>
