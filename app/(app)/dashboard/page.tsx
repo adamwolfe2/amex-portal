@@ -37,6 +37,7 @@ import { NotEnrolled } from "@/components/dashboard/not-enrolled";
 import { CheckoutToast } from "@/components/dashboard/checkout-toast";
 import { ActivityGrid } from "@/components/dashboard/activity-grid";
 import { ShareCard } from "@/components/dashboard/share-card";
+import { RecommendedNext } from "@/components/dashboard/recommended-next";
 import { UpgradePrompt } from "@/components/upgrade-prompt";
 
 export default async function DashboardPage() {
@@ -155,6 +156,19 @@ export default async function DashboardPage() {
     unclaimedCount,
     getDaysRemainingInMonth()
   );
+
+  const claimedSet = new Set(claimedThisMonth);
+  const recommendedBenefits = userBenefits
+    .filter((b) => b.value !== null && !claimedSet.has(b.id))
+    .sort((a, b) => (b.value ?? 0) - (a.value ?? 0))
+    .slice(0, 3)
+    .map((b) => ({
+      id: b.id,
+      name: b.name,
+      card: b.card,
+      value: b.value!,
+      cadence: b.cadence,
+    }));
 
   function computeProgress(card: CardKey) {
     const tasks = userChecklistItems.filter((t) => t.card === card);
@@ -284,6 +298,7 @@ export default async function DashboardPage() {
 
       {/* Widgets Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <RecommendedNext benefits={recommendedBenefits} />
         <ActionPreview actions={actions} />
         <UpcomingResets benefits={userBenefits} />
         <div className="md:col-span-2">

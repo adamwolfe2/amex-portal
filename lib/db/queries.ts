@@ -175,11 +175,13 @@ export async function createBenefitClaim(data: {
   return result[0];
 }
 
-export const getUserClaims = cache(async (userId: number) => {
+export const getUserClaims = cache(async (userId: number, limit = 200) => {
   return db
     .select()
     .from(benefitClaims)
-    .where(eq(benefitClaims.userId, userId));
+    .where(eq(benefitClaims.userId, userId))
+    .orderBy(desc(benefitClaims.claimedAt))
+    .limit(limit);
 });
 
 export async function getUserClaimsForYear(userId: number, year: number) {
@@ -248,11 +250,13 @@ export async function createReferral(data: {
   return result[0];
 }
 
-export async function getReferralsByReferrer(userId: number) {
+export async function getReferralsByReferrer(userId: number, limit = 100) {
   return db
     .select()
     .from(referrals)
-    .where(eq(referrals.referrerId, userId));
+    .where(eq(referrals.referrerId, userId))
+    .orderBy(desc(referrals.createdAt))
+    .limit(limit);
 }
 
 // ── Checklist Progress ─────────────────────────────────
