@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect, useCallback, useTransition } from "react";
 import { BENEFITS, CARDS } from "@/lib/data";
-import { Download, Calendar as CalendarIcon } from "lucide-react";
+import { Download, Calendar as CalendarIcon, Check } from "lucide-react";
+import { quickClaimBenefit } from "@/lib/actions/claims";
+import { toast } from "sonner";
 
 type ResetEvent = {
   benefitId: string;
@@ -165,10 +167,59 @@ function downloadICS(events: ResetEvent[]) {
   URL.revokeObjectURL(url);
 }
 
+type Claim = {
+  id: number;
+  benefitId: string;
+  period: string | null;
+  claimedAt: string;
+};
+
+function currentPeriod(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+
 export default function CalendarPage() {
   const now = useMemo(() => new Date(), []);
   const events = useMemo(() => getNextResetDates(now), [now]);
   const grouped = useMemo(() => groupByMonth(events), [events]);
+  const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
+  const [claimsLoaded, setClaimsLoaded] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const fetchClaims = useCallback(async () => {
+    try {
+      const res = await fetch("/api/claims");
+      if (res.ok) {
+        const data: Claim[] = await res.json();
+        const period = currentPeriod();
+        const ids = new Set(
+          data
+            .filter((c) => c.period === period)
+            .map((c) => c.benefitId)
+        );
+        setClaimedIds(ids);
+      }
+    } finally {
+      setClaimsLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchClaims();
+  }, [fetchClaims]);
+
+  const handleQuickClaim = (benefitId: string) => {
+    startTransition(async () => {
+      const result = await quickClaimBenefit(benefitId);
+      if (result.success) {
+        setClaimedIds((prev) => new Set([...prev, benefitId]));
+        toast.success("Benefit claimed!");
+      } else {
+        toast.error(result.error ?? "Failed to claim");
+      }
+    });
+  };
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -239,7 +290,21 @@ export default function CalendarPage() {
                           })}
                         </p>
                       </div>
-                      <div className="shrink-0 text-right">
+                      <div className="shrink-0 flex items-center gap-2">
+                        {claimsLoaded && claimedIds.has(e.benefitId) ? (
+                          <span className="inline-flex items-center gap-1 text-xs text-[#999999]">
+                            <Check className="size-3.5" />
+                            <span className="hidden sm:inline">Claimed</span>
+                          </span>
+                        ) : claimsLoaded && e.daysUntil <= 30 ? (
+                          <button
+                            onClick={() => handleQuickClaim(e.benefitId)}
+                            disabled={isPending}
+                            className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-full bg-[#1a1a2e] px-3 text-xs font-medium text-white hover:bg-[#2a2a3e] transition-colors disabled:opacity-50"
+                          >
+                            {isPending ? "..." : "Claim"}
+                          </button>
+                        ) : null}
                         <span
                           className={`text-xs font-medium ${
                             e.daysUntil <= 7

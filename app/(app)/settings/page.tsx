@@ -14,6 +14,8 @@ import {
   User,
   AlertTriangle,
   Clock,
+  Download,
+  Trash2,
 } from "lucide-react";
 import Image from "next/image";
 import { MONTHLY_PRICE, ANNUAL_PRICE, LIFETIME_PRICE } from "@/lib/referral";
@@ -401,6 +403,22 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Data section */}
+      <div className="border border-[#e0ddd9] rounded-lg bg-white p-5">
+        <h2 className="text-sm font-semibold text-[#111111] mb-3">Your Data</h2>
+        <p className="text-xs text-[#666666] mb-3">
+          Download all your CreditOS data including claims, checklist progress, and account info.
+        </p>
+        <a
+          href="/api/export"
+          download
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-[#e0ddd9] rounded-md text-[#111111] hover:bg-[#f5f3f0] transition-colors min-h-[44px]"
+        >
+          <Download className="h-4 w-4" />
+          Export My Data
+        </a>
+      </div>
+
       {/* Danger zone */}
       <div className="border border-red-200 rounded-lg bg-white p-5 space-y-4">
         <div className="flex items-center gap-2 mb-3">
@@ -411,6 +429,25 @@ export default function SettingsPage() {
           <LogOut className="h-4 w-4 mr-1.5" />
           Sign Out
         </Button>
+      </div>
+
+      {/* Delete account */}
+      <div className="border border-red-200 rounded-lg bg-white p-5">
+        <h2 className="text-sm font-semibold text-[#111111] mb-1">Delete Account</h2>
+        <p className="text-xs text-[#666666] mb-3">
+          Permanently delete your account and all associated data. This cannot be undone.
+        </p>
+        <button
+          onClick={() => {
+            if (window.confirm("Are you sure? This will permanently delete your account, all claims, and checklist progress. This cannot be undone.")) {
+              toast.error("Please contact support to delete your account.");
+            }
+          }}
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-red-200 rounded-md text-red-600 hover:bg-red-50 transition-colors min-h-[44px]"
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete Account
+        </button>
       </div>
     </div>
   );
