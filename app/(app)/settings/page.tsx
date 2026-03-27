@@ -51,6 +51,37 @@ export default function SettingsPage() {
       });
   }, []);
 
+  // Poll for status update after checkout redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") !== "success") return;
+
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      attempts++;
+      if (attempts > 10) {
+        clearInterval(interval);
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/user/status");
+        if (!res.ok) return;
+        const data: UserStatus = await res.json();
+        if (data.planType !== "free") {
+          setStatus(data);
+          clearInterval(interval);
+          window.history.replaceState({}, "", "/settings");
+          toast.success("Your plan has been upgraded!");
+        }
+      } catch {
+        // Silently retry on next interval
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const saveCards = useCallback(
     async (plat: boolean, gold: boolean) => {
       if (savingCards) return;
@@ -99,6 +130,20 @@ export default function SettingsPage() {
     } catch {
       toast.error("Failed to connect. Please try again.");
       setUpgrading(null);
+    }
+  };
+
+  const handleManageBilling = async () => {
+    try {
+      const res = await fetch("/api/billing", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error("Failed to open billing portal.");
+      }
+    } catch {
+      toast.error("Failed to connect. Please try again.");
     }
   };
 
@@ -218,6 +263,14 @@ export default function SettingsPage() {
               year: "numeric",
             })}
           </div>
+        )}
+        {plan === "pro" && status.planType !== "lifetime" && (
+          <button
+            onClick={handleManageBilling}
+            className="text-sm font-medium text-[#1a1a2e] hover:underline"
+          >
+            Manage Billing
+          </button>
         )}
         {plan === "free" && (
           <div className="space-y-3">

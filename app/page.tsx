@@ -378,6 +378,95 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ── FAQ ── */}
+      <section className="py-24 sm:py-32 border-t border-[#e0ddd9]">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight text-center mb-12">
+            Frequently asked questions
+          </h2>
+          <div className="space-y-0 divide-y divide-[#e0ddd9]">
+            <details className="group py-5">
+              <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-[#111111]">
+                What is CreditOS?
+                <ChevronRight className="h-4 w-4 text-[#666666] transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] text-[#666666] leading-relaxed">
+                CreditOS is a benefits tracking platform for American Express
+                Platinum and Gold cardholders. It helps you track, claim, and
+                maximize over $4,500 per year in card credits so you never leave
+                money on the table.
+              </p>
+            </details>
+            <details className="group py-5">
+              <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-[#111111]">
+                Which Amex cards does CreditOS support?
+                <ChevronRight className="h-4 w-4 text-[#666666] transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] text-[#666666] leading-relaxed">
+                CreditOS currently supports the American Express Platinum Card
+                and the American Express Gold Card. We track all monthly,
+                quarterly, and annual benefits for both cards.
+              </p>
+            </details>
+            <details className="group py-5">
+              <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-[#111111]">
+                How does the 7-day free trial work?
+                <ChevronRight className="h-4 w-4 text-[#666666] transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] text-[#666666] leading-relaxed">
+                Sign up for the annual plan and get full access to every feature
+                for 7 days. If CreditOS is not for you, cancel before the trial
+                ends and you will not be charged.
+              </p>
+            </details>
+            <details className="group py-5">
+              <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-[#111111]">
+                Can I cancel anytime?
+                <ChevronRight className="h-4 w-4 text-[#666666] transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] text-[#666666] leading-relaxed">
+                Yes. You can cancel your subscription at any time from Settings
+                in your dashboard. Monthly plans end at the close of the current
+                billing period. Annual and lifetime plans include a 30-day
+                refund window.
+              </p>
+            </details>
+            <details className="group py-5">
+              <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-[#111111]">
+                Is my payment information secure?
+                <ChevronRight className="h-4 w-4 text-[#666666] transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] text-[#666666] leading-relaxed">
+                Absolutely. Stripe handles all payment processing. CreditOS
+                never sees or stores your credit card details.
+              </p>
+            </details>
+            <details className="group py-5">
+              <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-[#111111]">
+                Do I need to give CreditOS access to my Amex account?
+                <ChevronRight className="h-4 w-4 text-[#666666] transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] text-[#666666] leading-relaxed">
+                No. CreditOS does not connect to your American Express account.
+                You manually track your benefits, and we provide the reminders,
+                guides, and analytics to help you claim every dollar.
+              </p>
+            </details>
+            <details className="group py-5">
+              <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-[#111111]">
+                What happens if I miss a credit reset?
+                <ChevronRight className="h-4 w-4 text-[#666666] transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] text-[#666666] leading-relaxed">
+                CreditOS sends reminders before each reset deadline so you have
+                time to act. Your dashboard also highlights unclaimed benefits
+                with urgency indicators as deadlines approach.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
       {/* ── Final CTA ── */}
       <section className="py-24 sm:py-32 border-t border-[#e0ddd9]">
         <div className="max-w-5xl mx-auto px-6">
@@ -417,7 +506,7 @@ export default async function Home() {
               CreditOS
             </span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap justify-center">
             <Link
               href="/apply"
               className="text-sm text-[#666666] hover:text-[#111111] transition-colors"
@@ -429,6 +518,24 @@ export default async function Home() {
               className="text-sm text-[#666666] hover:text-[#111111] transition-colors"
             >
               Send Feedback
+            </Link>
+            <Link
+              href="/terms"
+              className="text-sm text-[#666666] hover:text-[#111111] transition-colors"
+            >
+              Terms
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-sm text-[#666666] hover:text-[#111111] transition-colors"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/refunds"
+              className="text-sm text-[#666666] hover:text-[#111111] transition-colors"
+            >
+              Refunds
             </Link>
           </div>
         </div>

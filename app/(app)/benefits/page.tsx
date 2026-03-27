@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { BENEFITS, CARDS } from "@/lib/data";
 import { useUser } from "@/lib/user-context";
+import Link from "next/link";
 import {
   Search,
   ExternalLink,
@@ -146,9 +147,13 @@ export default function BenefitsPage() {
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="font-medium text-sm text-[#111111]">
+                    <Link
+                      href={`/benefits/${b.id}`}
+                      className="font-medium text-sm text-[#111111] hover:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {b.name}
-                    </span>
+                    </Link>
                     {b.value !== null && (
                       <span className="text-xs font-semibold text-[#1a1a2e]">
                         ${b.value}

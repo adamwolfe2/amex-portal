@@ -65,7 +65,7 @@ const navSections = [
   {
     label: "Personal",
     items: [
-      { label: "Vault", href: "/vault", icon: Lock },
+      { label: "Claim History", href: "/vault", icon: Lock },
       { label: "Settings", href: "/settings", icon: Settings },
       { label: "Refer", href: "/refer", icon: Users },
     ],
