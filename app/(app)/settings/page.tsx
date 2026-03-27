@@ -152,9 +152,13 @@ export default function SettingsPage() {
   const isPastDue = status?.subscriptionStatus === "past_due";
 
   const copyReferralCode = async () => {
-    await navigator.clipboard.writeText(referralCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(referralCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy. Please copy manually.");
+    }
   };
 
   if (!isLoaded || !status) {

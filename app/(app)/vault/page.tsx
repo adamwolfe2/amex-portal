@@ -112,7 +112,12 @@ export default function VaultPage() {
       if (!file) return;
       const text = await file.text();
       try {
-        const imported = JSON.parse(text) as Claim[];
+        const parsed = JSON.parse(text);
+        if (!Array.isArray(parsed)) {
+          toast.error("Invalid file format. Expected an array of claims.");
+          return;
+        }
+        const imported = parsed as Claim[];
         for (const item of imported) {
           await fetch("/api/claims", {
             method: "POST",

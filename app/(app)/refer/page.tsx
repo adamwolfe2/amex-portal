@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { Users, Copy, Check, DollarSign, UserPlus, Clock } from "lucide-react";
 import {
   COMMISSION_RATE,
@@ -56,9 +57,13 @@ export default function ReferPage() {
 
   const copyLink = async () => {
     if (!referralLink) return;
-    await navigator.clipboard.writeText(referralLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy. Please copy manually.");
+    }
   };
 
   if (loading) {
