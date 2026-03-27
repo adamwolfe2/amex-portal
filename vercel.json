@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/recap",
       "schedule": "0 14 28 * *"
+    },
+    {
+      "path": "/api/cron/trial-reminder",
+      "schedule": "0 14 * * *"
     }
   ],
   "headers": [

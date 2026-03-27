@@ -249,21 +249,38 @@ export default function VaultPage() {
 
       {/* Claims list */}
       {loading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
+        <div className="space-y-2">
+          {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-20 rounded-lg border border-[#e0ddd9] bg-[#f0efed] animate-pulse"
-            />
+              className="flex items-center justify-between p-4 border border-[#e0ddd9] rounded-lg bg-white"
+            >
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-44 bg-[#f0efed] rounded animate-pulse" />
+                <div className="flex items-center gap-3">
+                  <div className="h-3 w-20 bg-[#f0efed] rounded animate-pulse" />
+                  <div className="h-3 w-14 bg-[#f0efed] rounded animate-pulse" />
+                </div>
+              </div>
+              <div className="h-8 w-8 bg-[#f0efed] rounded animate-pulse shrink-0 ml-2" />
+            </div>
           ))}
         </div>
       ) : claims.length === 0 ? (
-        <div className="text-center py-12 border border-[#e0ddd9] rounded-lg bg-white">
-          <Lock className="h-8 w-8 text-[#ccc] mx-auto mb-3" />
-          <p className="text-sm text-[#666666]">No claims yet</p>
-          <p className="text-xs text-[#999999] mt-1">
-            Start tracking your benefit redemptions
+        <div className="text-center py-12 border border-[#e0ddd9] rounded-lg bg-white px-4">
+          <Lock className="h-8 w-8 text-[#999999] mx-auto mb-3" />
+          <p className="text-sm font-medium text-[#111111]">Your vault is empty</p>
+          <p className="text-xs text-[#666666] mt-1 max-w-xs mx-auto">
+            Each time you redeem a benefit, log it here to track your total value captured over time
           </p>
+          <Button
+            size="sm"
+            className="mt-4"
+            onClick={() => setShowForm(true)}
+          >
+            <Plus className="h-4 w-4 mr-1.5" />
+            Log Your First Redemption
+          </Button>
         </div>
       ) : (
         <div className="space-y-2">

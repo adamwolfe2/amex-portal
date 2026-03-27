@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 import {
   AlertCircle,
-  Info,
+  CircleCheck,
 } from "lucide-react";
 
 const cardLabels = {
@@ -62,11 +62,11 @@ export default async function ActionsPage() {
       </div>
 
       {groups.length === 0 && (
-        <div className="border border-[#e0ddd9] rounded-lg bg-white p-8 text-center">
-          <Info className="h-8 w-8 text-[#999999] mx-auto mb-3" />
-          <p className="text-sm text-[#666666]">
-            No time-sensitive actions right now. Check back at the start of the
-            month or quarter.
+        <div className="border border-[#e0ddd9] rounded-lg bg-white py-12 px-4 text-center">
+          <CircleCheck className="h-8 w-8 text-[#999999] mx-auto mb-3" />
+          <p className="text-sm font-medium text-[#111111]">You&apos;re all caught up</p>
+          <p className="text-xs text-[#666666] mt-1 max-w-xs mx-auto">
+            No time-sensitive actions right now. We&apos;ll surface new reminders as your benefits reset each month or quarter.
           </p>
         </div>
       )}

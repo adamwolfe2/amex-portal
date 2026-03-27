@@ -144,6 +144,109 @@ export async function sendReferralNotification(
   }
 }
 
+export async function sendWelcomeEmail(
+  to: string,
+  userName: string | null
+): Promise<boolean> {
+  const resend = getResend();
+  if (!resend) return false;
+
+  const greeting = userName ? `Hi ${escapeHtml(userName)}` : "Welcome";
+
+  const html = `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:600px;margin:0 auto;background:#fafaf9;">
+      <div style="padding:32px 24px;background:#1a1a2e;border-radius:8px 8px 0 0;">
+        <h1 style="color:white;font-size:20px;font-weight:600;margin:0;">Welcome to CreditOS</h1>
+        <p style="color:#c0c0c0;font-size:14px;margin:8px 0 0;">Your card benefits command center</p>
+      </div>
+      <div style="padding:24px;background:white;border:1px solid #e0ddd9;border-top:none;border-radius:0 0 8px 8px;">
+        <p style="font-size:15px;color:#111111;margin:0 0 16px;">${greeting},</p>
+        <p style="font-size:14px;color:#444444;margin:0 0 16px;">
+          You just joined CreditOS. Here's how to get the most out of your Amex Platinum and Gold cards:
+        </p>
+        <ol style="margin:0 0 20px;padding-left:20px;color:#444444;font-size:14px;">
+          <li style="margin-bottom:8px;"><strong>Complete onboarding</strong> — Select your cards and see what benefits you have.</li>
+          <li style="margin-bottom:8px;"><strong>Run through the checklist</strong> — Set up each benefit to start earning credits.</li>
+          <li style="margin-bottom:8px;"><strong>Claim monthly credits</strong> — Use the dashboard to track and claim benefits before they reset.</li>
+        </ol>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://amex-portal.vercel.app"}/dashboard"
+           style="display:inline-block;padding:10px 20px;background:#1a1a2e;color:white;text-decoration:none;border-radius:6px;font-size:14px;font-weight:500;">
+          Go to Dashboard
+        </a>
+        <p style="font-size:12px;color:#999999;margin:20px 0 0;">
+          You're receiving this because you signed up for CreditOS.
+        </p>
+      </div>
+    </div>`;
+
+  try {
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: "Welcome to CreditOS — let's maximize your Amex benefits",
+      html,
+    });
+    return true;
+  } catch (error) {
+    logger.error("Failed to send welcome email", { error: error instanceof Error ? error.message : String(error) });
+    return false;
+  }
+}
+
+export async function sendTrialExpiringEmail(
+  to: string,
+  userName: string | null,
+  daysLeft: number
+): Promise<boolean> {
+  const resend = getResend();
+  if (!resend) return false;
+
+  const greeting = userName ? `Hi ${escapeHtml(userName)}` : "Hi there";
+  const daysText = daysLeft === 1 ? "1 day" : `${daysLeft} days`;
+
+  const html = `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:600px;margin:0 auto;background:#fafaf9;">
+      <div style="padding:32px 24px;background:#1a1a2e;border-radius:8px 8px 0 0;">
+        <h1 style="color:white;font-size:20px;font-weight:600;margin:0;">Your free trial ends in ${daysText}</h1>
+        <p style="color:#c0c0c0;font-size:14px;margin:8px 0 0;">Upgrade to keep your premium features</p>
+      </div>
+      <div style="padding:24px;background:white;border:1px solid #e0ddd9;border-top:none;border-radius:0 0 8px 8px;">
+        <p style="font-size:15px;color:#111111;margin:0 0 16px;">${greeting},</p>
+        <p style="font-size:14px;color:#444444;margin:0 0 16px;">
+          Your CreditOS trial expires in <strong>${daysText}</strong>. After that you'll lose access to:
+        </p>
+        <ul style="margin:0 0 20px;padding-left:20px;color:#444444;font-size:14px;">
+          <li style="margin-bottom:8px;"><strong>Quick Claim</strong> — One-tap benefit claiming from the dashboard.</li>
+          <li style="margin-bottom:8px;"><strong>ROI Analytics</strong> — Track how much value you're capturing each month.</li>
+          <li style="margin-bottom:8px;"><strong>Smart Alerts</strong> — Get notified before benefits reset so you never miss a credit.</li>
+        </ul>
+        <p style="font-size:14px;color:#444444;margin:0 0 20px;">
+          Your data is safe — upgrade anytime to pick up where you left off.
+        </p>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://amex-portal.vercel.app"}/settings"
+           style="display:inline-block;padding:10px 20px;background:#1a1a2e;color:white;text-decoration:none;border-radius:6px;font-size:14px;font-weight:500;">
+          Upgrade Now
+        </a>
+        <p style="font-size:12px;color:#999999;margin:20px 0 0;">
+          You're receiving this because you started a free trial on CreditOS.
+        </p>
+      </div>
+    </div>`;
+
+  try {
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: `Your CreditOS trial ends in ${daysText} — upgrade to keep your benefits`,
+      html,
+    });
+    return true;
+  } catch (error) {
+    logger.error("Failed to send trial expiring email", { error: error instanceof Error ? error.message : String(error) });
+    return false;
+  }
+}
+
 export async function sendMonthlyRecap(
   to: string,
   userName: string | null,

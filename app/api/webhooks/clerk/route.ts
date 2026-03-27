@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { generateReferralCode } from "@/lib/referral";
+import { sendWelcomeEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
 
 interface ClerkWebhookEvent {
@@ -116,6 +117,9 @@ export async function POST(request: Request) {
       referralCode,
       referredBy,
     });
+
+    // Send welcome email (fire and forget)
+    sendWelcomeEmail(email, name ?? null).catch(() => {});
   }
 
   if (event.type === "user.updated") {
