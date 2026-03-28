@@ -258,70 +258,17 @@ export default async function DashboardPage() {
       </div>
 
       {/* Mark as Used — primary CTA (Pro only) */}
-      <div className="mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
-        {isPro ? (
+      {isPro && (
+        <div className="mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
           <MarkAsUsed
             benefits={monthlyBenefits}
             claimedIds={claimedThisMonth}
-          />
-        ) : (
-          <UpgradePrompt
-            feature="Quick Claim"
-            description="One-tap benefit tracking to never miss a monthly credit. Track what you've used and see your savings grow."
-          />
-        )}
-      </div>
-
-      {/* ROI row (Pro only) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-150">
-        {isPro ? (
-          <>
-            <ValueCaptured captured={capturedValue} available={availableValue} />
-            <ROICard captured={capturedValue} totalFees={totalFees} />
-          </>
-        ) : (
-          <>
-            <UpgradePrompt
-              feature="Value Captured"
-              description="See exactly how much of your annual benefits you've captured this year."
-            />
-            <UpgradePrompt
-              feature="Card ROI"
-              description="Know if your cards are paying for themselves with real-time ROI tracking."
-            />
-          </>
-        )}
-      </div>
-
-      {/* Share Your Savings (Pro only) */}
-      {isPro && capturedValue > 0 && (
-        <div className="mb-4 animate-in fade-in duration-300 delay-200">
-          <ShareCard
-            captured={capturedValue}
-            available={availableValue}
-            streak={streakData.current}
-            claimCount={yearClaimCount}
-          />
-        </div>
-      )}
-
-      {/* Activity Grid */}
-      <div className="mb-4 animate-in fade-in duration-300 delay-200">
-        <ActivityGrid claimDates={claimDates} />
-      </div>
-
-      {/* Achievement Badges (Pro only) */}
-      {isPro && (
-        <div className="mb-4 animate-in fade-in duration-300 delay-200">
-          <Achievements
-            badges={achievementBadges}
-            totalCount={ACHIEVEMENTS.length}
           />
         </div>
       )}
 
       {/* Setup Progress */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in duration-300 delay-300">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
         {progressWidgets.map((pw) => (
           <ProgressWidget
             key={pw.card}
@@ -333,16 +280,63 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* Widgets Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in duration-300 delay-300">
+      {/* Widgets Grid — free for all users */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in duration-300 delay-150">
         <RecommendedNext benefits={recommendedBenefits} />
         <ActionPreview actions={actions} />
         <UpcomingResets benefits={userBenefits} />
         <SpendingTip />
-        <div className="md:col-span-2">
-          <NotEnrolled benefits={userBenefits} />
-        </div>
       </div>
+
+      {/* Activity Grid */}
+      <div className="mb-4 animate-in fade-in duration-300 delay-200">
+        <ActivityGrid claimDates={claimDates} />
+      </div>
+
+      {/* Not Enrolled */}
+      <div className="mb-4 animate-in fade-in duration-300 delay-200">
+        <NotEnrolled benefits={userBenefits} />
+      </div>
+
+      {/* ROI row (Pro only) */}
+      {isPro && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in duration-300 delay-250">
+          <ValueCaptured captured={capturedValue} available={availableValue} />
+          <ROICard captured={capturedValue} totalFees={totalFees} />
+        </div>
+      )}
+
+      {/* Achievement Badges (Pro only) */}
+      {isPro && (
+        <div className="mb-4 animate-in fade-in duration-300 delay-250">
+          <Achievements
+            badges={achievementBadges}
+            totalCount={ACHIEVEMENTS.length}
+          />
+        </div>
+      )}
+
+      {/* Share Your Savings (Pro only) */}
+      {isPro && capturedValue > 0 && (
+        <div className="mb-4 animate-in fade-in duration-300 delay-300">
+          <ShareCard
+            captured={capturedValue}
+            available={availableValue}
+            streak={streakData.current}
+            claimCount={yearClaimCount}
+          />
+        </div>
+      )}
+
+      {/* Single upgrade banner for free users — after all free content */}
+      {!isPro && (
+        <div className="mb-4 animate-in fade-in duration-300 delay-300">
+          <UpgradePrompt
+            feature="Unlock Pro"
+            description="Get one-tap benefit tracking, ROI analytics, achievement badges, and shareable savings reports."
+          />
+        </div>
+      )}
     </div>
   );
 }
