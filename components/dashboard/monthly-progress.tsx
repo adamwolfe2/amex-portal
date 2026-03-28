@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 interface MonthlyProgressProps {
   captured: number;
   available: number;
@@ -12,6 +14,12 @@ export function MonthlyProgress({
   urgencyMessage,
 }: MonthlyProgressProps) {
   const percent = available > 0 ? Math.min(100, Math.round((captured / available) * 100)) : 0;
+  const [displayPercent, setDisplayPercent] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDisplayPercent(percent), 100);
+    return () => clearTimeout(t);
+  }, [percent]);
 
   return (
     <div className="border border-[#e0ddd9] rounded-lg p-4 bg-white">
@@ -30,8 +38,8 @@ export function MonthlyProgress({
       </div>
       <div className="w-full h-1.5 bg-[#f0eeeb] rounded-full overflow-hidden mb-2">
         <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${percent}%`, backgroundColor: "#1a1a2e" }}
+          className="h-full rounded-full transition-all duration-700 ease-out"
+          style={{ width: `${displayPercent}%`, backgroundColor: "#1a1a2e" }}
         />
       </div>
       <p className="text-xs text-[#666666]">{urgencyMessage}</p>

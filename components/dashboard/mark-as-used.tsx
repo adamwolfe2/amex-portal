@@ -86,7 +86,7 @@ export function MarkAsUsed({ benefits, claimedIds }: MarkAsUsedProps) {
         {claimed.map((b) => (
           <div
             key={b.id}
-            className="flex items-center justify-between gap-3 py-2.5 border-b border-[#f0eeeb] last:border-b-0 opacity-60"
+            className="flex items-center justify-between gap-3 py-2.5 border-b border-[#f0eeeb] last:border-b-0 opacity-60 animate-in fade-in duration-300"
           >
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-[#999999] line-through truncate" title={b.name}>
@@ -97,7 +97,7 @@ export function MarkAsUsed({ benefits, claimedIds }: MarkAsUsedProps) {
               </span>
             </div>
             <div className="flex items-center justify-center min-h-[44px] min-w-[44px]">
-              <CheckCheck className="h-4 w-4 text-[#999999]" />
+              <CheckCheck className="h-4 w-4 text-[#999999] animate-in zoom-in duration-200" />
             </div>
           </div>
         ))}

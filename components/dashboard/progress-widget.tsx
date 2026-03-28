@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 interface ProgressWidgetProps {
   title: string;
   completed: number;
@@ -9,6 +11,12 @@ interface ProgressWidgetProps {
 
 export function ProgressWidget({ title, completed, total, color }: ProgressWidgetProps) {
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const [displayPct, setDisplayPct] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDisplayPct(pct), 150);
+    return () => clearTimeout(t);
+  }, [pct]);
 
   return (
     <div className="border border-[#e0ddd9] rounded-lg p-4 bg-white">
@@ -20,8 +28,8 @@ export function ProgressWidget({ title, completed, total, color }: ProgressWidge
       </div>
       <div className="h-1.5 bg-[#f0eeeb] rounded-full overflow-hidden">
         <div
-          className="h-full rounded-full transition-all duration-600"
-          style={{ width: `${pct}%`, backgroundColor: color }}
+          className="h-full rounded-full transition-all duration-700 ease-out"
+          style={{ width: `${displayPct}%`, backgroundColor: color }}
         />
       </div>
     </div>
