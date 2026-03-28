@@ -2,9 +2,17 @@
 
 import { useMemo, useState, useEffect, useCallback, useTransition } from "react";
 import { BENEFITS, CARDS } from "@/lib/data";
-import { Download, Calendar as CalendarIcon, Check } from "lucide-react";
+import { Download, Calendar as CalendarIcon, Check, CreditCard, ExternalLink, Info } from "lucide-react";
 import { quickClaimBenefit } from "@/lib/actions/claims";
 import { toast } from "sonner";
+import type { Benefit } from "@/lib/data/types";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 type ResetEvent = {
   benefitId: string;
@@ -186,6 +194,7 @@ export default function CalendarPage() {
   const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
   const [claimsLoaded, setClaimsLoaded] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null);
 
   const fetchClaims = useCallback(async () => {
     try {
@@ -265,7 +274,11 @@ export default function CalendarPage() {
                   return (
                     <div
                       key={`${e.benefitId}-${i}`}
-                      className="flex items-center gap-3 rounded-lg border border-[#e0ddd9] bg-white px-4 py-3"
+                      className="flex items-center gap-3 rounded-lg border border-[#e0ddd9] bg-white px-4 py-3 cursor-pointer hover:border-[#ccc9c4] transition-colors active:bg-[#fafaf9]"
+                      onClick={() => {
+                        const benefit = BENEFITS.find((b) => b.id === e.benefitId);
+                        if (benefit) setSelectedBenefit(benefit);
+                      }}
                     >
                       <div
                         className="size-2.5 shrink-0 rounded-full"
@@ -298,7 +311,7 @@ export default function CalendarPage() {
                           </span>
                         ) : claimsLoaded && e.daysUntil <= 30 ? (
                           <button
-                            onClick={() => handleQuickClaim(e.benefitId)}
+                            onClick={(ev) => { ev.stopPropagation(); handleQuickClaim(e.benefitId); }}
                             disabled={isPending}
                             className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-full bg-[#1a1a2e] px-3 text-xs font-medium text-white hover:bg-[#2a2a3e] transition-colors disabled:opacity-50"
                           >
@@ -332,6 +345,108 @@ export default function CalendarPage() {
         Calendar shows benefit resets within the next 6 months. Download the ICS
         file to add reminders to your calendar app.
       </p>
+
+      {/* Benefit Info Sheet */}
+      <Sheet open={!!selectedBenefit} onOpenChange={(open) => { if (!open) setSelectedBenefit(null); }}>
+        <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto">
+          {selectedBenefit && (() => {
+            const card = CARDS[selectedBenefit.card];
+            const steps = selectedBenefit.action.split(". ").filter(Boolean);
+            return (
+              <>
+                <SheetHeader>
+                  <div className="flex items-center gap-2 mb-1">
+                    <CreditCard className="h-4 w-4" style={{ color: card.color }} />
+                    <span className="text-[11px] text-[#999999]">{card.name}</span>
+                  </div>
+                  <SheetTitle className="text-lg font-semibold text-[#111111]">
+                    {selectedBenefit.name}
+                  </SheetTitle>
+                  <SheetDescription className="text-sm text-[#666666]">
+                    {selectedBenefit.description}
+                  </SheetDescription>
+                </SheetHeader>
+
+                <div className="px-4 pb-6 space-y-4">
+                  {/* Key facts */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {selectedBenefit.value !== null && (
+                      <div className="border border-[#e0ddd9] rounded-lg p-3 bg-[#fafaf9]">
+                        <p className="text-[11px] text-[#999999]">Annual Value</p>
+                        <p className="text-lg font-semibold text-[#111111]">
+                          ${selectedBenefit.value.toLocaleString()}
+                        </p>
+                      </div>
+                    )}
+                    <div className="border border-[#e0ddd9] rounded-lg p-3 bg-[#fafaf9]">
+                      <p className="text-[11px] text-[#999999]">Resets</p>
+                      <p className="text-sm font-medium text-[#111111] capitalize">
+                        {selectedBenefit.cadence}
+                      </p>
+                    </div>
+                    <div className="border border-[#e0ddd9] rounded-lg p-3 bg-[#fafaf9]">
+                      <p className="text-[11px] text-[#999999]">Category</p>
+                      <p className="text-sm font-medium text-[#111111]">
+                        {selectedBenefit.category}
+                      </p>
+                    </div>
+                    <div className="border border-[#e0ddd9] rounded-lg p-3 bg-[#fafaf9]">
+                      <p className="text-[11px] text-[#999999]">Enrollment</p>
+                      <p className="text-sm font-medium text-[#111111]">
+                        {selectedBenefit.enrollmentRequired ? "Required" : "Automatic"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* How to claim */}
+                  <div className="border border-[#e0ddd9] rounded-lg bg-white p-4">
+                    <h3 className="text-sm font-semibold text-[#111111] mb-3">
+                      How to Claim
+                    </h3>
+                    <ol className="space-y-2">
+                      {steps.map((step, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#f0efed] text-xs font-medium text-[#666666] shrink-0 mt-0.5">
+                            {i + 1}
+                          </span>
+                          <p className="text-sm text-[#444444]">
+                            {step.trim()}
+                            {step.endsWith(".") ? "" : "."}
+                          </p>
+                        </li>
+                      ))}
+                    </ol>
+                    {selectedBenefit.portalLink && (
+                      <a
+                        href={selectedBenefit.portalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 mt-4 text-sm font-medium text-[#1a1a2e] hover:underline min-h-[44px]"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        Open enrollment page
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Caveats */}
+                  {selectedBenefit.caveats && (
+                    <div className="border border-[#e0ddd9] rounded-lg bg-white p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Info className="h-4 w-4 text-[#999999]" />
+                        <h3 className="text-sm font-semibold text-[#111111]">
+                          Important Notes
+                        </h3>
+                      </div>
+                      <p className="text-sm text-[#666666]">{selectedBenefit.caveats}</p>
+                    </div>
+                  )}
+                </div>
+              </>
+            );
+          })()}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
