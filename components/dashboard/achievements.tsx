@@ -60,7 +60,7 @@ export function Achievements({ badges, totalCount }: AchievementsProps) {
               title={badge.description}
             >
               <div
-                className={`flex items-center justify-center rounded-full ${
+                className={`flex items-center justify-center rounded-full transition-transform duration-150 hover:scale-110 ${
                   unlocked ? "bg-[#1a1a2e]" : "bg-[#f0efed]"
                 }`}
                 style={{ width: 44, height: 44 }}

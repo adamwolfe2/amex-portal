@@ -133,7 +133,7 @@ export function ActivityGrid({ claimDates }: ActivityGridProps) {
               {week.map((day) => (
                 <div
                   key={day.key}
-                  className={`w-2.5 h-2.5 sm:w-[11px] sm:h-[11px] rounded-[2px] transition-colors ${
+                  className={`w-2.5 h-2.5 sm:w-[11px] sm:h-[11px] rounded-[2px] transition-all duration-150 hover:scale-125 ${
                     isFuture(day.date)
                       ? "bg-transparent"
                       : getCellColor(day.count)

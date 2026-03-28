@@ -76,7 +76,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="w-full max-w-lg space-y-6">
         {/* Step indicator */}
         <div className="flex items-center justify-center gap-2">
