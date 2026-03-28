@@ -9,11 +9,14 @@ import type { CardKey, BenefitCategory } from "@/lib/data/types";
 import { BarChart3, TrendingUp, Award, Flame } from "lucide-react";
 import { ShareCard } from "@/components/dashboard/share-card";
 
-export const metadata: Metadata = {
-  title: "2026 Savings Report",
-  description:
-    "Your comprehensive annual review of Amex benefit usage and savings.",
-};
+export function generateMetadata(): Metadata {
+  const year = new Date().getFullYear();
+  return {
+    title: `${year} Savings Report`,
+    description:
+      "Your comprehensive annual review of Amex benefit usage and savings.",
+  };
+}
 
 const MONTH_NAMES = [
   "January",
@@ -31,7 +34,7 @@ const MONTH_NAMES = [
 ];
 
 export default async function ReportPage() {
-  const year = 2026;
+  const year = new Date().getFullYear();
 
   const { userId } = await auth();
   if (!userId) {

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { BENEFITS, CARDS } from "@/lib/data";
 import { useUser } from "@/lib/user-context";
 import Link from "next/link";
@@ -56,9 +57,15 @@ function CadenceBadge({ cadence }: { cadence: string }) {
 
 export default function BenefitsPage() {
   const { cards: userCards } = useUser();
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const [filter, setFilter] = useState<FilterKey>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) setSearch(q);
+  }, [searchParams]);
 
   // Only show benefits for the user's selected cards
   const userBenefits = useMemo(

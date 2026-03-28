@@ -399,6 +399,22 @@ export async function getPendingTips(limit = 20) {
     .limit(limit);
 }
 
+export async function getApprovedTips(limit = 100) {
+  return db
+    .select({
+      id: communityTips.id,
+      title: communityTips.title,
+      body: communityTips.body,
+      card: communityTips.card,
+      category: communityTips.category,
+      createdAt: communityTips.createdAt,
+    })
+    .from(communityTips)
+    .where(eq(communityTips.status, "approved"))
+    .orderBy(desc(communityTips.createdAt))
+    .limit(limit);
+}
+
 export async function updateTipStatus(id: number, status: string) {
   const result = await db
     .update(communityTips)

@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { getUserByClerkId, createCommunityTip } from "@/lib/db/queries";
+import { getUserByClerkId, createCommunityTip, getApprovedTips } from "@/lib/db/queries";
 import { communityTipSchema } from "@/lib/validation";
 import {
   rateLimit,
@@ -10,6 +10,18 @@ import {
   getClientIp,
 } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+
+export async function GET() {
+  try {
+    const tips = await getApprovedTips();
+    return NextResponse.json(tips);
+  } catch (error) {
+    logger.error("Failed to fetch approved tips", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return NextResponse.json({ error: "Failed to fetch tips" }, { status: 500 });
+  }
+}
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);

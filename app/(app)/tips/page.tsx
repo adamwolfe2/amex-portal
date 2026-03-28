@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { TIPS, EVIDENCE_LEVELS } from "@/lib/data";
 import { ExternalLink, Plus, Send, X } from "lucide-react";
 import { toast } from "sonner";
@@ -209,18 +209,49 @@ function SubmitTipForm({ onClose }: { onClose: () => void }) {
   );
 }
 
+type CommunityTip = {
+  id: number;
+  title: string;
+  body: string;
+  card: string;
+  category: string | null;
+  createdAt: string | null;
+};
+
 export default function TipsPage() {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [showForm, setShowForm] = useState(false);
+  const [communityTips, setCommunityTips] = useState<CommunityTip[]>([]);
+
+  useEffect(() => {
+    fetch("/api/tips")
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => Array.isArray(data) ? setCommunityTips(data) : null)
+      .catch(() => null);
+  }, []);
+
+  const allTips = useMemo(() => {
+    const mapped = communityTips.map((t) => ({
+      id: `community-${t.id}`,
+      title: t.title,
+      description: t.body,
+      evidence: "community" as const,
+      card: t.card as "platinum" | "gold" | "both",
+      category: t.category ?? undefined,
+      sourceUrl: "#",
+      sourceLabel: "Community submission",
+    }));
+    return [...TIPS, ...mapped];
+  }, [communityTips]);
 
   const filtered = useMemo(() => {
-    return TIPS.filter((t) => {
+    return allTips.filter((t) => {
       if (filter === "all") return true;
       if (filter === "platinum") return t.card === "platinum" || t.card === "both";
       if (filter === "gold") return t.card === "gold" || t.card === "both";
       return t.evidence === filter;
     });
-  }, [filter]);
+  }, [filter, allTips]);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -286,15 +317,17 @@ export default function TipsPage() {
               <p className="text-xs text-[#666] leading-relaxed mb-2">
                 {t.description}
               </p>
-              <a
-                href={t.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-xs text-[#2563eb] hover:underline"
-              >
-                <ExternalLink className="size-3" />
-                {t.sourceLabel}
-              </a>
+              {t.sourceUrl !== "#" && (
+                <a
+                  href={t.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-[#2563eb] hover:underline"
+                >
+                  <ExternalLink className="size-3" />
+                  {t.sourceLabel}
+                </a>
+              )}
             </div>
           );
         })}

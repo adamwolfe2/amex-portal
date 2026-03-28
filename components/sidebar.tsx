@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   AlertCircle,
@@ -221,6 +222,11 @@ export function Sidebar({
   isAdmin?: boolean;
 }) {
   const pathname = usePathname();
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  useEffect(() => {
+    setSheetOpen(false);
+  }, [pathname]);
 
   return (
     <>
@@ -231,7 +237,7 @@ export function Sidebar({
 
       {/* Mobile hamburger + sheet */}
       <div className="fixed top-0 left-0 right-0 z-40 flex items-center h-14 px-4 bg-[#fafaf9] border-b border-[#e0ddd9] md:hidden pt-[env(safe-area-inset-top)]">
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger
             className="p-3 -ml-3 rounded-md hover:bg-[#f0efed] active:bg-[#e5e3e0]"
             aria-label="Open navigation menu"

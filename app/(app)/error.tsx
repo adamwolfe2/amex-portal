@@ -12,7 +12,8 @@ export default function AppError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("App error:", error);
+    // error is available for external logging services
+    void error;
   }, [error]);
 
   return (
