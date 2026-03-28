@@ -215,7 +215,7 @@ export default async function DashboardPage() {
       </Suspense>
 
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
         <h1 className="text-xl font-semibold text-[#111111]">Dashboard</h1>
         <p className="text-sm text-[#777777] mt-1">
           Your credit card rewards command center
@@ -245,7 +245,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Streak + Monthly Progress */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-75">
         <StreakCounter
           currentStreak={streakData.current}
           longestStreak={streakData.longest}
@@ -258,7 +258,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Mark as Used — primary CTA (Pro only) */}
-      <div className="mb-4">
+      <div className="mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
         {isPro ? (
           <MarkAsUsed
             benefits={monthlyBenefits}
@@ -273,7 +273,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ROI row (Pro only) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-150">
         {isPro ? (
           <>
             <ValueCaptured captured={capturedValue} available={availableValue} />
@@ -295,7 +295,7 @@ export default async function DashboardPage() {
 
       {/* Share Your Savings (Pro only) */}
       {isPro && capturedValue > 0 && (
-        <div className="mb-4">
+        <div className="mb-4 animate-in fade-in duration-300 delay-200">
           <ShareCard
             captured={capturedValue}
             available={availableValue}
@@ -306,13 +306,13 @@ export default async function DashboardPage() {
       )}
 
       {/* Activity Grid */}
-      <div className="mb-4">
+      <div className="mb-4 animate-in fade-in duration-300 delay-200">
         <ActivityGrid claimDates={claimDates} />
       </div>
 
       {/* Achievement Badges (Pro only) */}
       {isPro && (
-        <div className="mb-4">
+        <div className="mb-4 animate-in fade-in duration-300 delay-200">
           <Achievements
             badges={achievementBadges}
             totalCount={ACHIEVEMENTS.length}
@@ -321,7 +321,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Setup Progress */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in duration-300 delay-300">
         {progressWidgets.map((pw) => (
           <ProgressWidget
             key={pw.card}
@@ -334,7 +334,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Widgets Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 animate-in fade-in duration-300 delay-300">
         <RecommendedNext benefits={recommendedBenefits} />
         <ActionPreview actions={actions} />
         <UpcomingResets benefits={userBenefits} />

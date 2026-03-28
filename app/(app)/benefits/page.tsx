@@ -95,7 +95,7 @@ export default function BenefitsPage() {
   }, [search, filter, userBenefits]);
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-[#111111]">
           Benefits Database

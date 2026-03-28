@@ -17,7 +17,11 @@ export function StreakCounter({
     <div className="border border-[#e0ddd9] rounded-lg p-4 bg-white">
       <div className="flex items-center gap-2 mb-1">
         <Flame
-          className={`h-5 w-5 ${active ? "text-[#8B6914]" : "text-[#999999]"}`}
+          className={`h-5 w-5 transition-transform ${
+            active
+              ? "text-[#8B6914] animate-pulse"
+              : "text-[#999999]"
+          }`}
         />
         <span
           className="text-2xl font-semibold text-[#111111]"
