@@ -148,11 +148,11 @@ export default async function Home() {
       </nav>
 
       {/* ── Hero Section ── */}
-      <section className="relative min-h-screen flex items-center pt-16">
+      <section className="relative min-h-screen flex items-center pt-24 sm:pt-16 pb-12 sm:pb-0">
         <div className="max-w-5xl mx-auto px-6 w-full">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-16 items-center">
+            <div className="space-y-10 sm:space-y-8">
+              <div className="space-y-6 sm:space-y-4">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#111111] tracking-tight leading-[1.1]">
                   Stop leaving money on the table.
                 </h1>
@@ -168,19 +168,19 @@ export default async function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/sign-up"
-                  className="inline-flex items-center justify-center gap-2 text-base font-semibold text-white bg-[#1a1a2e] hover:bg-[#2a2a3e] transition-colors px-8 py-3.5 rounded-lg"
+                  className="inline-flex items-center justify-center gap-2 text-base font-semibold text-white bg-[#1a1a2e] hover:bg-[#2a2a3e] transition-colors px-8 py-4 sm:py-3.5 rounded-xl sm:rounded-lg"
                 >
                   Start Tracking
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a
                   href="#features"
-                  className="inline-flex items-center justify-center gap-2 text-base font-medium text-[#666666] hover:text-[#111111] border border-[#e0ddd9] hover:border-[#ccc9c4] transition-colors px-8 py-3.5 rounded-lg"
+                  className="inline-flex items-center justify-center gap-2 text-base font-medium text-[#666666] hover:text-[#111111] border border-[#e0ddd9] hover:border-[#ccc9c4] transition-colors px-8 py-4 sm:py-3.5 rounded-xl sm:rounded-lg"
                 >
                   See How It Works
                 </a>
               </div>
-              <div className="flex items-center flex-wrap gap-6 gap-y-2 pt-2">
+              <div className="flex items-center flex-wrap gap-6 gap-y-3 pt-2">
                 <div className="flex items-center gap-2 text-sm text-[#666666]">
                   <Check className="h-4 w-4 text-[#8B6914]" />
                   <span>No credit card required</span>
@@ -191,8 +191,8 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-md overflow-hidden">
+            <div className="relative flex justify-center lg:justify-end pt-4 sm:pt-0">
+              <div className="relative w-full max-w-md overflow-hidden pb-8">
                 <Image
                   src="/platinum-card.png"
                   alt="Amex Platinum Card"
@@ -215,7 +215,7 @@ export default async function Home() {
       </section>
 
       {/* ── Problem Section ── */}
-      <section className="py-24 sm:py-32 border-t border-[#e0ddd9]">
+      <section className="py-20 sm:py-32 border-t border-[#e0ddd9]">
         <div className="max-w-5xl mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">
@@ -230,7 +230,7 @@ export default async function Home() {
               problem? Most cardholders miss 60%+ of their available credits.
             </p>
           </div>
-          <div className="mt-16 grid sm:grid-cols-3 gap-8">
+          <div className="mt-12 sm:mt-16 grid sm:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center space-y-3 p-6">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#f0efed]">
                 <CreditCard className="h-5 w-5 text-[#1a1a2e]" />
@@ -263,9 +263,9 @@ export default async function Home() {
       </section>
 
       {/* ── Feature Grid ── */}
-      <section id="features" className="py-24 sm:py-32 border-t border-[#e0ddd9] scroll-mt-20">
+      <section id="features" className="py-20 sm:py-32 border-t border-[#e0ddd9] scroll-mt-20">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
+          <div className="max-w-2xl mx-auto text-center space-y-5 sm:space-y-4 mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">
               Everything you need to maximize your cards
             </h2>
@@ -274,7 +274,7 @@ export default async function Home() {
               refuse to leave money on the table.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
             {features.map((feature) => {
               const Icon = feature.icon;
               return (
@@ -299,9 +299,9 @@ export default async function Home() {
       </section>
 
       {/* ── Social Proof / Stats ── */}
-      <section className="py-24 sm:py-32 border-t border-[#e0ddd9] bg-[#1a1a2e]">
+      <section className="py-20 sm:py-32 border-t border-[#e0ddd9] bg-[#1a1a2e]">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid sm:grid-cols-3 gap-12">
+          <div className="grid sm:grid-cols-3 gap-10 sm:gap-12">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
@@ -319,9 +319,9 @@ export default async function Home() {
       </section>
 
       {/* ── Pricing Section ── */}
-      <section id="pricing" className="py-24 sm:py-32 border-t border-[#e0ddd9]">
+      <section id="pricing" className="py-20 sm:py-32 border-t border-[#e0ddd9]">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
+          <div className="max-w-2xl mx-auto text-center space-y-5 sm:space-y-4 mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">
               Simple, transparent pricing
             </h2>
@@ -330,7 +330,7 @@ export default async function Home() {
               surprises.
             </p>
           </div>
-          <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="grid sm:grid-cols-3 gap-5 sm:gap-8 max-w-3xl mx-auto">
             {pricingPlans.map((plan) => (
               <div
                 key={plan.name}
@@ -379,9 +379,9 @@ export default async function Home() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24 sm:py-32 border-t border-[#e0ddd9]">
+      <section className="py-20 sm:py-32 border-t border-[#e0ddd9]">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight text-center mb-10 sm:mb-12">
             Frequently asked questions
           </h2>
           <div className="space-y-0 divide-y divide-[#e0ddd9]">
@@ -468,7 +468,7 @@ export default async function Home() {
       </section>
 
       {/* ── Final CTA ── */}
-      <section className="py-24 sm:py-32 border-t border-[#e0ddd9]">
+      <section className="py-20 sm:py-32 border-t border-[#e0ddd9]">
         <div className="max-w-5xl mx-auto px-6">
           <div className="max-w-2xl mx-auto text-center space-y-8">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">
@@ -482,7 +482,7 @@ export default async function Home() {
             </p>
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 text-base font-semibold text-white bg-[#1a1a2e] hover:bg-[#2a2a3e] transition-colors px-10 py-4 rounded-lg"
+              className="inline-flex items-center justify-center gap-2 text-base font-semibold text-white bg-[#1a1a2e] hover:bg-[#2a2a3e] transition-colors px-10 py-4 rounded-xl sm:rounded-lg w-full sm:w-auto"
             >
               Get Started Free
               <ArrowRight className="h-4 w-4" />
@@ -492,7 +492,7 @@ export default async function Home() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-8 border-t border-[#e0ddd9]">
+      <footer className="py-10 sm:py-8 border-t border-[#e0ddd9]">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Image
