@@ -179,7 +179,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-1">

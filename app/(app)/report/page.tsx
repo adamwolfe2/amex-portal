@@ -173,7 +173,7 @@ export default async function ReportPage() {
   const maxCategory = Math.max(...sortedCategories.map((c) => c.total), 1);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+    <div className="max-w-3xl mx-auto px-4 py-8 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-[#1a1a2e]">
