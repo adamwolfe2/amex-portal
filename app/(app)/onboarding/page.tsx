@@ -67,6 +67,7 @@ export default function OnboardingPage() {
         toast.error("Failed to save your card selection. Please try again.");
         return;
       }
+      router.refresh();
       router.push("/dashboard");
     } catch {
       toast.error("Something went wrong. Please try again.");
