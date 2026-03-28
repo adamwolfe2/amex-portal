@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { and, gte, lt, eq } from "drizzle-orm";
+import { and, gte, lt, eq, lte } from "drizzle-orm";
 import { sendTrialExpiringEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
 
@@ -46,7 +46,31 @@ export async function GET(request: Request) {
       if (ok) sent++;
     }
 
-    return Response.json({ sent, checked: trialingUsers.length });
+    // Downgrade users whose trial has expired
+    const expiredTrialUsers = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(
+        and(
+          eq(users.subscriptionStatus, "trialing"),
+          lte(users.trialEndsAt, now)
+        )
+      );
+
+    if (expiredTrialUsers.length > 0) {
+      await db
+        .update(users)
+        .set({ subscriptionStatus: "free", planType: "free", updatedAt: now })
+        .where(
+          and(
+            eq(users.subscriptionStatus, "trialing"),
+            lte(users.trialEndsAt, now)
+          )
+        );
+      logger.info("Downgraded expired trial users", { count: expiredTrialUsers.length });
+    }
+
+    return Response.json({ sent, checked: trialingUsers.length, expired: expiredTrialUsers.length });
   } catch (error) {
     logger.error("Trial reminder cron failed", {
       error: error instanceof Error ? error.message : String(error),

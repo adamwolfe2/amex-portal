@@ -62,11 +62,11 @@ describe("search", () => {
     }
   });
 
-  it("benefit results have query-encoded hrefs", () => {
+  it("benefit results link to individual benefit pages", () => {
     const results = search("uber");
     const benefitResults = results.filter((r) => r.type === "benefit");
     for (const result of benefitResults) {
-      expect(result.href).toMatch(/^\/benefits\?q=/);
+      expect(result.href).toMatch(/^\/benefits\//);
     }
   });
 

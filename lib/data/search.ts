@@ -36,7 +36,7 @@ export function search(query: string): SearchResult[] {
         type: "benefit",
         title: b.name,
         description: b.description,
-        href: `/benefits?q=${encodeURIComponent(b.name)}`,
+        href: `/benefits/${b.id}`,
       });
     }
   }
