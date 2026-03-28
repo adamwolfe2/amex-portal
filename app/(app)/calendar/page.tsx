@@ -222,7 +222,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-[#111111]">
