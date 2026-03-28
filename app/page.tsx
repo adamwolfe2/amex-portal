@@ -21,6 +21,12 @@ import {
   LIFETIME_PRICE,
 } from "@/lib/referral";
 import { CARDS } from "@/lib/data";
+import { BenefitTrackerDemo } from "@/components/landing/benefit-tracker-demo";
+import { ROICalculatorDemo } from "@/components/landing/roi-calculator-demo";
+import { ActivityHeatmapDemo } from "@/components/landing/activity-heatmap-demo";
+import { MonthlyResetDemo } from "@/components/landing/monthly-reset-demo";
+import { SavingsStreakDemo } from "@/components/landing/savings-streak-demo";
+import { BeforeAfterDemo } from "@/components/landing/before-after-demo";
 
 const features = [
   {
@@ -294,6 +300,69 @@ export default async function Home() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Interactive Demos ── */}
+      <section className="py-20 sm:py-32 border-t border-[#e0ddd9] bg-[#fafaf9]">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="max-w-2xl mx-auto text-center space-y-5 sm:space-y-4 mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#111111] tracking-tight">
+              See it in action
+            </h2>
+            <p className="text-lg text-[#666666]">
+              Interactive previews of the tools that help you capture every
+              dollar. Go ahead, click around.
+            </p>
+          </div>
+
+          {/* Row 1: Benefit Tracker + ROI Calculator */}
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
+                Track Your Benefits
+              </p>
+              <BenefitTrackerDemo />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
+                Calculate Your ROI
+              </p>
+              <ROICalculatorDemo />
+            </div>
+          </div>
+
+          {/* Row 2: Monthly Reset + Activity Heatmap */}
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
+                Never Miss a Reset
+              </p>
+              <MonthlyResetDemo />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
+                Visualize Your Activity
+              </p>
+              <ActivityHeatmapDemo />
+            </div>
+          </div>
+
+          {/* Row 3: Savings Streak + Before/After */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
+                Stay Motivated
+              </p>
+              <SavingsStreakDemo />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
+                See the Difference
+              </p>
+              <BeforeAfterDemo />
+            </div>
           </div>
         </div>
       </section>
