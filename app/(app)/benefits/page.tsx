@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { BENEFITS, CARDS } from "@/lib/data";
 import { useUser } from "@/lib/user-context";
 import Link from "next/link";
@@ -58,14 +58,30 @@ function CadenceBadge({ cadence }: { cadence: string }) {
 export default function BenefitsPage() {
   const { cards: userCards } = useUser();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
-  const [filter, setFilter] = useState<FilterKey>("all");
+  const [filter, setFilter] = useState<FilterKey>(
+    () => (searchParams.get("filter") as FilterKey) ?? "all"
+  );
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     const q = searchParams.get("q");
     if (q) setSearch(q);
+    const f = searchParams.get("filter") as FilterKey;
+    if (f) setFilter(f);
   }, [searchParams]);
+
+  function updateFilter(f: FilterKey) {
+    setFilter(f);
+    const params = new URLSearchParams(searchParams.toString());
+    if (f === "all") {
+      params.delete("filter");
+    } else {
+      params.set("filter", f);
+    }
+    router.replace(`/benefits?${params.toString()}`, { scroll: false });
+  }
 
   // Only show benefits for the user's selected cards
   const userBenefits = useMemo(
@@ -122,7 +138,7 @@ export default function BenefitsPage() {
         {FILTERS.map((f) => (
           <button
             key={f.key}
-            onClick={() => setFilter(f.key)}
+            onClick={() => updateFilter(f.key)}
             className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors min-h-[44px] flex items-center ${
               filter === f.key
                 ? "bg-[#1a1a2e] text-white"
