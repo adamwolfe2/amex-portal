@@ -59,7 +59,7 @@ export function HeroCards() {
             height={240}
             draggable={false}
             className="rounded-xl shadow-xl"
-            style={{ display: "block", background: "transparent" }}
+            style={{ display: "block", mixBlendMode: "multiply" }}
           />
           <div
             className="absolute inset-0 rounded-xl pointer-events-none"
@@ -91,7 +91,7 @@ export function HeroCards() {
             height={240}
             draggable={false}
             className="rounded-xl shadow-2xl"
-            style={{ display: "block", background: "transparent" }}
+            style={{ display: "block", mixBlendMode: "multiply" }}
           />
           <div
             className="absolute inset-0 rounded-xl pointer-events-none"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, AlertCircle } from "lucide-react";
+import { Flame, Check, Clock } from "lucide-react";
 
 const monthlyBenefits = [
   { name: "Uber Cash", card: "Platinum", value: 15 },
@@ -9,31 +9,26 @@ const monthlyBenefits = [
   { name: "Dining Credit", card: "Gold", value: 10 },
   { name: "Walmart+", card: "Platinum", value: 12.95 },
   { name: "Dunkin' Credit", card: "Gold", value: 7 },
-  { name: "Uber Cash", card: "Gold", value: 10 },
+  { name: "CLEAR Plus", card: "Platinum", value: 13 },
 ];
 
-const annualBenefits = [
-  { name: "Global Entry", card: "Platinum", value: 100, status: "claimed" as const },
-  { name: "CLEAR Plus", card: "Platinum", value: 189, status: "warning" as const },
-  { name: "Airline Fee Credit", card: "Platinum", value: 200, status: "claimed" as const },
+const totalValue = monthlyBenefits.reduce((sum, b) => sum + b.value, 0);
+const capturedValue = 47.95;
+const actualPct = Math.round((capturedValue / totalValue) * 100);
+
+const upcomingResets = [
+  { name: "Uber Cash", card: "Platinum", daysLeft: 1, urgency: "high" },
+  { name: "Dining Credit", card: "Gold", daysLeft: 4, urgency: "medium" },
 ];
 
-const totalMonthly = monthlyBenefits.reduce((sum, b) => sum + b.value, 0);
-
-export function BenefitTrackerDemo() {
-  const [claimed, setClaimed] = useState<Set<number>>(new Set([2]));
+export function DashboardDemo() {
   const [displayPct, setDisplayPct] = useState(0);
-
-  const claimedValue = monthlyBenefits.reduce(
-    (sum, b, i) => (claimed.has(i) ? sum + b.value : sum),
-    0
-  );
-  const actualPct = Math.round((47.95 / totalMonthly) * 100);
+  const [claimed, setClaimed] = useState<Set<number>>(new Set([2, 4]));
 
   useEffect(() => {
     const t = setTimeout(() => setDisplayPct(actualPct), 150);
     return () => clearTimeout(t);
-  }, [actualPct]);
+  }, []);
 
   function toggle(index: number) {
     setClaimed((prev) => {
@@ -44,28 +39,51 @@ export function BenefitTrackerDemo() {
     });
   }
 
-  const progressPct = Math.round((claimedValue / totalMonthly) * 100);
-
   return (
     <div className="bg-white min-h-full px-4 py-3">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-base font-bold text-[#111111]">Benefits</p>
-        <p className="text-sm text-[#666666]">March</p>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-base font-bold text-[#111111]">CreditOS</p>
+        <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full">
+          <Flame className="h-3.5 w-3.5 text-orange-500" />
+          <span className="text-xs font-semibold text-orange-600">7</span>
+        </div>
       </div>
 
-      {/* Progress section */}
-      <div className="text-center mb-4">
-        <p className="text-4xl font-bold text-[#1a1a2e] tabular-nums">{displayPct}%</p>
-        <div className="h-2.5 bg-[#f0eeeb] rounded-full mt-3 mb-2 overflow-hidden">
-          <div
-            className="h-full bg-[#1a1a2e] rounded-full transition-all duration-700 ease-out"
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
-        <p className="text-xs text-[#666666]">
-          ${claimedValue.toFixed(2)} of ${totalMonthly.toFixed(2)} captured
+      {/* THIS MONTH section */}
+      <p className="text-[10px] font-semibold text-[#999999] uppercase tracking-wider mt-2 mb-2">
+        This Month
+      </p>
+      <div className="flex items-center justify-between mb-1.5">
+        <p className="text-sm font-semibold text-[#111111]">
+          $47.95 <span className="text-[#999999] font-normal">/ $79.95</span>
         </p>
+        <p className="text-sm font-semibold text-[#1a1a2e]">{displayPct}% captured</p>
+      </div>
+      <div className="h-2 bg-[#f0eeeb] rounded-full mb-3 overflow-hidden">
+        <div
+          className="h-full bg-[#1a1a2e] rounded-full transition-all duration-700 ease-out"
+          style={{ width: `${displayPct}%` }}
+        />
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 gap-2 mb-1">
+        <div className="bg-[#f0efed] rounded-xl p-2.5 text-center">
+          <div className="flex items-center justify-center gap-1 mb-0.5">
+            <Flame className="h-3.5 w-3.5 text-orange-500" />
+            <p className="text-base font-bold text-[#111111]">7</p>
+          </div>
+          <p className="text-[10px] text-[#666666]">Streak</p>
+        </div>
+        <div className="bg-[#f0efed] rounded-xl p-2.5 text-center">
+          <p className="text-base font-bold text-[#111111] tabular-nums">$47.95</p>
+          <p className="text-[10px] text-[#666666]">Captured</p>
+        </div>
+        <div className="bg-[#f0efed] rounded-xl p-2.5 text-center">
+          <p className="text-base font-bold text-emerald-600 tabular-nums">3.8x</p>
+          <p className="text-[10px] text-[#666666]">ROI</p>
+        </div>
       </div>
 
       {/* MONTHLY CREDITS section */}
@@ -120,67 +138,44 @@ export function BenefitTrackerDemo() {
         })}
       </div>
 
-      {/* ANNUAL SETUP section */}
+      {/* UPCOMING RESETS section */}
       <p className="text-[10px] font-semibold text-[#999999] uppercase tracking-wider mt-4 mb-2">
-        Annual Setup
+        Upcoming Resets
       </p>
       <div>
-        {annualBenefits.map((benefit, i) => (
+        {upcomingResets.map((item, i) => (
           <div
             key={i}
             className="flex items-center gap-3 py-2.5 border-b border-[#f0eeeb]"
           >
             <div
-              className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${
-                benefit.status === "claimed"
-                  ? "bg-[#1a1a2e]"
-                  : benefit.status === "warning"
-                  ? "bg-amber-400"
-                  : "bg-[#f0eeeb]"
+              className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                item.urgency === "high" ? "bg-red-500" : "bg-amber-400"
               }`}
-            >
-              {benefit.status === "claimed" ? (
-                <Check className="h-3 w-3 text-white" />
-              ) : (
-                <AlertCircle className="h-3 w-3 text-white" />
-              )}
-            </div>
-            <span
-              className={`flex-1 text-sm ${
-                benefit.status === "warning"
-                  ? "text-amber-700"
-                  : benefit.status === "claimed"
-                  ? "text-[#999999] line-through"
-                  : "text-[#111111] font-medium"
-              }`}
-            >
-              {benefit.name}
-              {benefit.status === "warning" && (
-                <span className="ml-1.5 text-[10px] font-medium text-amber-600 no-underline">
-                  not enrolled
-                </span>
-              )}
-            </span>
+            />
+            <Clock className="h-3.5 w-3.5 text-[#999999]" />
+            <span className="flex-1 text-sm text-[#111111]">{item.name}</span>
             <span
               className={`text-[10px] px-1.5 py-0.5 rounded ${
-                benefit.card === "Platinum"
+                item.card === "Platinum"
                   ? "bg-[#1a1a2e]/10 text-[#1a1a2e]"
                   : "bg-[#8B6914]/10 text-[#8B6914]"
               }`}
             >
-              {benefit.card}
+              {item.card}
             </span>
             <span
-              className={`text-sm font-semibold tabular-nums min-w-[40px] text-right ${
-                benefit.status === "claimed" ? "text-[#999999]" : "text-[#111111]"
+              className={`text-xs font-semibold ${
+                item.urgency === "high" ? "text-red-600" : "text-amber-600"
               }`}
             >
-              ${benefit.value}
+              {item.daysLeft}d left
             </span>
           </div>
         ))}
       </div>
 
+      {/* Bottom padding */}
       <div className="h-4" />
     </div>
   );

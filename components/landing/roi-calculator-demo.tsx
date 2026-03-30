@@ -1,42 +1,45 @@
 "use client";
 
-import { useState } from "react";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { TrendingUp } from "lucide-react";
 
 const cards = {
-  platinum: {
-    name: "Platinum",
-    fee: 895,
-    value: 3105,
-    color: "#1a1a2e",
-  },
-  gold: {
-    name: "Gold",
-    fee: 325,
-    value: 1551,
-    color: "#8B6914",
-  },
+  platinum: { name: "Platinum", fee: 895, value: 3105 },
+  gold: { name: "Gold", fee: 325, value: 1551 },
 };
 
 export function ROICalculatorDemo() {
   const [active, setActive] = useState({ platinum: true, gold: true });
+  const [barWidth, setBarWidth] = useState(0);
 
-  const totalFees =
-    (active.platinum ? cards.platinum.fee : 0) +
-    (active.gold ? cards.gold.fee : 0);
   const totalValue =
     (active.platinum ? cards.platinum.value : 0) +
     (active.gold ? cards.gold.value : 0);
+  const totalFees =
+    (active.platinum ? cards.platinum.fee : 0) +
+    (active.gold ? cards.gold.fee : 0);
   const netROI = totalValue - totalFees;
-  const positive = netROI >= 0;
+
+  const platNet = cards.platinum.value - cards.platinum.fee;
+  const goldNet = cards.gold.value - cards.gold.fee;
+
+  useEffect(() => {
+    const t = setTimeout(() => setBarWidth(100), 150);
+    return () => clearTimeout(t);
+  }, []);
+
+  const feesRatio = totalValue > 0 ? (totalFees / totalValue) * 100 : 0;
+  const netRatio = totalValue > 0 ? (netROI / totalValue) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#e0ddd9] p-5 sm:p-6 max-w-md mx-auto">
-      <p className="text-sm font-semibold text-[#111111] mb-4">
-        Card ROI Calculator
-      </p>
+    <div className="bg-white min-h-full px-4 py-3">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-base font-bold text-[#111111]">ROI Calculator</p>
+      </div>
 
-      <div className="flex gap-3 mb-6">
+      {/* Card toggles */}
+      <div className="flex gap-2 mb-5">
         {(["platinum", "gold"] as const).map((key) => {
           const card = cards[key];
           const isActive = active[key];
@@ -46,14 +49,13 @@ export function ROICalculatorDemo() {
               onClick={() =>
                 setActive((prev) => ({ ...prev, [key]: !prev[key] }))
               }
-              className={`flex-1 py-3 px-4 rounded-xl border-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex-1 py-2 px-3 rounded-xl border-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? "border-current text-white"
+                  ? key === "platinum"
+                    ? "bg-[#1a1a2e] border-[#1a1a2e] text-white"
+                    : "bg-[#8B6914] border-[#8B6914] text-white"
                   : "border-[#e0ddd9] text-[#999999] bg-[#fafaf9]"
               }`}
-              style={
-                isActive ? { backgroundColor: card.color, borderColor: card.color } : undefined
-              }
             >
               {card.name}
             </button>
@@ -61,51 +63,114 @@ export function ROICalculatorDemo() {
         })}
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-5">
-        <div className="text-center p-3 rounded-xl bg-[#f0eeeb]">
-          <p className="text-xs text-[#666666] mb-1">Value</p>
-          <p className="text-lg font-bold text-[#111111] tabular-nums">
+      {/* Big ROI display */}
+      <div className="text-center mb-5">
+        <p className="text-[40px] font-bold text-emerald-600 tabular-nums leading-none">
+          +${netROI.toLocaleString()}
+        </p>
+        <p className="text-xs text-[#666666] mt-1">net return this year</p>
+      </div>
+
+      {/* Bar chart */}
+      <div className="space-y-2.5 mb-5">
+        {/* Value row */}
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-[#666666] w-10 flex-shrink-0">Value</p>
+          <div className="flex-1 h-5 bg-[#f0eeeb] rounded overflow-hidden">
+            <div
+              className="h-full bg-[#1a1a2e] rounded transition-all duration-700 ease-out"
+              style={{ width: `${barWidth}%` }}
+            />
+          </div>
+          <p className="text-xs font-semibold text-[#111111] tabular-nums w-14 text-right">
             ${totalValue.toLocaleString()}
           </p>
         </div>
-        <div className="text-center p-3 rounded-xl bg-[#f0eeeb]">
-          <p className="text-xs text-[#666666] mb-1">Fees</p>
-          <p className="text-lg font-bold text-[#111111] tabular-nums">
+        {/* Fees row */}
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-[#666666] w-10 flex-shrink-0">Fees</p>
+          <div className="flex-1 h-5 bg-[#f0eeeb] rounded overflow-hidden">
+            <div
+              className="h-full bg-red-400 rounded transition-all duration-700 ease-out"
+              style={{ width: `${(feesRatio * barWidth) / 100}%` }}
+            />
+          </div>
+          <p className="text-xs font-semibold text-[#111111] tabular-nums w-14 text-right">
             ${totalFees.toLocaleString()}
           </p>
         </div>
-        <div
-          className={`text-center p-3 rounded-xl ${
-            positive ? "bg-emerald-50" : "bg-red-50"
-          }`}
-        >
-          <p className="text-xs text-[#666666] mb-1">Net ROI</p>
-          <p
-            className={`text-lg font-bold tabular-nums ${
-              positive ? "text-emerald-600" : "text-red-600"
-            }`}
-          >
-            {positive ? "+" : ""}${netROI.toLocaleString()}
+        {/* Net row */}
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-[#666666] w-10 flex-shrink-0">Net</p>
+          <div className="flex-1 h-5 bg-[#f0eeeb] rounded overflow-hidden">
+            <div
+              className="h-full bg-emerald-500 rounded transition-all duration-700 ease-out"
+              style={{ width: `${(netRatio * barWidth) / 100}%` }}
+            />
+          </div>
+          <p className="text-xs font-semibold text-emerald-600 tabular-nums w-14 text-right">
+            +${netROI.toLocaleString()}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 justify-center">
-        {positive ? (
-          <TrendingUp className="h-4 w-4 text-emerald-600" />
-        ) : (
-          <TrendingDown className="h-4 w-4 text-red-600" />
-        )}
-        <p
-          className={`text-sm font-medium ${
-            positive ? "text-emerald-600" : "text-red-600"
-          }`}
-        >
-          {positive
-            ? "Your cards are paying for themselves!"
-            : "Toggle cards to see your ROI"}
+      {/* Divider */}
+      <div className="border-t border-[#f0eeeb] mb-3" />
+
+      {/* Per-card breakdown */}
+      <p className="text-[10px] font-semibold text-[#999999] uppercase tracking-wider mt-4 mb-2">
+        Breakdown
+      </p>
+
+      {/* Header row */}
+      <div className="flex items-center py-1.5 mb-0.5">
+        <p className="flex-1 text-[10px] text-[#999999] uppercase tracking-wider">Card</p>
+        <p className="text-[10px] text-[#999999] w-14 text-right">Value</p>
+        <p className="text-[10px] text-[#999999] w-14 text-right">Fee</p>
+        <p className="text-[10px] text-[#999999] w-14 text-right">Net</p>
+      </div>
+
+      <div className="flex items-center py-2.5 border-b border-[#f0eeeb]">
+        <div className="flex-1 flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#1a1a2e]" />
+          <p className="text-sm font-medium text-[#111111]">Platinum</p>
+        </div>
+        <p className="text-sm tabular-nums text-[#111111] w-14 text-right">
+          ${cards.platinum.value.toLocaleString()}
+        </p>
+        <p className="text-sm tabular-nums text-[#666666] w-14 text-right">
+          ${cards.platinum.fee}
+        </p>
+        <p className="text-sm font-semibold tabular-nums text-emerald-600 w-14 text-right">
+          +${platNet.toLocaleString()}
         </p>
       </div>
+
+      <div className="flex items-center py-2.5 border-b border-[#f0eeeb]">
+        <div className="flex-1 flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#8B6914]" />
+          <p className="text-sm font-medium text-[#111111]">Gold</p>
+        </div>
+        <p className="text-sm tabular-nums text-[#111111] w-14 text-right">
+          ${cards.gold.value.toLocaleString()}
+        </p>
+        <p className="text-sm tabular-nums text-[#666666] w-14 text-right">
+          ${cards.gold.fee}
+        </p>
+        <p className="text-sm font-semibold tabular-nums text-emerald-600 w-14 text-right">
+          +${goldNet.toLocaleString()}
+        </p>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-center gap-2 mt-4">
+        <TrendingUp className="h-4 w-4 text-emerald-600" />
+        <p className="text-sm font-medium text-emerald-600">
+          Your cards are paying for themselves!
+        </p>
+      </div>
+
+      <div className="h-4" />
     </div>
   );
 }
