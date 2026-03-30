@@ -21,12 +21,8 @@ import {
   LIFETIME_PRICE,
 } from "@/lib/referral";
 import { CARDS } from "@/lib/data";
-import { BenefitTrackerDemo } from "@/components/landing/benefit-tracker-demo";
-import { ROICalculatorDemo } from "@/components/landing/roi-calculator-demo";
-import { ActivityHeatmapDemo } from "@/components/landing/activity-heatmap-demo";
-import { MonthlyResetDemo } from "@/components/landing/monthly-reset-demo";
-import { SavingsStreakDemo } from "@/components/landing/savings-streak-demo";
-import { BeforeAfterDemo } from "@/components/landing/before-after-demo";
+import { HeroCards } from "@/components/landing/hero-cards";
+import { FeatureShowcase } from "@/components/landing/feature-showcase";
 
 const features = [
   {
@@ -197,25 +193,7 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-            <div className="relative flex justify-center lg:justify-end pt-4 sm:pt-0">
-              <div className="relative w-full max-w-md overflow-hidden pb-8">
-                <Image
-                  src="/platinum-card.png"
-                  alt="Amex Platinum Card"
-                  width={400}
-                  height={252}
-                  className="relative z-10 rounded-xl shadow-2xl transform -rotate-6 hover:rotate-0 transition-transform duration-500"
-                  priority
-                />
-                <Image
-                  src="/gold-card.png"
-                  alt="Amex Gold Card"
-                  width={400}
-                  height={252}
-                  className="absolute top-8 left-12 rounded-xl shadow-xl transform rotate-6 hover:rotate-0 transition-transform duration-500"
-                />
-              </div>
-            </div>
+            <HeroCards />
           </div>
         </div>
       </section>
@@ -317,69 +295,23 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Row 1: Benefit Tracker + ROI Calculator */}
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <div>
-              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
-                Track Your Benefits
-              </p>
-              <BenefitTrackerDemo />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
-                Calculate Your ROI
-              </p>
-              <ROICalculatorDemo />
-            </div>
-          </div>
-
-          {/* Row 2: Monthly Reset + Activity Heatmap */}
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <div>
-              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
-                Never Miss a Reset
-              </p>
-              <MonthlyResetDemo />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
-                Visualize Your Activity
-              </p>
-              <ActivityHeatmapDemo />
-            </div>
-          </div>
-
-          {/* Row 3: Savings Streak + Before/After */}
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
-                Stay Motivated
-              </p>
-              <SavingsStreakDemo />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-[#999999] uppercase tracking-wider mb-3 text-center">
-                See the Difference
-              </p>
-              <BeforeAfterDemo />
-            </div>
-          </div>
+          <FeatureShowcase />
         </div>
       </section>
 
       {/* ── Social Proof / Stats ── */}
-      <section className="py-20 sm:py-32 border-t border-[#e0ddd9] bg-[#1a1a2e]">
+      <section className="py-20 sm:py-32 border-t border-[#e0ddd9] bg-[#f5f4f2]">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid sm:grid-cols-3 gap-10 sm:gap-12">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
                 <div key={stat.label} className="text-center space-y-3">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#e0ddd9] mb-2">
                     <Icon className="h-5 w-5 text-[#8B6914]" />
                   </div>
-                  <p className="text-4xl font-bold text-white">{stat.value}</p>
-                  <p className="text-sm text-white/60">{stat.label}</p>
+                  <p className="text-4xl font-bold text-[#111111]">{stat.value}</p>
+                  <p className="text-sm text-[#666666]">{stat.label}</p>
                 </div>
               );
             })}
