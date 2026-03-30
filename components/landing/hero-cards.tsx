@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 
 export function HeroCards() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,64 +23,57 @@ export function HeroCards() {
     setTilt({ x: 0, y: 0 });
   }
 
-  function handleMouseEnter() {
-    setIsHovering(true);
-  }
+  const easing = isHovering ? "0.1s ease-out" : "0.6s ease-out";
+  const glossPos = `${50 + tilt.y * 3}% ${50 - tilt.x * 3}%`;
 
   return (
     <div className="relative flex justify-center lg:justify-end pt-4 sm:pt-0">
       <div
         ref={containerRef}
         onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
+        onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={handleMouseLeave}
         className="relative w-full max-w-md h-72 select-none"
         style={{ perspective: "1000px" }}
       >
         {/* Gold card — behind */}
         <div
-          className="absolute"
+          className="absolute inset-0"
           style={{
-            top: "2rem",
-            left: "3.5rem",
             zIndex: 1,
             transform: `
               perspective(1000px)
               rotateX(${tilt.x * 0.8}deg)
               rotateY(${tilt.y * 0.8 + 6}deg)
               translateZ(${isHovering ? -20 : -30}px)
+              translate(3.5rem, 2rem)
             `,
-            transition: isHovering
-              ? "transform 0.1s ease-out"
-              : "transform 0.6s ease-out",
+            transition: `transform ${easing}`,
           }}
         >
-          <Image
+          {/* Plain img — no wrapper stacking context */}
+          <img
             src="/gold-card.png"
             alt="Amex Gold Card"
             width={380}
             height={240}
-            className="rounded-xl shadow-xl"
             draggable={false}
+            className="rounded-xl shadow-xl"
+            style={{ display: "block", background: "transparent" }}
           />
-          {/* Gloss sheen */}
           <div
             className="absolute inset-0 rounded-xl pointer-events-none"
             style={{
-              background: `radial-gradient(ellipse at ${50 + tilt.y * 3}% ${50 - tilt.x * 3}%, rgba(255,255,255,0.18) 0%, transparent 70%)`,
-              transition: isHovering
-                ? "background 0.1s ease-out"
-                : "background 0.6s ease-out",
+              background: `radial-gradient(ellipse at ${glossPos}, rgba(255,255,255,0.18) 0%, transparent 70%)`,
+              transition: `background ${easing}`,
             }}
           />
         </div>
 
         {/* Platinum card — front */}
         <div
-          className="absolute"
+          className="absolute inset-0"
           style={{
-            top: 0,
-            left: 0,
             zIndex: 2,
             transform: `
               perspective(1000px)
@@ -89,28 +81,23 @@ export function HeroCards() {
               rotateY(${tilt.y - 6}deg)
               translateZ(${isHovering ? 20 : 0}px)
             `,
-            transition: isHovering
-              ? "transform 0.1s ease-out"
-              : "transform 0.6s ease-out",
+            transition: `transform ${easing}`,
           }}
         >
-          <Image
+          <img
             src="/platinum-card.png"
             alt="Amex Platinum Card"
             width={380}
             height={240}
-            className="rounded-xl shadow-2xl"
-            priority
             draggable={false}
+            className="rounded-xl shadow-2xl"
+            style={{ display: "block", background: "transparent" }}
           />
-          {/* Gloss sheen */}
           <div
             className="absolute inset-0 rounded-xl pointer-events-none"
             style={{
-              background: `radial-gradient(ellipse at ${50 + tilt.y * 3}% ${50 - tilt.x * 3}%, rgba(255,255,255,0.22) 0%, transparent 65%)`,
-              transition: isHovering
-                ? "background 0.1s ease-out"
-                : "background 0.6s ease-out",
+              background: `radial-gradient(ellipse at ${glossPos}, rgba(255,255,255,0.22) 0%, transparent 65%)`,
+              transition: `background ${easing}`,
             }}
           />
         </div>
