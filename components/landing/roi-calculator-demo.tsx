@@ -38,26 +38,24 @@ export function ROICalculatorDemo() {
         <p className="text-base font-bold text-[#111111]">ROI Calculator</p>
       </div>
 
-      {/* Card toggles */}
-      <div className="flex gap-2 mb-5">
+      {/* Card toggles — show card images */}
+      <div className="flex gap-3 mb-5">
         {(["platinum", "gold"] as const).map((key) => {
-          const card = cards[key];
           const isActive = active[key];
           return (
             <button
               key={key}
-              onClick={() =>
-                setActive((prev) => ({ ...prev, [key]: !prev[key] }))
-              }
-              className={`flex-1 py-2 px-3 rounded-xl border-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                isActive
-                  ? key === "platinum"
-                    ? "bg-[#1a1a2e] border-[#1a1a2e] text-white"
-                    : "bg-[#8B6914] border-[#8B6914] text-white"
-                  : "border-[#e0ddd9] text-[#999999] bg-[#fafaf9]"
+              onClick={() => setActive((prev) => ({ ...prev, [key]: !prev[key] }))}
+              className={`flex-1 rounded-xl border-2 overflow-hidden transition-all duration-200 cursor-pointer flex items-center justify-center py-2 ${
+                isActive ? "border-[#1a1a2e] shadow-sm" : "border-[#e0ddd9] opacity-40"
               }`}
             >
-              {card.name}
+              <img
+                src={key === "platinum" ? "/platinum-card.png" : "/gold-card.png"}
+                alt={key === "platinum" ? "Amex Platinum" : "Amex Gold"}
+                style={{ height: 44, objectFit: "contain", mixBlendMode: "multiply" }}
+                draggable={false}
+              />
             </button>
           );
         })}
@@ -65,7 +63,7 @@ export function ROICalculatorDemo() {
 
       {/* Big ROI display */}
       <div className="text-center mb-5">
-        <p className="text-[40px] font-bold text-emerald-600 tabular-nums leading-none">
+        <p className="text-[40px] font-bold text-[#1a1a2e] tabular-nums leading-none">
           +${netROI.toLocaleString()}
         </p>
         <p className="text-xs text-[#666666] mt-1">net return this year</p>
@@ -91,8 +89,8 @@ export function ROICalculatorDemo() {
           <p className="text-xs text-[#666666] w-10 flex-shrink-0">Fees</p>
           <div className="flex-1 h-5 bg-[#f0eeeb] rounded overflow-hidden">
             <div
-              className="h-full bg-red-400 rounded transition-all duration-700 ease-out"
-              style={{ width: `${(feesRatio * barWidth) / 100}%` }}
+              className="h-full rounded transition-all duration-700 ease-out"
+              style={{ width: `${(feesRatio * barWidth) / 100}%`, background: "#c4c0bb" }}
             />
           </div>
           <p className="text-xs font-semibold text-[#111111] tabular-nums w-14 text-right">
@@ -104,11 +102,11 @@ export function ROICalculatorDemo() {
           <p className="text-xs text-[#666666] w-10 flex-shrink-0">Net</p>
           <div className="flex-1 h-5 bg-[#f0eeeb] rounded overflow-hidden">
             <div
-              className="h-full bg-emerald-500 rounded transition-all duration-700 ease-out"
+              className="h-full bg-[#1a1a2e] rounded transition-all duration-700 ease-out"
               style={{ width: `${(netRatio * barWidth) / 100}%` }}
             />
           </div>
-          <p className="text-xs font-semibold text-emerald-600 tabular-nums w-14 text-right">
+          <p className="text-xs font-semibold text-[#1a1a2e] tabular-nums w-14 text-right">
             +${netROI.toLocaleString()}
           </p>
         </div>
@@ -141,7 +139,7 @@ export function ROICalculatorDemo() {
         <p className="text-sm tabular-nums text-[#666666] w-14 text-right">
           ${cards.platinum.fee}
         </p>
-        <p className="text-sm font-semibold tabular-nums text-emerald-600 w-14 text-right">
+        <p className="text-sm font-semibold tabular-nums text-[#1a1a2e] w-14 text-right">
           +${platNet.toLocaleString()}
         </p>
       </div>
@@ -157,15 +155,15 @@ export function ROICalculatorDemo() {
         <p className="text-sm tabular-nums text-[#666666] w-14 text-right">
           ${cards.gold.fee}
         </p>
-        <p className="text-sm font-semibold tabular-nums text-emerald-600 w-14 text-right">
+        <p className="text-sm font-semibold tabular-nums text-[#1a1a2e] w-14 text-right">
           +${goldNet.toLocaleString()}
         </p>
       </div>
 
       {/* Footer */}
       <div className="flex items-center justify-center gap-2 mt-4">
-        <TrendingUp className="h-4 w-4 text-emerald-600" />
-        <p className="text-sm font-medium text-emerald-600">
+        <TrendingUp className="h-4 w-4 text-[#1a1a2e]" />
+        <p className="text-sm font-medium text-[#1a1a2e]">
           Your cards are paying for themselves!
         </p>
       </div>

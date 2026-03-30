@@ -44,9 +44,9 @@ export function DashboardDemo() {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <p className="text-base font-bold text-[#111111]">CreditOS</p>
-        <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full">
-          <Flame className="h-3.5 w-3.5 text-orange-500" />
-          <span className="text-xs font-semibold text-orange-600">7</span>
+        <div className="flex items-center gap-1 bg-[#f0efed] px-2 py-1 rounded-full">
+          <Flame className="h-3.5 w-3.5 text-[#1a1a2e]" />
+          <span className="text-xs font-semibold text-[#1a1a2e]">7</span>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ export function DashboardDemo() {
       <div className="grid grid-cols-3 gap-2 mb-1">
         <div className="bg-[#f0efed] rounded-xl p-2.5 text-center">
           <div className="flex items-center justify-center gap-1 mb-0.5">
-            <Flame className="h-3.5 w-3.5 text-orange-500" />
+            <Flame className="h-3.5 w-3.5 text-[#1a1a2e]" />
             <p className="text-base font-bold text-[#111111]">7</p>
           </div>
           <p className="text-[10px] text-[#666666]">Streak</p>
@@ -81,7 +81,7 @@ export function DashboardDemo() {
           <p className="text-[10px] text-[#666666]">Captured</p>
         </div>
         <div className="bg-[#f0efed] rounded-xl p-2.5 text-center">
-          <p className="text-base font-bold text-emerald-600 tabular-nums">3.8x</p>
+          <p className="text-base font-bold text-[#1a1a2e] tabular-nums">3.8x</p>
           <p className="text-[10px] text-[#666666]">ROI</p>
         </div>
       </div>

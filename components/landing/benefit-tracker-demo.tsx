@@ -135,7 +135,7 @@ export function BenefitTrackerDemo() {
                 benefit.status === "claimed"
                   ? "bg-[#1a1a2e]"
                   : benefit.status === "warning"
-                  ? "bg-amber-400"
+                  ? "bg-[#8B6914]"
                   : "bg-[#f0eeeb]"
               }`}
             >
@@ -148,7 +148,7 @@ export function BenefitTrackerDemo() {
             <span
               className={`flex-1 text-sm ${
                 benefit.status === "warning"
-                  ? "text-amber-700"
+                  ? "text-[#8B6914]"
                   : benefit.status === "claimed"
                   ? "text-[#999999] line-through"
                   : "text-[#111111] font-medium"
@@ -156,7 +156,7 @@ export function BenefitTrackerDemo() {
             >
               {benefit.name}
               {benefit.status === "warning" && (
-                <span className="ml-1.5 text-[10px] font-medium text-amber-600 no-underline">
+                <span className="ml-1.5 text-[10px] font-medium text-[#8B6914] no-underline">
                   not enrolled
                 </span>
               )}

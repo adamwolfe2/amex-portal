@@ -39,22 +39,22 @@ export function MonthlyResetDemo() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-base font-bold text-[#111111]">Resets</p>
-        <div className="flex items-center gap-1 bg-red-100 px-2.5 py-1 rounded-full">
-          <span className="text-xs font-semibold text-red-600">
+        <div className="flex items-center gap-1 bg-[#f0efed] px-2.5 py-1 rounded-full">
+          <span className="text-xs font-semibold text-[#1a1a2e]">
             {daysLeft !== null ? `${daysLeft} day${daysLeft === 1 ? "" : "s"} left` : "—"}
           </span>
         </div>
       </div>
 
       {/* Alert banner */}
-      <div className="bg-red-600 rounded-xl p-4 mb-4">
+      <div className="bg-[#1a1a2e] rounded-xl p-4 mb-4">
         <div className="flex items-center gap-3">
-          <AlertTriangle className="h-5 w-5 text-white flex-shrink-0" />
+          <AlertTriangle className="h-5 w-5 text-white/70 flex-shrink-0" />
           <div>
             <p className="text-xl font-bold text-white tabular-nums">
               ${totalAtRisk.toFixed(2)} at risk
             </p>
-            <p className="text-xs text-red-200 mt-0.5">
+            <p className="text-xs text-white/50 mt-0.5">
               {expiringBenefits.length} credits expire this month
             </p>
           </div>
@@ -73,7 +73,7 @@ export function MonthlyResetDemo() {
           >
             <div
               className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                benefit.urgency === "high" ? "bg-red-500" : "bg-amber-400"
+                benefit.urgency === "high" ? "bg-[#1a1a2e]" : "bg-[#8B6914]"
               }`}
             />
             <span className="flex-1 text-sm text-[#111111] font-medium">
@@ -92,7 +92,7 @@ export function MonthlyResetDemo() {
               ${benefit.value}
             </span>
             {benefit.urgency === "high" && (
-              <span className="text-[10px] font-semibold text-red-600 whitespace-nowrap">
+              <span className="text-[10px] font-semibold text-[#1a1a2e] whitespace-nowrap">
                 Claim now →
               </span>
             )}
@@ -110,7 +110,7 @@ export function MonthlyResetDemo() {
             key={i}
             className="flex items-center gap-3 py-2.5 border-b border-[#f0eeeb]"
           >
-            <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+            <div className="w-5 h-5 rounded-full bg-[#1a1a2e] flex items-center justify-center flex-shrink-0">
               <Check className="h-3 w-3 text-white" />
             </div>
             <span className="flex-1 text-sm text-[#999999] line-through">
@@ -134,7 +134,7 @@ export function MonthlyResetDemo() {
 
       {/* Bottom total */}
       <div className="mt-4 py-3 border-t border-[#f0eeeb]">
-        <p className="text-sm font-semibold text-red-600 text-center tabular-nums">
+        <p className="text-sm font-semibold text-[#1a1a2e] text-center tabular-nums">
           ${totalAtRisk.toFixed(2)} still unclaimed
         </p>
       </div>
